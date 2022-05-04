@@ -1,11 +1,11 @@
 # Manual SSH Key Setting Process
 If for whatever reason this script fails, SSH keys can be set manually using the following process:
 
-
 1. Save the public SSH key for the root user.
 
+   (`ncn#`)
    ```bash
-   ncn# export SCSD_SSH_KEY=$(cat /root/.ssh/id_rsa.pub | sed 's/[[:space:]]*$//')
+   export SCSD_SSH_KEY=$(cat /root/.ssh/id_rsa.pub | sed 's/[[:space:]]*$//')
    ```
 
    If a different SSH key is to be used (for example from conman) set the
@@ -14,8 +14,9 @@ If for whatever reason this script fails, SSH keys can be set manually using the
 1. Generate a System Configuration Service configuration via the scsd tool.
 The admin must be authenticated to the Cray CLI before proceeding.
 
+   (`ncn#`)
    ```bash
-   ncn# cat > scsd_cfg.json <<DATA
+   cat > scsd_cfg.json <<DATA
    {
       "Force":false,
       "Targets": $(cray hsm inventory redfishEndpoints list --format=json | jq '[.RedfishEndpoints[] | .ID]' | sed 's/^/ /'),
@@ -33,8 +34,9 @@ The admin must be authenticated to the Cray CLI before proceeding.
    * The component name (xname) list looks valid/appropriate
    * The SSHKey settings match the desired public key
 
+   (`ncn#`)
    ```bash
-   ncn# cray scsd bmc loadcfg create scsd_cfg.json
+   cray scsd bmc loadcfg create scsd_cfg.json
    ```
 
    Check the output to verify all hardware has been set with the correct keys. Passwordless SSH to the root

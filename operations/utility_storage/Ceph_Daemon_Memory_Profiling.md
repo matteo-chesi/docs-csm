@@ -25,16 +25,18 @@ This procedure is meant as an instructional guide to provide information back to
 
 3. Start the profiler.
 
+   (`ncn-s001#`)
    ```bash
-   ncn-s001# ceph tell mon.ncn-s001 heap start_profiler
+   ceph tell mon.ncn-s001 heap start_profiler
    ```
 
    A message stating "mon.ncn-s001 started profiler" will be returned.
 
 4. Dump stats. This `does NOT require` the profiler to be running.
 
+   (`ncn-s001#`)
    ```bash
-   ncn-s001# ceph tell mon.ncn-s001 heap stats
+   ceph tell mon.ncn-s001 heap stats
    ```
 
    Example output:
@@ -94,16 +96,18 @@ This procedure is meant as an instructional guide to provide information back to
 
 6. Release memory.
 
+   (`ncn-s001#`)
    ```bash
-   ncn-s001# ceph tell mon.ncn-s001 heap release
+   ceph tell mon.ncn-s001 heap release
    ```
 
    A message stating "mon.ncn-s001 releasing free RAM back to system" will be returned.
 
 7. Stop the profiler.
 
+   (`ncn-s001#`)
    ```bash
-   ncn-s001# ceph tell mon.ncn-s001 heap stop_profiler
+   ceph tell mon.ncn-s001 heap stop_profiler
    ```
 
    A message stating " mon.ncn-s001 stopped profiler" will be returned.

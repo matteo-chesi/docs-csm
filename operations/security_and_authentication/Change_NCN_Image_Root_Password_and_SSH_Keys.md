@@ -6,7 +6,7 @@ change the the timezone (UTC is the default).
 This procedure shows this process being done any time after the first time installation of the CSM
 software has been completed and the PIT node is booted as a regular master node. To change the NCN image
 during an installation while the PIT node is booted as the PIT node,
-see [Change_NCN_Image_Root_Password_and_SSH_Keys_PIT](#Change_NCN_Image_Root_Password_and_SSH_Keys_PIT.md).
+see [Change_NCN_Image_Root_Password_and_SSH_Keys_PIT](#Change_NCN-Image-Root-Password-and-SSH-Keys-PIT.md).
 
 There is some common preparation before making the Kubernetes image for master nodes and worker nodes, making the Ceph image for utility storage nodes, and then some common cleanup afterwards.
 
@@ -20,18 +20,20 @@ There is some common preparation before making the Kubernetes image for master n
 
 1. Change to a working directory with enough space to hold the images once they have been expanded.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cd /run/initramfs/overlayfs
-   ncn-m# mkdir workingarea
-   ncn-m# cd workingarea
+   cd /run/initramfs/overlayfs
+   mkdir workingarea
+   cd workingarea
    ```
 
 The Kubernetes image `k8s-image` is used by the master and worker nodes.
 
 1. Decide which `k8s-image` is to be modified
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cray artifacts list ncn-images --format json | jq '.artifacts[] .Key' | grep k8s | grep squashfs
+   cray artifacts list ncn-images --format json | jq '.artifacts[] .Key' | grep k8s | grep squashfs
    "k8s-filesystem.squashfs"
    "k8s/0.1.107/filesystem.squashfs"
    "k8s/0.1.109/filesystem.squashfs"
@@ -39,29 +41,33 @@ The Kubernetes image `k8s-image` is used by the master and worker nodes.
    ```
 
    This example uses k8s/0.1.109 for the current version and adds a suffix for the new version.
+   (`ncn-m#`)
    ```bash
-   ncn-m# export K8SVERSION=0.1.109
-   ncn-m# export K8SNEW=0.1.109-2
+   export K8SVERSION=0.1.109
+   export K8SNEW=0.1.109-2
    ```
 
 1. Make a temporary directory for the k8s-image using the current version string.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# mkdir -p k8s/${K8SVERSION}
+   mkdir -p k8s/${K8SVERSION}
    ```
 
 1. Get the image.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cray artifacts get ncn-images k8s/${K8SVERSION}/filesystem.squashfs k8s/${K8SVERSION}/filesystem.squashfs
+   cray artifacts get ncn-images k8s/${K8SVERSION}/filesystem.squashfs k8s/${K8SVERSION}/filesystem.squashfs
    ```
 
 The Ceph image `ceph-image` is used by the utility storage nodes.
 
 1. Decide which ceph-image is to be modified
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cray artifacts list ncn-images --format json | jq '.artifacts[] .Key' | grep ceph | grep squashfs
+   cray artifacts list ncn-images --format json | jq '.artifacts[] .Key' | grep ceph | grep squashfs
    "ceph-filesystem.squashfs"
    "ceph/0.1.107/filesystem.squashfs"
    "ceph/0.1.113/filesystem.squashfs"
@@ -70,21 +76,24 @@ The Ceph image `ceph-image` is used by the utility storage nodes.
 
    This example uses ceph/0.1.113 for the current version and adds a suffix for the new version.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# export CEPHVERSION=0.1.113
-   ncn-m# export CEPHNEW=0.1.113-2
+   export CEPHVERSION=0.1.113
+   export CEPHNEW=0.1.113-2
    ```
 
 1. Make a temporary directory for the ceph-image using the current version string.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# mkdir -p ceph/${CEPHVERSION}
+   mkdir -p ceph/${CEPHVERSION}
    ```
 
 1. Get the image.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cray artifacts get ncn-images ceph/${CEPHVERSION}/filesystem.squashfs ceph/${CEPHVERSION}/filesystem.squashfs
+   cray artifacts get ncn-images ceph/${CEPHVERSION}/filesystem.squashfs ceph/${CEPHVERSION}/filesystem.squashfs
    ```
 
 1. Execute the `ncn-image-modification.sh` script.
@@ -93,8 +102,9 @@ The Ceph image `ceph-image` is used by the utility storage nodes.
 
    See the `-h` output for usage information:
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# ncn-image-modification.sh -h
+   ncn-image-modification.sh -h
    Usage: ncn-image-modification.sh [-p] [-d dir] [ -z timezone] [-k kubernetes-squashfs-file] [-s storage-squashfs-file] [ssh-keygen arguments]
 
           This script semi-automates the process of changing the timezone, root
@@ -147,8 +157,9 @@ The Ceph image `ceph-image` is used by the utility storage nodes.
    ```
 
    Example:
+   (`ncn-m#`)
    ```bash
-   ncn-m# ncn-image-modification.sh -z Americas/Chicago \
+   ncn-image-modification.sh -z Americas/Chicago \
                                     -k k8s/${K8SVERSION}/filesystem.squashfs \
                                     -s ceph/${CEPHVERSION}/filesystem.squashfs \
                                     -d ~/.ssh/
@@ -159,9 +170,10 @@ The Ceph image `ceph-image` is used by the utility storage nodes.
    It will copy the existing keys in `~/.ssh/` into the image.
 
    Example:
+   (`ncn-m#`)
    ```bash
-   ncn-m# export SQUASHFS_ROOT_PW_HASH=$(awk -F':' /^root:/'{print $2}' < /etc/shadow)
-   ncn-m# ncn-image-modification.sh -p -t rsa \
+   export SQUASHFS_ROOT_PW_HASH=$(awk -F':' /^root:/'{print $2}' < /etc/shadow)
+   ncn-image-modification.sh -p -t rsa \
                                     -N "" \
                                     -k k8s/${K8SVERSION}/filesystem.squashfs \
                                     -s ceph/${CEPHVERSION}/filesystem.squashfs
@@ -179,15 +191,17 @@ The Ceph image `ceph-image` is used by the utility storage nodes.
 
    ***Note:*** The version string for the kernel file may be different.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cd k8s/${K8SNEW}
+   cd k8s/${K8SNEW}
    /usr/share/doc/csm/scripts/ceph-upload-file-public-read.py --bucket-name ncn-images --key-name 'k8s/${K8SNEW}/filesystem.squashfs' --file-name filesystem.squashfs
    /usr/share/doc/csm/scripts/ceph-upload-file-public-read.py --bucket-name ncn-images --key-name 'k8s/${K8SNEW}/initrd' --file-name initrd.img.xz
    /usr/share/doc/csm/scripts/ceph-upload-file-public-read.py --bucket-name ncn-images --key-name 'k8s/${K8SNEW}/kernel' --file-name 5.3.18-24.75-default.kernel
    ```
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cd ceph/${CEPHNEW}
+   cd ceph/${CEPHNEW}
    /usr/share/doc/csm/scripts/ceph-upload-file-public-read.py --bucket-name ncn-images --key-name 'ceph/${CEPHNEW}/filesystem.squashfs' --file-name filesystem.squashfs
    /usr/share/doc/csm/scripts/ceph-upload-file-public-read.py --bucket-name ncn-images --key-name 'ceph/${CEPHNEW}/initrd' --file-name initrd.img.xz
    /usr/share/doc/csm/scripts/ceph-upload-file-public-read.py --bucket-name ncn-images --key-name 'ceph/${CEPHNEW}/kernel' --file-name 5.3.18-24.75-default.kernel
@@ -207,7 +221,7 @@ The Ceph image `ceph-image` is used by the utility storage nodes.
    >     This will use the K8SVERSION and K8SNEW variables defined earlier.
    >
    >     ```bash
-   >     ncn-m# for node in $(grep -oP "(ncn-[mw]\w+)" /etc/hosts | sort -u)
+   >     for node in $(grep -oP "(ncn-[mw]\w+)" /etc/hosts | sort -u)
    >     do
    >       echo $node
    >       xname=$(ssh $node cat /etc/cray/xname)
@@ -232,7 +246,7 @@ The Ceph image `ceph-image` is used by the utility storage nodes.
    >     This will use the CEPHVERSION and CEPHNEW variables defined earlier.
    >
    >     ```bash
-   >     ncn-m# for node in $(grep -oP "(ncn-s\w+)" /etc/hosts | sort -u)
+   >     for node in $(grep -oP "(ncn-s\w+)" /etc/hosts | sort -u)
    >     do
    >       echo $node
    >       xname=$(ssh $node cat /etc/cray/xname)
@@ -250,8 +264,9 @@ The Ceph image `ceph-image` is used by the utility storage nodes.
 
 1. Remove the workarea so the space can be reused.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# rm -rf /run/initramfs/overlayfs/workingarea
+   rm -rf /run/initramfs/overlayfs/workingarea
    ```
 
 1. Rebuild nodes.

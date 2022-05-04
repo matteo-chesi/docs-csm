@@ -27,8 +27,9 @@ The commands in this procedure must be run as the `root` user.
 
     The following query may return multiple public key records. The correct one will have a name value including the current username in use.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims public-keys list
+    cray ims public-keys list
     ```
 
     Example output:
@@ -47,8 +48,9 @@ The commands in this procedure must be run as the `root` user.
 
     If a public key associated with the username in use is not returned, proceed to the next step. If a public key associated with the username does exist, create a variable for the IMS public key `id` value in the returned data and then proceed to step 3.
 
+    (`ncn#`)
     ```bash
-    ncn# export IMS_PUBLIC_KEY_ID=a252ff6f-c087-4093-a305-122b41824a3e
+    export IMS_PUBLIC_KEY_ID=a252ff6f-c087-4093-a305-122b41824a3e
     ```
 
 2.  Upload the SSH public key to the IMS service.
@@ -59,8 +61,9 @@ The commands in this procedure must be run as the `root` user.
 
     Replace the username value with the actual username being used on the system when setting the public key name.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims public-keys create --name "username public key" --public-key ~/.ssh/id_rsa.pub
+    cray ims public-keys create --name "username public key" --public-key ~/.ssh/id_rsa.pub
     ```
 
     Example output:
@@ -74,16 +77,18 @@ The commands in this procedure must be run as the `root` user.
 
     If successful, create a variable for the IMS public key `id` value in the returned data.
 
+    (`ncn#`)
     ```bash
-    ncn# export IMS_PUBLIC_KEY_ID=a252ff6f-c087-4093-a305-122b41824a3e
+    export IMS_PUBLIC_KEY_ID=a252ff6f-c087-4093-a305-122b41824a3e
     ```
 
 **Get the IMS Recipe to Build**
 
 3.  Locate the IMS recipe needed to build the image.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims recipes list
+    cray ims recipes list
     ```
 
     Example output:
@@ -106,8 +111,9 @@ The commands in this procedure must be run as the `root` user.
 
     If successful, create a variable for the IMS recipe `id` in the returned data.
 
+    (`ncn#`)
     ```bash
-    ncn# export IMS_RECIPE_ID=2233c82a-5081-4f67-bec4-4b59a60017a6
+    export IMS_RECIPE_ID=2233c82a-5081-4f67-bec4-4b59a60017a6
     ```
 
 **Submit the Kubernetes Image Create Job**
@@ -123,8 +129,9 @@ The commands in this procedure must be run as the `root` user.
     |SLES 15 SP3 Barebones|cray-sles15sp3-barebones|vmlinuz|initrd|
     |COS|cray-shasta-compute-sles15sp3.x86_64-1.4.66|vmlinuz|initrd|
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims jobs create \
+    cray ims jobs create \
     --job-type create \
     --image-root-archive-name cray-sles15-barebones \
     --artifact-id $IMS_RECIPE_ID \
@@ -153,15 +160,17 @@ The commands in this procedure must be run as the `root` user.
 
     If successful, create variables for the IMS job `id` and `kubernetes_job` values in the returned data.
 
+    (`ncn#`)
     ```bash
-    ncn# export IMS_JOB_ID=ad5163d2-398d-4e93-94f0-2f439f114fe7
-    ncn# export IMS_KUBERNETES_JOB=cray-ims-ad5163d2-398d-4e93-94f0-2f439f114fe7-create
+    export IMS_JOB_ID=ad5163d2-398d-4e93-94f0-2f439f114fe7
+    export IMS_KUBERNETES_JOB=cray-ims-ad5163d2-398d-4e93-94f0-2f439f114fe7-create
     ```
 
 5.  Use `kubectl` and the returned `IMS_KUBERNETES_JOB` value to describe the image create job.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n ims describe job $IMS_KUBERNETES_JOB
+    kubectl -n ims describe job $IMS_KUBERNETES_JOB
     ```
 
     Example output:
@@ -180,8 +189,9 @@ The commands in this procedure must be run as the `root` user.
 
     If successful, create a variable for the pod name that was created above, which will be used in the next step.
 
+    (`ncn#`)
     ```bash
-    ncn# export POD=cray-ims-ad5163d2-398d-4e93-94f0-2f439f114fe7-create-lt69t
+    export POD=cray-ims-ad5163d2-398d-4e93-94f0-2f439f114fe7-create-lt69t
     ```
 
 6.  Watch the logs from the `fetch-recipe`, `wait-for-repos`, `build-ca-rpm`, `build-image`, and `buildenv-sidecar` containers to monitor the image creation process.
@@ -190,8 +200,9 @@ The commands in this procedure must be run as the `root` user.
 
     The `fetch-recipe` container is responsible for fetching the recipe archive from S3 and uncompressing the recipe.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n ims logs -f $POD -c fetch-recipe
+    kubectl -n ims logs -f $POD -c fetch-recipe
     ```
 
     Example output:
@@ -212,8 +223,9 @@ The commands in this procedure must be run as the `root` user.
 
     The `wait-for-repos` container will ensure that any HTTP/HTTPS repositories referenced by the Kiwi-NG recipe can be accessed and are available. This helps ensure that the image will be built successfully. If 301 responses are returned instead of 200 responses, that does not indicate an error.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n ims logs -f $POD -c wait-for-repos
+    kubectl -n ims logs -f $POD -c wait-for-repos
     ```
 
     Example output:
@@ -232,8 +244,9 @@ The commands in this procedure must be run as the `root` user.
 
     The `build-ca-rpm` container creates an RPM with the private root-CA certificate for the system. This RPM is installed automatically by Kiwi-NG to ensure that Kiwi can securely talk to the Nexus repositories when building the image root.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n ims logs -f $POD -c build-ca-rpm
+    kubectl -n ims logs -f $POD -c build-ca-rpm
     ```
 
     Example output:
@@ -288,8 +301,9 @@ The commands in this procedure must be run as the `root` user.
 
     The `build-image` container builds the recipe using the Kiwi-NG tool.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n ims logs -f $POD -c build-image
+    kubectl -n ims logs -f $POD -c build-image
     ```
 
     Example output:
@@ -344,8 +358,9 @@ The commands in this procedure must be run as the `root` user.
     - If the Kiwi-NG build completed successfully, the image root, kernel, and initrd artifacts are uploaded to the artifact repository.
     - If the Kiwi-NG build failed to complete successfully, an optional SSH Debug shell is enabled so the image build can be debugged.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n ims logs -f $POD -c buildenv-sidecar
+    kubectl -n ims logs -f $POD -c buildenv-sidecar
     ```
 
     Example output:
@@ -457,8 +472,9 @@ The commands in this procedure must be run as the `root` user.
 
     There may be multiple records returned. Ensure that the correct record is selected in the returned data.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims jobs describe $IMS_JOB_ID
+    cray ims jobs describe $IMS_JOB_ID
     ```
 
     Example output:
@@ -494,9 +510,10 @@ The commands in this procedure must be run as the `root` user.
 
     If successful, create variables for the SSH connection information.
 
+    (`ncn#`)
     ```bash
-    ncn# IMS_SSH_HOST=ad5163d2-398d-4e93-94f0-2f439f114fe7.ims.cmn.shasta.cray.com
-    ncn# IMS_SSH_PORT=22
+    IMS_SSH_HOST=ad5163d2-398d-4e93-94f0-2f439f114fe7.ims.cmn.shasta.cray.com
+    IMS_SSH_PORT=22
     ```
 
 8.  Connect to the IMS debug shell.
@@ -505,8 +522,9 @@ The commands in this procedure must be run as the `root` user.
 
     > **IMPORTANT:** The following command will not work when run on a node within the Kubernetes cluster.
 
+    (`ncn#`)
     ```bash
-    ncn# ssh -p IMS_SSH_PORT root@IMS_SSH_HOST
+    ssh -p IMS_SSH_PORT root@IMS_SSH_HOST
     ```
 
     Example output:
@@ -547,8 +565,9 @@ The commands in this procedure must be run as the `root` user.
 
 10. Verify the new image was created correctly.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims jobs describe $IMS_JOB_ID
+    cray ims jobs describe $IMS_JOB_ID
     ```
 
     Example output:
@@ -574,14 +593,16 @@ The commands in this procedure must be run as the `root` user.
 
     If successful, create a variable for the IMS `resultant_image_id`.
 
+    (`ncn#`)
     ```bash
-    ncn# export IMS_RESULTANT_IMAGE_ID=d88521c3-b339-43bc-afda-afdfda126388
+    export IMS_RESULTANT_IMAGE_ID=d88521c3-b339-43bc-afda-afdfda126388
     ```
 
 11. Verify the new IMS image record exists.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims images describe $IMS_RESULTANT_IMAGE_ID
+    cray ims images describe $IMS_RESULTANT_IMAGE_ID
     ```
 
     Example output:
@@ -601,12 +622,12 @@ The commands in this procedure must be run as the `root` user.
 
 12. Delete the IMS job record using the `IMS_JOB_ID`.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims jobs delete $IMS_JOB_ID
+    cray ims jobs delete $IMS_JOB_ID
     ```
 
     Deleting the job record will delete the underlying Kubernetes job, service, and ConfigMap that were created when the job record was submitted.
-
 
 Images built by IMS contain only the packages and settings that are referenced in the Kiwi-NG recipe used to build the image. The only exception is that IMS will dynamically install the system's root CA certificate to allow Zypper \(via Kiwi-NG\) to talk securely with the required Nexus RPM repositories. Images that are intended to be used to boot a CN or other node must be configured with DNS and other settings that enable the image to talk to vital services. A base level of customization is provided by the default Ansible plays used by the Configuration Framework Service \(CFS\) to enable DNS resolution, which are typically run against an image after it is built by IMS.
 

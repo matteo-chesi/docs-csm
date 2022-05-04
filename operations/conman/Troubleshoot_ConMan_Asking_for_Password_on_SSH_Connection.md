@@ -14,8 +14,9 @@ This procedure requires administrative privileges.
 
 1. Scale the `cray-console-operator` pods to 0 replicas.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services scale --replicas=0 deployment/cray-console-operator
+    kubectl -n services scale --replicas=0 deployment/cray-console-operator
     ```
 
     Example output:
@@ -27,20 +28,23 @@ This procedure requires administrative privileges.
 
     The following command will give no output when the pod is no longer running.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services get pods | grep console-operator
+    kubectl -n services get pods | grep console-operator
     ```
 
 1. Delete the SSH keys in a `cray-console-node` pod.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services exec -it cray-console-node-0 -- rm -v /var/log/console/conman.key /var/log/console/conman.key.pub
+    kubectl -n services exec -it cray-console-node-0 -- rm -v /var/log/console/conman.key /var/log/console/conman.key.pub
     ```
 
 1. Restart the `cray-console-operator` pod.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services scale --replicas=1 deployment/cray-console-operator
+    kubectl -n services scale --replicas=1 deployment/cray-console-operator
     ```
 
     Example output:

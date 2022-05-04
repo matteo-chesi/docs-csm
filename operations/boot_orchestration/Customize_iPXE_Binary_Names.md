@@ -16,8 +16,9 @@ This procedure requires administrative privileges.
 
    The following is an example of creating a backup:
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get configmap -n services cray-ipxe-settings \
+    kubectl get configmap -n services cray-ipxe-settings \
             -o yaml > /root/cray-ipxe-settings-backup.yaml
     ```
 
@@ -34,31 +35,35 @@ This procedure requires administrative privileges.
 
     - **Option 1:** Edit the `cray-ipxe-settings` ConfigMap directly.
 
+      (`ncn#`)
       ```bash
-      ncn# kubectl edit configmap -n services cray-ipxe-settings
+      kubectl edit configmap -n services cray-ipxe-settings
       ```
 
     - **Option 2:** Edit the ConfigMap by saving the file, editing it, and reloading the ConfigMap.
         1. Save the file.
 
+           (`ncn#`)
            ```bash
-           ncn# kubectl get configmap -n services cray-ipxe-settings \
+           kubectl get configmap -n services cray-ipxe-settings \
                    -o yaml > /root/cray-ipxe-settings.yaml
            ```
 
         2. Edit the `cray-ipxe-settings.yaml` file.
 
+           (`ncn#`)
            ```bash
-           ncn# vi /root/cray-ipxe-bss-ipxe.yaml
+           vi /root/cray-ipxe-bss-ipxe.yaml
            ```
 
         3. Reload the ConfigMap.
 
            Deleting and recreating the ConfigMap will reload it.
 
+           (`ncn#`)
            ```bash
-           ncn# kubectl delete configmap -n services cray-ipxe-settings
-           ncn# kubectl create -f /root/cray-ipxe-settings.yaml
+           kubectl delete configmap -n services cray-ipxe-settings
+           kubectl create -f /root/cray-ipxe-settings.yaml
            ```
 
 The `cray-ipxe` builder will detect the configuration change and rebuild the iPXE binaries within 30 to 90 seconds. Upon

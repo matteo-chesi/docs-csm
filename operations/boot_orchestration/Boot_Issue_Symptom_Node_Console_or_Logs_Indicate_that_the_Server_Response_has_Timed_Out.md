@@ -22,8 +22,9 @@ Check if the `nf_nat_tftp` kernel module has been loaded. The kernel module is l
 
 1. Load `nf_nat_tftp` if it has not been loaded already by executing modprobe nf\_nat\_tftp from the non-compute node \(NCN\).
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl get pods -n services -o wide|grep -E "NAME|tftp"
+    kubectl get pods -n services -o wide|grep -E "NAME|tftp"
     ```
 
     Example output:
@@ -35,8 +36,9 @@ Check if the `nf_nat_tftp` kernel module has been loaded. The kernel module is l
 
 1. Restart the `cray-tftp` service.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl delete pod cray-tftp-885cc65c4-fk8bm
+    kubectl delete pod cray-tftp-885cc65c4-fk8bm
     ```
 
     Example output:

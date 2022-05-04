@@ -14,8 +14,9 @@ Use this procedure as a general guide to power off an external ClusterStor syste
 
 1.  SSH to the primary MGMT node as `admin`.
 
+    (`ncn#`)
     ```bash
-    ncn# remote$ ssh -l admin cls01234n00.us.cray.com
+    remote$ ssh -l admin cls01234n00.us.cray.com
     ```
 
 1.  Change to root user.

@@ -56,8 +56,9 @@ Client (master and worker nodes):
 
 1. Check the expiration of the certificates.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubeadm alpha certs check-expiration --config /etc/kubernetes/kubeadmcfg.yaml
+    kubeadm alpha certs check-expiration --config /etc/kubernetes/kubeadmcfg.yaml
     ```
 
     Example output:
@@ -87,8 +88,9 @@ Client (master and worker nodes):
 
 1. Backup existing certificates on master nodes:
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# pdsh -w ncn-m00[1-3] tar cvf /root/cert_backup.tar /etc/kubernetes/pki/ /var/lib/kubelet/pki/
+    pdsh -w ncn-m00[1-3] tar cvf /root/cert_backup.tar /etc/kubernetes/pki/ /var/lib/kubelet/pki/
     ```
 
     Example output:
@@ -108,8 +110,9 @@ Client (master and worker nodes):
 
     **IMPORTANT:** The range of nodes below should reflect the size of the environment. This should run on every worker node.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# pdsh -w ncn-w00[1-3] tar cvf /root/cert_backup.tar /var/lib/kubelet/pki/
+    pdsh -w ncn-w00[1-3] tar cvf /root/cert_backup.tar /var/lib/kubelet/pki/
     ```
 
     Example output:
@@ -130,8 +133,9 @@ Run the following steps on each master node.
 
 1. Renew the certificates.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubeadm alpha certs renew all --config /etc/kubernetes/kubeadmcfg.yaml
+    kubeadm alpha certs renew all --config /etc/kubernetes/kubeadmcfg.yaml
     ```
 
     Example output:
@@ -152,8 +156,9 @@ Run the following steps on each master node.
 
 1. Check the new expiration.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubeadm alpha certs check-expiration --config /etc/kubernetes/kubeadmcfg.yaml
+    kubeadm alpha certs check-expiration --config /etc/kubernetes/kubeadmcfg.yaml
     ```
 
     Example output:
@@ -180,8 +185,9 @@ Run the following steps on each master node.
 
 1. Check to see if only some of the certificates were updated.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# ncn-m001# ls -l /etc/kubernetes/pki
+    ls -l /etc/kubernetes/pki
     ```
 
     Example output:
@@ -204,8 +210,9 @@ Run the following steps on each master node.
     -rw------- 1 root root  451 Sep 21 20:50 sa.pub
     ```
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# ls -l /etc/kubernetes/pki/etcd
+    ls -l /etc/kubernetes/pki/etcd
     ```
 
     Example output:
@@ -283,8 +290,9 @@ Run the following steps on each master node.
 
    Once the steps to renew the needed certificates have been completed on all the master nodes, log into each master node one at a time and run the following:
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# systemctl restart etcd.service
+   systemctl restart etcd.service
    ```
 
 **Run the remaining steps on both master and worker nodes.**
@@ -295,8 +303,9 @@ Run the following steps on each master node.
 
    **IMPORTANT:** The following example will need to be adjusted to reflect the correct amount of master and worker nodes in the environment being used.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# pdsh -w ncn-m00[1-3] -w ncn-w00[1-3] systemctl restart kubelet.service
+   pdsh -w ncn-m00[1-3] -w ncn-w00[1-3] systemctl restart kubelet.service
    ```
 
 1. Fix `kubectl` command access.
@@ -305,8 +314,9 @@ Run the following steps on each master node.
 
    1. View the status of the nodes.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# kubectl get nodes
+      kubectl get nodes
       ```
 
       The following is returned if certificates have expired:
@@ -317,14 +327,16 @@ Run the following steps on each master node.
 
    1. Copy `/etc/kubernetes/admin.conf` to `/root/.kube/config`.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# cp /etc/kubernetes/admin.conf /root/.kube/config
+      cp /etc/kubernetes/admin.conf /root/.kube/config
       ```
 
    1. Check the status of the nodes again.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# kubectl get nodes
+      kubectl get nodes
       ```
 
       Example output:
@@ -350,8 +362,9 @@ Run the following steps on each master node.
 
    **NOTE:** Update the following command with the appropriate range of worker nodes.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# pdcp -w ncn-m00[2-3] -w ncn-w00[1-3] /etc/kubernetes/admin.conf /etc/kubernetes/
+   pdcp -w ncn-m00[2-3] -w ncn-w00[1-3] /etc/kubernetes/admin.conf /etc/kubernetes/
    ```
 
 ### Regenerate `kubelet` `.pem` Certificates
@@ -360,8 +373,9 @@ Run the following steps on each master node.
 
    **IMPORTANT:** The following example will need to be adjusted to reflect the correct number of master and worker nodes in the environment being used.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# pdsh -w ncn-m00[1-3] -w ncn-w00[1-3] tar cvf \
+   pdsh -w ncn-m00[1-3] -w ncn-w00[1-3] tar cvf \
                /root/kubelet_certs.tar /etc/kubernetes/kubelet.conf /var/lib/kubelet/pki/
    ```
 
@@ -369,8 +383,9 @@ Run the following steps on each master node.
 
    1. Get the current `apiserver-advertise-address`.
 
+      (`ncn#`)
       ```bash
-      ncn# kubectl config view|grep server
+      kubectl config view|grep server
       ```
 
       Example output:
@@ -383,8 +398,9 @@ Run the following steps on each master node.
 
       **NOTE:** The `apiserver-advertise-address` may vary, so do not copy and paste without verifying.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# for node in $(kubectl get nodes -o json|jq -r '.items[].metadata.name'); do kubeadm alpha kubeconfig user --org system:nodes \
+      for node in $(kubectl get nodes -o json|jq -r '.items[].metadata.name'); do kubeadm alpha kubeconfig user --org system:nodes \
                                --client-name system:node:$node --apiserver-advertise-address 10.252.120.2 --apiserver-bind-port 6442 > /root/$node.kubelet.conf; done
       ```
 
@@ -394,14 +410,16 @@ Run the following steps on each master node.
 
    **NOTE:** Update the below command with the appropriate number of master and worker nodes.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# for node in ncn-m00{1..3} ncn-w00{1..3}; do scp /root/$node.kubelet.conf $node:/etc/kubernetes/; done
+   for node in ncn-m00{1..3} ncn-w00{1..3}; do scp /root/$node.kubelet.conf $node:/etc/kubernetes/; done
    ```
 
 4. Log into each node one at a time and run the following commands:
 
+   (`ncn#`)
    ```bash
-   ncn# systemctl stop kubelet.service &&
+   systemctl stop kubelet.service &&
         rm -v /etc/kubernetes/kubelet.conf /var/lib/kubelet/pki/* &&
         cp -v /etc/kubernetes/$(hostname -s).kubelet.conf /etc/kubernetes/kubelet.conf &&
         systemctl start kubelet.service && 
@@ -412,8 +430,9 @@ Run the following steps on each master node.
 
    **This task is for each master and worker node. The example checks each `kubelet` certificate in [File Locations](#file-locations).**
 
+   (`ncn#`)
    ```bash
-   ncn# for i in $(ls /var/lib/kubelet/pki/*.crt;ls /var/lib/kubelet/pki/*.pem);do echo ${i}; openssl x509 -enddate -noout -in ${i};done
+   for i in $(ls /var/lib/kubelet/pki/*.crt;ls /var/lib/kubelet/pki/*.pem);do echo ${i}; openssl x509 -enddate -noout -in ${i};done
    ```
 
    Example output:
@@ -445,8 +464,9 @@ Run the following steps from a master node.
 
    1. Update the `kube-etcdbackup-etcd` secret.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# kubectl --namespace=kube-system create secret generic kube-etcdbackup-etcd \
+      kubectl --namespace=kube-system create secret generic kube-etcdbackup-etcd \
                      --from-file=/etc/kubernetes/pki/etcd/ca.crt \
                      --from-file=tls.crt=/etc/kubernetes/pki/etcd/server.crt \
                      --from-file=tls.key=/etc/kubernetes/pki/etcd/server.key \
@@ -455,8 +475,9 @@ Run the following steps from a master node.
 
    1. Check the certificate's expiration date to verify that the certificate is not expired.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# kubectl get secret -n kube-system kube-etcdbackup-etcd -o json | jq -r '.data."tls.crt" | @base64d' | openssl x509 -noout -enddate
+      kubectl get secret -n kube-system kube-etcdbackup-etcd -o json | jq -r '.data."tls.crt" | @base64d' | openssl x509 -noout -enddate
       ```
 
       Example output:
@@ -467,8 +488,9 @@ Run the following steps from a master node.
 
    1. Check that the next `kube-etcdbackup` cronjob `Completed`. This cronjob runs every 10 minutes.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# kubectl get pod -l app.kubernetes.io/instance=cray-baremetal-etcd-backup -n kube-system
+      kubectl get pod -l app.kubernetes.io/instance=cray-baremetal-etcd-backup -n kube-system
       ```
 
       Example output:
@@ -482,8 +504,9 @@ Run the following steps from a master node.
 
    1. Update the `etcd-client-cert` secret.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# kubectl --namespace=sysmgmt-health create secret generic etcd-client-cert 
+      kubectl --namespace=sysmgmt-health create secret generic etcd-client-cert 
                      --from-file=etcd-client=/etc/kubernetes/pki/apiserver-etcd-client.crt \
                      --from-file=etcd-client-key=/etc/kubernetes/pki/apiserver-etcd-client.key \
                      --from-file=etcd-ca=/etc/kubernetes/pki/etcd/ca.crt \
@@ -494,8 +517,9 @@ Run the following steps from a master node.
 
       1. Check the `etcd-ca` expiration date.
 
+         (`ncn-m#`)
          ```bash
-         ncn-m# kubectl get secret -n sysmgmt-health etcd-client-cert -o json | jq -r '.data."etcd-ca" | @base64d' | openssl x509 -noout -enddate
+         kubectl get secret -n sysmgmt-health etcd-client-cert -o json | jq -r '.data."etcd-ca" | @base64d' | openssl x509 -noout -enddate
          ```
 
          Example output:
@@ -506,8 +530,9 @@ Run the following steps from a master node.
 
       1. Check the `etcd-client` expiration date.
 
+         (`ncn-m#`)
          ```bash
-         ncn-m# kubectl get secret -n sysmgmt-health etcd-client-cert -o json | jq -r '.data."etcd-client" | @base64d' | openssl x509 -noout -enddate
+         kubectl get secret -n sysmgmt-health etcd-client-cert -o json | jq -r '.data."etcd-client" | @base64d' | openssl x509 -noout -enddate
          ```
 
          Example output:
@@ -518,9 +543,10 @@ Run the following steps from a master node.
 
    1. Restart Prometheus.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# kubectl rollout restart -n sysmgmt-health statefulSet/prometheus-cray-sysmgmt-health-promet-prometheus
-      ncn-m# kubectl rollout status -n sysmgmt-health statefulSet/prometheus-cray-sysmgmt-health-promet-prometheus
+      kubectl rollout restart -n sysmgmt-health statefulSet/prometheus-cray-sysmgmt-health-promet-prometheus
+      kubectl rollout status -n sysmgmt-health statefulSet/prometheus-cray-sysmgmt-health-promet-prometheus
       ```
 
       Example output:
@@ -532,9 +558,10 @@ Run the following steps from a master node.
 
    1. Check for any `tls` errors from the active Prometheus targets. No errors are expected.
 
+      (`ncn-m#`)
       ```bash
-      ncn-m# PROM_IP=$(kubectl get services -n sysmgmt-health cray-sysmgmt-health-promet-prometheus -o json | jq -r '.spec.clusterIP')
-      ncn-m# curl -s http://${PROM_IP}:9090/api/v1/targets | jq -r '.data.activeTargets[] | select(."scrapePool" == "sysmgmt-health/cray-sysmgmt-health-promet-kube-etcd/0")' | grep lastError | sort -u
+      PROM_IP=$(kubectl get services -n sysmgmt-health cray-sysmgmt-health-promet-prometheus -o json | jq -r '.spec.clusterIP')
+      curl -s http://${PROM_IP}:9090/api/v1/targets | jq -r '.data.activeTargets[] | select(."scrapePool" == "sysmgmt-health/cray-sysmgmt-health-promet-kube-etcd/0")' | grep lastError | sort -u
       ```
 
       Example output:

@@ -18,8 +18,9 @@ Scenarios where this procedure is applicable:
 
 1. Retrieve an API token:
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# export TOKEN=$(curl -s -S -d grant_type=client_credentials \
+    export TOKEN=$(curl -s -S -d grant_type=client_credentials \
             -d client_id=admin-client -d client_secret=`kubectl get secrets admin-client-auth \
             -o jsonpath='{.data.client-secret}' | base64 -d` \
             https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token \
@@ -47,14 +48,16 @@ Scenarios where this procedure is applicable:
         | B | BMC number     |                          | For Management NCNs the BMC number is 0.
         | N | Node number    |                          | For Management NCNs the Node number is 0.
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# export XNAME=x3000c0s4b0n0
+        export XNAME=x3000c0s4b0n0
         ```
 
     1. **Skip if adding `ncn-m001`:** Determine the NCN BMC xname by removing the trailing `n0` from the NCN node xname:
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# export BMC_XNAME=x3000c0s4b0
+        export BMC_XNAME=x3000c0s4b0
         ```
 
     1. **Skip if adding `ncn-m001`:** Determine the xname of the `MgmtSwitchConnector` (the switch port of the management switch that the BMC is connected to). This is not required for `ncn-m001`, because its BMC is typically connected to the site network.
@@ -74,14 +77,16 @@ Scenarios where this procedure is applicable:
         | W | Slot/Rack U        | Destination Location (S20) | The Slot/Rack U that the management switch occupies.
         | J | Switch port number | Destination Port (U20)     | The switch port on the switch that the NCN BMC is cabled to.
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# export MGMT_SWITCH_CONNECTOR=x3000c0w14j48
+        export MGMT_SWITCH_CONNECTOR=x3000c0w14j48
         ```
 
     1. **Skip if adding `ncn-m001`:** Determine the xname of the management switch by removing the trailing `jJ` from the `MgmtSwitchConnector` xname:
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# export MGMT_SWITCH=x3000c0w14
+        export MGMT_SWITCH=x3000c0w14
         ```
 
     1. **Skip if adding `ncn-m001`:** Collect the BMC MAC address.
@@ -91,8 +96,9 @@ Scenarios where this procedure is applicable:
 
             1. Determine the alias of the management switch that the BMC is connected to:
 
+                (`ncn-m#`)
                 ```bash
-                ncn-m# cray sls hardware describe $MGMT_SWITCH --format json | jq .ExtraProperties.Aliases[] -r
+                cray sls hardware describe $MGMT_SWITCH --format json | jq .ExtraProperties.Aliases[] -r
                 ```
 
                 Example output:
@@ -103,16 +109,18 @@ Scenarios where this procedure is applicable:
 
             1. SSH into the management switch that the BMC is connected to:
 
+                (`ncn-m#`)
                 ```bash
-                ncn-m# ssh admin@sw-leaf-bmc-001.hmn
+                ssh admin@sw-leaf-bmc-001.hmn
                 ```
 
             1. Locate the switch port that the BMC is connected to and record its MAC address.
                In the commands below, change the value of `1/1/39` to match the BMC switch port number (the BMC Switch port number is the `J` value in the in the `MgmtSwitchConnector` xname `xXwWjJ`).
                 For example, with the following `$MGMT_SWITCH_CONNECTOR` value:
 
+                (`ncn-m#`)
                 ```bash
-                ncn-m# echo $MGMT_SWITCH_CONNECTOR
+                echo $MGMT_SWITCH_CONNECTOR
                 ```
 
                 Example output:
@@ -149,19 +157,21 @@ Scenarios where this procedure is applicable:
 
     1. **Skip if adding `ncn-m001`:** Set the `BMC_MAC` environment variable to the BMC MAC address:
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# export BMC_MAC=a4:bf:01:65:68:54
+        export BMC_MAC=a4:bf:01:65:68:54
         ```
 
     1. **Skip if adding `ncn-m001`:** Determine the current IP address of the NCN BMC:
 
         1. Query Kea for the BMC MAC address to determine its current IP address:
 
+            (`ncn-m#`)
             ```bash
-            ncn-m# export BMC_IP=$(curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST -H "Content-Type: application/json" \
+            export BMC_IP=$(curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST -H "Content-Type: application/json" \
                                        -d '{ "command": "lease4-get-all", "service": [ "dhcp4" ] }' \
                                         https://api-gw-service-nmn.local/apis/dhcp-kea | jq --arg BMC_MAC $BMC_MAC '.[].arguments.leases[] | select(."hw-address" == $BMC_MAC)."ip-address"' -r)
-            ncn-m# echo $BMC_IP
+            echo $BMC_IP
             ```
 
             Example output:
@@ -177,14 +187,16 @@ Scenarios where this procedure is applicable:
 
         1. Ping the BMC to see if it is reachable:
 
+            (`ncn-m#`)
             ```bash
-            ncn-m# ping $BMC_IP
+            ping $BMC_IP
             ```
 
     1. **Perform this step if adding `ncn-m001`, otherwise skip:** Set the `BMC_IP` environment variable to the current IP address or hostname of the BMC. This is not the allocated HMN address for the BMC of `ncn-m001`.
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# export BMC_IP=10.0.0.10
+        export BMC_IP=10.0.0.10
         ```
 
     1. Collect NCN MAC addresses for the following interfaces if they are present.
@@ -226,14 +238,16 @@ Scenarios where this procedure is applicable:
 
             Recall the previous node xname of the NCN being added:
 
+            (`ncn-m#`)
             ```bash
-            ncn-m# export PREVIOUS_XNAME=REPLACE_WITH_OLD_XNAME
+            export PREVIOUS_XNAME=REPLACE_WITH_OLD_XNAME
             ```
 
             Retrieve the MAC address for the NCN from the backup files:
 
+            (`ncn-m#`)
             ```bash
-            ncn-m# cat /tmp/remove_management_ncn/$PREVIOUS_XNAME/bss-bootparameters-$PREVIOUS_XNAME.json |
+            cat /tmp/remove_management_ncn/$PREVIOUS_XNAME/bss-bootparameters-$PREVIOUS_XNAME.json |
                    jq .[].params -r | tr " " "\n" | grep ifname
             ```
 
@@ -258,16 +272,17 @@ Scenarios where this procedure is applicable:
             | `hsn0`    | `50:6b:4b:23:9f:7c` | `--mac-hsn0=50:6b:4b:23:9f:7c`
 
         2. **Otherwise** the NCN MAC addresses need to be collected using the [Collect NCN MAC Addresses](Collect_NCN_MAC_Addresses.md) procedure.
-  
+
 1. Perform a dry run of the `add_management_ncn.py` script in order to determine if any validation failures occur:
 
     > Update the following command with the MAC addresses and interfaces that were collected from the NCN.
 
     * If adding a node other than `ncn-m001`:
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# cd /usr/share/doc/csm/scripts/operations/node_management/Add_Remove_Replace_NCNs/
-        ncn-m# ./add_management_ncn.py ncn-data \
+        cd /usr/share/doc/csm/scripts/operations/node_management/Add_Remove_Replace_NCNs/
+        ./add_management_ncn.py ncn-data \
                     --xname $XNAME \
                     --alias $NODE \
                     --bmc-mgmt-switch-connector $MGMT_SWITCH_CONNECTOR \
@@ -281,9 +296,10 @@ Scenarios where this procedure is applicable:
 
     * If adding `ncn-m001`, omit the `--bmc-mgmt-switch-connector` and `--mac-bmc` arguments, because its BMC is connected to the site network:
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# cd /usr/share/doc/csm/scripts/operations/node_management/Add_Remove_Replace_NCNs/
-        ncn-m# ./add_management_ncn.py ncn-data \
+        cd /usr/share/doc/csm/scripts/operations/node_management/Add_Remove_Replace_NCNs/
+        ./add_management_ncn.py ncn-data \
                     --xname $XNAME \
                     --alias $NODE \
                     --mac-mgmt0 a4:bf:01:65:6a:aa \
@@ -298,8 +314,9 @@ Scenarios where this procedure is applicable:
 
     For example:
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# ./add_management_ncn.py ncn-data \
+    ./add_management_ncn.py ncn-data \
         --xname $XNAME \
         --alias $NODE \
         --bmc-mgmt-switch-connector $MGMT_SWITCH_CONNECTOR \
@@ -352,25 +369,28 @@ Scenarios where this procedure is applicable:
 
     > `read -s` is used to read the password in order to prevent it from being echoed to the screen or recorded in the shell history.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# read -s IPMI_PASSWORD
-    ncn-m# export IPMI_PASSWORD
-    ncn-m# ipmitool -U root -I lanplus -E -H $BMC_IP mc reset cold
-    ncn-m# sleep 60
+    read -s IPMI_PASSWORD
+    export IPMI_PASSWORD
+    ipmitool -U root -I lanplus -E -H $BMC_IP mc reset cold
+    sleep 60
     ```
 
 1. **Skip if adding `ncn-m001`:** Verify that the BMC is reachable at the expected IP address:
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# ping $NODE-mgmt
+    ping $NODE-mgmt
     ```
 
     Wait 5 minutes for Kea and the Hardware State Manager to sync. If `ping` continues to fail, re-run the previous step to restart the BMC.
 
 1. Restart the REDS deployment:
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl -n services rollout restart deployment cray-reds
+    kubectl -n services rollout restart deployment cray-reds
     ```
 
     Expected output:
@@ -381,8 +401,9 @@ Scenarios where this procedure is applicable:
 
 1. Wait for REDS to restart:
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl -n services rollout status  deployment cray-reds
+    kubectl -n services rollout status  deployment cray-reds
     ```
 
     Expected output:
@@ -396,8 +417,9 @@ Scenarios where this procedure is applicable:
 1. **Skip if adding `ncn-m001`:** Wait for the NCN BMC to get discovered by HSM:
     > If the BMC of `ncn-m001` is connected to the site network, then we will be unable to discover the BMC, because it is not connected via the HMN network.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# watch -n 0.2 "cray hsm inventory redfishEndpoints describe $BMC_XNAME --format json" 
+    watch -n 0.2 "cray hsm inventory redfishEndpoints describe $BMC_XNAME --format json" 
     ```
 
     Wait until the `LastDiscoveryAttempt` field is `DiscoverOK`:
@@ -426,8 +448,9 @@ Scenarios where this procedure is applicable:
     The `redfishEndpoint` may cycle between `DiscoveryStarted` and `HTTPsGetFailed` before the endpoint becomes `DiscoverOK`. If the BMC is in `HTTPSGetFailed` for a long period of time, then the following steps may help to determine the cause:
     * Verify that the xname of the BMC resolves in DNS:
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# nslookup x3000c0s38b0
+        nslookup x3000c0s38b0
         ```
 
         Expected output:
@@ -442,20 +465,23 @@ Scenarios where this procedure is applicable:
 
     * Verify that the BMC is reachable at the expected IP address:
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# ping $NODE-mgmt
+        ping $NODE-mgmt
         ```
 
     * Verify that the BMC Redfish `v1/Managers` endpoint is reachable.
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# curl -k -u root:changeme https://x3000c0s38b0/redfish/v1/Managers
+        curl -k -u root:changeme https://x3000c0s38b0/redfish/v1/Managers
         ```
 
 1. Verify that the NCN exists under HSM State Components:
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# cray hsm state components describe $XNAME
+    cray hsm state components describe $XNAME
     ```
 
     Example output:

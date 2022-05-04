@@ -6,8 +6,9 @@ Ansible tasks and playbooks can be profiled in order to determine execution time
 
 1.  Edit the `cfs-default-ansible-cfg` ConfigMap.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl edit cm cfs-default-ansible-cfg -n services
+    kubectl edit cm cfs-default-ansible-cfg -n services
     ```
 
 2.  Uncomment the indicated line by removing the \# character from the beginning of the line.

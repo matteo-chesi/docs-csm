@@ -39,4 +39,4 @@ To get the switch IP addresses from the Shasta SLS API, run the following comman
 linux# canu -s 1.4 init --auth-token ~./config/cray/tokens/ --sls-address 1.2.3.4 --out output.txt
 ```
 
-[Back to Index](./index.md)
+[Back to Index](.README.md)

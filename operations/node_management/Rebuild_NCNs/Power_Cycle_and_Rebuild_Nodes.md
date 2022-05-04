@@ -85,8 +85,9 @@ This section applies to all node types. The commands in this section assume the 
 
     * **Master nodes only:** If `cloud-init` did not complete the newly rebuilt node will need to have its `etcd` service definition manually updated. Reconfigure the `etcd` service, and restart `cloud-init` on the newly rebuilt master:
 
+       (`ncn-m#`)
        ```bash
-       ncn-m# systemctl stop etcd.service; sed -i 's/new/existing/' \
+       systemctl stop etcd.service; sed -i 's/new/existing/' \
               /etc/systemd/system/etcd.service /srv/cray/resources/common/etcd/etcd.service; \
               systemctl daemon-reload ; rm -rf /var/lib/etcd/member; \
               systemctl start etcd.service; /srv/cray/scripts/common/kubernetes-cloudinit.sh
@@ -98,24 +99,27 @@ This section applies to all node types. The commands in this section assume the 
     1. Copy the correct SSH key(s) to the newly rebuilt node.
     1. Re-run `cloud-init` on the newly rebuilt node:
 
+       (`ncn-m#`)
        ```bash
-       ncn-m# cloud-init clean; cloud-init init --local; cloud-init init
+       cloud-init clean; cloud-init init --local; cloud-init init
        ```
 
 1. Set the wipe flag back so it will not wipe the disk when the node is rebooted.
 
    1. Run the following commands from a node that has `cray` CLI initialized:
 
+       (`ncn#`)
        ```bash
-       ncn# cray bss bootparameters list --name $XNAME --format=json | jq .[] > ${XNAME}.json
+       cray bss bootparameters list --name $XNAME --format=json | jq .[] > ${XNAME}.json
        ```
 
    1. Edit the `XNAME.json` file and set the `metal.no-wipe=1` value.
 
    1. Get a token to interact with BSS using the REST API.
 
+       (`ncn#`)
        ```bash
-       ncn# TOKEN=$(curl -s -S -d grant_type=client_credentials \
+       TOKEN=$(curl -s -S -d grant_type=client_credentials \
            -d client_id=admin-client -d client_secret=`kubectl get secrets admin-client-auth \
            -o jsonpath='{.data.client-secret}' | base64 -d` \
            https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token \
@@ -126,8 +130,9 @@ This section applies to all node types. The commands in this section assume the 
 
       This command can be run from any node.
 
+       (`ncn#`)
        ```bash
-       ncn# curl -i -s -k -H "Content-Type: application/json" \
+       curl -i -s -k -H "Content-Type: application/json" \
            -H "Authorization: Bearer ${TOKEN}" \
            "https://api-gw-service-nmn.local/apis/bss/boot/v1/bootparameters" \
            -X PUT -d @./${XNAME}.json
@@ -137,14 +142,16 @@ This section applies to all node types. The commands in this section assume the 
 
       * Export the list from BSS to a file with a different name.
 
+        (`ncn#`)
         ```bash
-        ncn# cray bss bootparameters list --name ${XNAME} --format=json |jq .[]> ${XNAME}.check.json
+        cray bss bootparameters list --name ${XNAME} --format=json |jq .[]> ${XNAME}.check.json
         ```
 
       * Compare the new JSON file with what was put into BSS.
 
+        (`ncn#`)
         ```bash
-        ncn# diff ${XNAME}.json ${XNAME}.check.json
+        diff ${XNAME}.json ${XNAME}.check.json
         ```
 
       The files should be identical.

@@ -42,5 +42,5 @@ VLAN  Name                              Status  Reason          Type      Interf
 3. Administrators can configure an IP address on the VLAN interface
 4. Administrators can successfully ping the other switch's VLAN interface
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)
 

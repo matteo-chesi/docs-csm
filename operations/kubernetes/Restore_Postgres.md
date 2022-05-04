@@ -12,7 +12,6 @@ Restore Postgres Procedures by Service:
   * [Capsules Dispatch Server](#capsules-dispatch-server)
 
 <a name="spire"> </a>
-
 ## Restore Postgres for Spire
 
 In the event that the Spire Postgres cluster is in a state that the cluster must be rebuilt and the data restored, the following procedures are recommended.
@@ -238,7 +237,6 @@ This assumes that a dump of the database exists.
     ```
 
 <a name="keycloak"> </a>
-
 ## Restore Postgres for Keycloak
 
 In the event that the Keycloak Postgres cluster is in a state that the cluster must be rebuilt and the data restored, the following procedures are recommended.
@@ -494,7 +492,6 @@ This assumes that a dump of the database exists.
     ```
 
 <a name="vcs"> </a>
-
 ## Restore Postgres for VCS
 
 In the event that the VCS Postgres cluster is in a state that the cluster must be rebuilt and the data restored, the following procedures are recommended.
@@ -691,7 +688,6 @@ This assumes that a dump of the database exists, as well as a backup of the VCS 
     ```
 
 <a name="capsules"> </a>
-
 ## Restore Postgres for Capsules
 
 ### Capsules Warehouse Server

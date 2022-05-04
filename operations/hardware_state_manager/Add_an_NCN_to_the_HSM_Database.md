@@ -16,8 +16,9 @@ The examples in this procedure use `ncn-w0003-nmn` as the Customer Access Node \
 
     The component name (xname) is located in the `/etc/hosts` file.
 
+    (`ncn#`)
     ```bash
-    ncn# grep ncn-w003-nmn /etc/hosts
+    grep ncn-w003-nmn /etc/hosts
     ```
 
     Example output:
@@ -30,8 +31,9 @@ The examples in this procedure use `ncn-w0003-nmn` as the Customer Access Node \
 
    get\_token needs to be created or exist in the script with the following curl command. The get\_token function is defined below:
 
+   (`ncn#`)
    ```bash
-    ncn# function get_token () {
+    function get_token () {
         curl -s -S -d grant_type=client_credentials \
             -d client_id=admin-client \
             -d client_secret=`kubectl get secrets admin-client-auth -o jsonpath='{.data.client-secret}' | base64 -d` \
@@ -41,8 +43,9 @@ The examples in this procedure use `ncn-w0003-nmn` as the Customer Access Node \
 
    The `get_token` function adds the authorization required by the HTTPS security token. `-H` options tell the REST API to accept the data as JSON and that the information is for a JSON-enabled application.
 
+   (`ncn#`)
    ```bash
-   ncn# curl -X POST -k https://api-gw-service-nmn.local/apis/smd/hsm/v2/State/Components \
+   curl -X POST -k https://api-gw-service-nmn.local/apis/smd/hsm/v2/State/Components \
    -H "Authorization: Bearer $(get_token)" -H "accept: application/json" -H \
    "Content-Type: application/json" -d \
    '{"Components":[{"ID":"x3000c0s24b0","State":"On","NetType":"Sling","Arch":"X86","Role":"Management"}]}'
@@ -50,8 +53,9 @@ The examples in this procedure use `ncn-w0003-nmn` as the Customer Access Node \
 
 3.  List HSM state components and verify information is correct.
 
+    (`ncn#`)
     ```bash
-    ncn# cray hsm state components list --id x3000c0s24b0
+    cray hsm state components list --id x3000c0s24b0
     ```
 
     Example output:
@@ -70,8 +74,9 @@ The examples in this procedure use `ncn-w0003-nmn` as the Customer Access Node \
 
 4.  Find the daemonset pod that is running on the NCN being added to the HSM database.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get pods -l app.kubernetes.io/instance=ncn-customization -n services -o wide
+    kubectl get pods -l app.kubernetes.io/instance=ncn-customization -n services -o wide
     ```
 
     Example output:
@@ -89,16 +94,18 @@ The examples in this procedure use `ncn-w0003-nmn` as the Customer Access Node \
 
     Deleting the pod will restart it and enable the changes to be picked up.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services delete pod ncn-customization-cray-service-dh8gb
+    kubectl -n services delete pod ncn-customization-cray-service-dh8gb
     ```
 
 6.  Verify the daemonset restarts on the NCN with the CAN configuration.
 
     1.  Retrieve the new pod name.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl get pods -l app.kubernetes.io/instance=ncn-customization \
+        kubectl get pods -l app.kubernetes.io/instance=ncn-customization \
         -n services -o wide | grep ncn-w003
         ```
 
@@ -112,8 +119,9 @@ The examples in this procedure use `ncn-w0003-nmn` as the Customer Access Node \
 
         This may take up to 5 minutes.
 
+        (`ncn#`)
         ```bash
-        ncn# cray cfs sessions list | grep "name ="
+        cray cfs sessions list | grep "name ="
         ```
 
         Example output:
@@ -126,8 +134,9 @@ The examples in this procedure use `ncn-w0003-nmn` as the Customer Access Node \
 
         This may take up to 5 minutes.
 
+        (`ncn#`)
         ```bash
-        ncn# cray cfs sessions list | grep "name ="
+        cray cfs sessions list | grep "name ="
         ```
 
         Example output:

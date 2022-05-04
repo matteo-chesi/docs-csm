@@ -9,13 +9,15 @@ The log file locations for ConMan, DHCP, and TFTP.
 - ConMan logs are located within the `conman` pod at /var/log/conman.log.
 - DHCP:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl logs DHCP_POD_ID
+    kubectl logs DHCP_POD_ID
     ```
 - TFTP:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl logs -n services TFTP_POD_ID
+    kubectl logs -n services TFTP_POD_ID
     ```
 
 ### Port IDs

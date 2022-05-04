@@ -7,7 +7,6 @@ Several conventions have been used in the preparation of this documentation.
    * [Typographic Conventions](#typographic-conventions)
    * [Command Prompt Conventions](#command-prompt-conventions) which describe the context for user, host, directory, chroot environment, or container environment
 
-<a name="markdown-format"></a>
 ## Markdown Format
 
 This documentation is in Markdown format. Although much of it can be viewed with any text editor,
@@ -19,12 +18,10 @@ There are many tools which render the Markdown format and provide these advantag
 for Markdown tools will provide a long list of these tools. Some of the tools are better than others
 at displaying the images and allowing you to follow the navigational links.
 
-<a name="file-formats"></a>
 ## File Formats
 
 Some of the installation instructions require updating files in JSON, YAML, or TOML format. These files should be updated with care because some file formats do not accept tab characters for indentation of lines. Only space characters are supported. Refer to online documentation to learn more about the syntax of JSON, YAML, and TOML files. YAML does not support tab characters. The JSON *convention* is to use four spaces rather than a tab character.
 
-<a name="typographic-conventions"></a>
 ## Typographic Conventions
 
 `This style` indicates program code, reserved words, library functions, command-line prompts,
@@ -33,12 +30,11 @@ screen output, file/path names, and other software constructs.
 \ (backslash) At the end of a command line, indicates the Linux shell line continuation character
 (lines joined by a backslash are parsed as a single line).
 
-<a name="command-prompt-conventions"></a>
 ## Command Prompt Conventions
 
 #### Host name and account in command prompts
 
-The host name in a command prompt indicates where the command must be run. The account that must run the command is also indicated in the prompt.
+The host name in a command prompt indicates where the command must be run. The account that must run the command is also indicated in the prompt. The prompt will be dictated by a label on the step with the command.
 - The root or super-user account always has the # character at the end of the prompt
 - Any non-root account is indicated with `account@hostname`. A non-privileged account is referred to as user.
 
@@ -53,14 +49,14 @@ The following list contains abbreviations for nodes used below
 
 | Prompt | Description |
 | ------ | ----------- |
-| ncn# | Run the command as root on any NCN, except an NCN which is functioning as an Application Node (AN), such as a UAN. |
-| ncn-m# | Run the command as root on any NCN-M (NCN which is a Kubernetes master node).|
-| ncn-m002# | Run the command as root on the specific NCN-M (NCN which is a Kubernetes master node) which has this hostname (ncn-m002). |
-| ncn-w# | Run the command as root on any NCN-W (NCN which is a Kubernetes worker node).|
+| | Run the command as root on any NCN, except an NCN which is functioning as an Application Node (AN), such as a UAN. |
+| | Run the command as root on any NCN-M (NCN which is a Kubernetes master node).|
+| | Run the command as root on the specific NCN-M (NCN which is a Kubernetes master node) which has this hostname (ncn-m002). |
+| | Run the command as root on any NCN-W (NCN which is a Kubernetes worker node).|
 | ncn-w001# | Run the command as root on the specific NCN-W (NCN which is a Kubernetes master node) which has this hostname (ncn-w001). |
-| ncn-s# | Run the command as root on any NCN-S (NCN which is a Utility Storage node).|
+| | Run the command as root on any NCN-S (NCN which is a Utility Storage node).|
 | ncn-s003# | Run the command as root on the specific NCN-S (NCN which is a Utility Storage node) which has this hostname (ncn-s003). |
-| pit# | Run the command as root on the PIT node. |
+| | Run the command as root on the PIT node. |
 | linux# | Run the command as root on a Linux host. |
 | uan# | Run the command as root on any UAN. |
 | uan01# | Run the command as root on hostname uan01. |
@@ -87,8 +83,9 @@ the pod name is $podName, the prompt changes to indicate that it
 is inside the pod. Not all shells are available within every pod, this
 is an example using a commonly available shell.
 
+(`ncn#`)
 ```bash
-ncn# kubectl exec -it $podName /bin/sh
+kubectl exec -it $podName /bin/sh
 pod#
 ```
 

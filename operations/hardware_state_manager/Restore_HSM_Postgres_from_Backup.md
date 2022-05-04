@@ -10,8 +10,9 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
   Use `patronictl list` on the HSM Postgres cluster to determine the current state of the cluster, and a healthy cluster will look similar to the following:
 
+  (`ncn#`)
   ```bash
-  ncn# kubectl exec cray-smd-postgres-0 -n services -c postgres -it -- patronictl list
+  kubectl exec cray-smd-postgres-0 -n services -c postgres -it -- patronictl list
   ```
 
   Example output:
@@ -30,8 +31,9 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
   Check for any available automatic HSM Postgres backups:
 
+  (`ncn#`)
   ```bash
-  ncn# cray artifacts list postgres-backup --format json | jq -r '.artifacts[].Key | select(contains("smd"))'
+  cray artifacts list postgres-backup --format json | jq -r '.artifacts[].Key | select(contains("smd"))'
   ```
 
   Example output:
@@ -51,22 +53,25 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
         2. Set the environment variable `POSTGRES_SQL_FILE` to point toward the `.psql` file in the backup folder:
 
+            (`ncn#`)
             ```bash
-            ncn# export POSTGRES_SQL_FILE=/root/cray-smd-postgres-backup_2021-07-07_16-39-44/cray-smd-postgres-backup_2021-07-07_16-39-44.psql
+            export POSTGRES_SQL_FILE=/root/cray-smd-postgres-backup_2021-07-07_16-39-44/cray-smd-postgres-backup_2021-07-07_16-39-44.psql
             ```
 
         3. Set the environment variable `POSTGRES_SECRET_MANIFEST` to point toward the `.manifest` file in the backup folder:
 
+            (`ncn#`)
             ```bash
-            ncn# export POSTGRES_SECRET_MANIFEST=/root/cray-smd-postgres-backup_2021-07-07_16-39-44/cray-smd-postgres-backup_2021-07-07_16-39-44.manifest
+            export POSTGRES_SECRET_MANIFEST=/root/cray-smd-postgres-backup_2021-07-07_16-39-44/cray-smd-postgres-backup_2021-07-07_16-39-44.manifest
             ```
 
     - From a previous automatic Postgres backup:
 
         1. Check for available backups.
 
+            (`ncn#`)
             ```bash
-            ncn# cray artifacts list postgres-backup --format json | jq -r '.artifacts[].Key | select(contains("smd"))'
+            cray artifacts list postgres-backup --format json | jq -r '.artifacts[].Key | select(contains("smd"))'
             ```
 
             Example output:
@@ -78,37 +83,42 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
             Set the following environment variables for the name of the files in the backup:
 
+            (`ncn#`)
             ```bash
-            ncn# export POSTGRES_SECRET_MANIFEST_NAME=cray-smd-postgres-2021-07-11T23:10:08.manifest
-            ncn# export POSTGRES_SQL_FILE_NAME=cray-smd-postgres-2021-07-11T23:10:08.psql
+            export POSTGRES_SECRET_MANIFEST_NAME=cray-smd-postgres-2021-07-11T23:10:08.manifest
+            export POSTGRES_SQL_FILE_NAME=cray-smd-postgres-2021-07-11T23:10:08.psql
             ```
 
         2. Download the `.psql` file for the Postgres backup.
 
+            (`ncn#`)
             ```bash
-            ncn# cray artifacts get postgres-backup "$POSTGRES_SQL_FILE_NAME" "$POSTGRES_SQL_FILE_NAME"
+            cray artifacts get postgres-backup "$POSTGRES_SQL_FILE_NAME" "$POSTGRES_SQL_FILE_NAME"
             ```
 
         3. Download the `.manifest` file for the HSM backup.
 
+            (`ncn#`)
             ```bash
-            ncn# cray artifacts get postgres-backup "$POSTGRES_SECRET_MANIFEST_NAME" "$POSTGRES_SECRET_MANIFEST_NAME"
+            cray artifacts get postgres-backup "$POSTGRES_SECRET_MANIFEST_NAME" "$POSTGRES_SECRET_MANIFEST_NAME"
             ```
 
         4. Setup environment variables pointing to the full path of the `.psql` and `.manifest` files.
 
+            (`ncn#`)
             ```bash
-            ncn# export POSTGRES_SQL_FILE=$(realpath "$POSTGRES_SQL_FILE_NAME")
-            ncn# export POSTGRES_SECRET_MANIFEST=$(realpath "$POSTGRES_SECRET_MANIFEST_NAME")
+            export POSTGRES_SQL_FILE=$(realpath "$POSTGRES_SQL_FILE_NAME")
+            export POSTGRES_SECRET_MANIFEST=$(realpath "$POSTGRES_SECRET_MANIFEST_NAME")
             ```
 
 2. Verify the `POSTGRES_SQL_FILE` and `POSTGRES_SECRET_MANIFEST` environment variables are set correctly.
 
+    (`ncn#`)
     ```bash
-    ncn# echo "$POSTGRES_SQL_FILE"
+    echo "$POSTGRES_SQL_FILE"
     /root/cray-smd-postgres-backup_2021-07-07_16-39-44/cray-smd-postgres-backup_2021-07-07_16-39-44.psql
 
-    ncn# echo "$POSTGRES_SECRET_MANIFEST"
+    echo "$POSTGRES_SECRET_MANIFEST"
     /root/cray-smd-postgres-backup_2021-07-07_16-39-44/cray-smd-postgres-backup_2021-07-07_16-39-44.manifest
     ```
 
@@ -127,14 +137,16 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
 4. Re-run the HSM loader job.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services get job cray-smd-init -o json | jq 'del(.spec.selector)' | jq 'del(.spec.template.metadata.labels."controller-uid")' | kubectl replace --force -f -
+    kubectl -n services get job cray-smd-init -o json | jq 'del(.spec.selector)' | jq 'del(.spec.template.metadata.labels."controller-uid")' | kubectl replace --force -f -
     ```
 
     Wait for the job to complete:
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl wait -n services job cray-smd-init --for=condition=complete --timeout=5m
+    kubectl wait -n services job cray-smd-init --for=condition=complete --timeout=5m
     ```
 
 5. Determine which Postgres member is the leader.
@@ -165,8 +177,9 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
     Database schema of the currently running HSM Postgres instance.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl exec $POSTGRES_LEADER -n services -c postgres -it -- bash -c "psql -U hmsdsuser -d hmsds -c 'SELECT * FROM system'"
+    kubectl exec $POSTGRES_LEADER -n services -c postgres -it -- bash -c "psql -U hmsdsuser -d hmsds -c 'SELECT * FROM system'"
     ```
 
     Example output:
@@ -182,8 +195,9 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
     Database schema version from the Postgres backup:
 
+    (`ncn#`)
     ```bash
-    ncn# cat "$POSTGRES_SQL_FILE" | grep "COPY public.system" -A 2
+    cat "$POSTGRES_SQL_FILE" | grep "COPY public.system" -A 2
     COPY public.system (id, schema_version, dirty) FROM stdin;
     0       17       f
     \.
@@ -255,8 +269,9 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
     Delete the entries in the EthernetInterfaces table. These will automatically get repopulated during rediscovery.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl exec $POSTGRES_LEADER -n services -c postgres -it -- bash -c "psql -U hmsdsuser -d hmsds -c 'DELETE FROM comp_eth_interfaces'"
+    kubectl exec $POSTGRES_LEADER -n services -c postgres -it -- bash -c "psql -U hmsdsuser -d hmsds -c 'DELETE FROM comp_eth_interfaces'"
     ```
 
 11. Restore the secrets.
@@ -355,8 +370,9 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
 14. Verify that the service is functional.
 
+    (`ncn#`)
     ```bash
-    ncn# cray hsm service ready
+    cray hsm service ready
     ```
 
     Example output:
@@ -368,29 +384,33 @@ This procedure can be used to restore the HSM Postgres database from a previousl
 
     Get the number of node objects stored in HSM:
 
+    (`ncn#`)
     ```bash
-    ncn# cray hsm state components list --type node --format json | jq .[].ID | wc -l
+    cray hsm state components list --type node --format json | jq .[].ID | wc -l
     ```
 
 15. Resync the component state and inventory.
 
     After restoring HSM's postgres from a back up, some of the transient data like component state and hardware inventory may be out of sync with reality. This involves kicking off an HSM rediscovery.
 
+    (`ncn#`)
     ```bash
-    ncn# endpoints=$(cray hsm inventory redfishEndpoints list --format json | jq -r '.[]|.[]|.ID')
-    ncn# for e in $endpoints; do cray hsm inventory discover create --xnames ${e}; done
+    endpoints=$(cray hsm inventory redfishEndpoints list --format json | jq -r '.[]|.[]|.ID')
+    for e in $endpoints; do cray hsm inventory discover create --xnames ${e}; done
     ```
 
     Wait for discovery to complete. Discovery is complete after there are no redfishEndpoints left in the 'DiscoveryStarted' state. A value of `0` will be returned.
 
+    (`ncn#`)
     ```bash
-    ncn# cray hsm inventory redfishEndpoints list --format json | grep -c "DiscoveryStarted"
+    cray hsm inventory redfishEndpoints list --format json | grep -c "DiscoveryStarted"
     ```
 
 16. Check for discovery errors.
 
+    (`ncn#`)
     ```bash
-    ncn# cray hsm inventory redfishEndpoints list --format json | grep LastDiscoveryStatus | grep -v -c "DiscoverOK"
+    cray hsm inventory redfishEndpoints list --format json | grep LastDiscoveryStatus | grep -v -c "DiscoverOK"
     ```
 
     If any of the RedfishEndpoint entries have a `LastDiscoveryStatus` other than `DiscoverOK` after discovery has completed, refer to the [Troubleshoot Issues with Redfish Endpoint Discovery](../node_management/Troubleshoot_Issues_with_Redfish_Endpoint_Discovery.md) procedure for guidance.

@@ -47,8 +47,9 @@ Configuration status of a given component \(using the component name (xname)\) i
 
 To view the configuration state of a given component, use the `describe` command for a given component name (xname):
 
+(`ncn#`)
 ```bash
-ncn# cray cfs components describe XNAME --format json
+cray cfs components describe XNAME --format json
 ```
 
 Example output:
@@ -120,16 +121,18 @@ If a playbook exits early because of the Ansible any\_errors\_fatal setting, CFS
 
 To force a component which has a specific desiredConfig to a different configuration, use the `update` subcommand to change the configuration:
 
+(`ncn#`)
 ```bash
-ncn# cray cfs components update XNAME --desired-config new-config
+cray cfs components update XNAME --desired-config new-config
 ```
 
 > **IMPORTANT:** Ensure that the new configuration has been created with the `cray cfs configurations update new-config` command before assigning the configuration to any components.
 
 To force a component to retry its configuration again after it failed, change the errorCount to less than the retryPolicy, or raise the retryPolicy. If the errorCount has not reached the retry limit, CFS will automatically keep attempting the configuration and no action is required.
 
+(`ncn#`)
 ```bash
-ncn# cray cfs components update XNAME --error-count 0
+cray cfs components update XNAME --error-count 0
 ```
 
 ## Disable Component Configuration
@@ -138,8 +141,9 @@ To disable CFS configuration of a component, use the `--enabled` option:
 
 > **WARNING:** When a node reboots and the state-reporter reports in to CFS, it will automatically enable configuration. The following command only disables configuration until a node reboots.
 
+(`ncn#`)
 ```bash
-ncn# cray cfs components update XNAME --enabled false
+cray cfs components update XNAME --enabled false
 ```
 
 Use `--enabled true` to re-enable the component.

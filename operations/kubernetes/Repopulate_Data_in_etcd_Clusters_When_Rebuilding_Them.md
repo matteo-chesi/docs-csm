@@ -18,7 +18,6 @@ The following services need their data repopulated in the etcd cluster:
 
 An etcd cluster was rebuilt. See [Rebuild Unhealthy etcd Clusters](Rebuild_Unhealthy_etcd_Clusters.md).
 
-
 ### BOS
 
 1.  Reconstruct boot session templates for impacted product streams to repopulate data.
@@ -34,7 +33,6 @@ An etcd cluster was rebuilt. See [Rebuild Unhealthy etcd Clusters](Rebuild_Unhea
 
     - If there are no clients using CPS when the etcd cluster is rebuilt, then nothing needs to be done other than to rebuild the cluster and make sure all of the components are up and running. See [Rebuild Unhealthy etcd Clusters](Rebuild_Unhealthy_etcd_Clusters.md) for more information.
     - If any clients have already mounted content provided by CPS, that content should be unmounted before rebuilding the etcd cluster, and then re-mounted after the etcd cluster is rebuilt. Compute nodes that use CPS to access their root file system must be shut down to unmount, and then booted to perform the re-mount.
-
 
 ### CRUS
 
@@ -163,20 +161,22 @@ Data is repopulated in BSS when the REDS init job is run.
 
     1.  Resubscribe all compute nodes.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# TMPFILE=$(mktemp)
-        ncn-m001# sat status --no-borders --no-headings | grep Ready | grep Compute | awk '{printf("nid%06d-nmn\n",$3);}' > $TMPFILE
+        TMPFILE=$(mktemp)
+        sat status --no-borders --no-headings | grep Ready | grep Compute | awk '{printf("nid%06d-nmn\n",$3);}' > $TMPFILE
 
-        ncn-m001# pdsh -w ^${TMPFILE} "systemctl restart cray-dvs-orca"
+        pdsh -w ^${TMPFILE} "systemctl restart cray-dvs-orca"
 
-        ncn-m001# rm -rf $TMPFILE
+        rm -rf $TMPFILE
         ```
 
     2.  Resubscribe the NCNs.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# pdsh -w ncn-w00[0-4]-can.local "systemctl restart cray-dvs-orca"
-        ncn-m001# pdsh -w ncn-s00[0-4]-can.local "systemctl restart cray-dvs-orca"
+        pdsh -w ncn-w00[0-4]-can.local "systemctl restart cray-dvs-orca"
+        pdsh -w ncn-s00[0-4]-can.local "systemctl restart cray-dvs-orca"
         ```
 
         **NOTE:** On larger systems, [0-4] may have to be a larger range.

@@ -4,8 +4,9 @@ Ceph reports several different health states depending on the condition of a clu
 
 The health of a Ceph cluster can be viewed with the following command:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# ceph -s
+ceph -s
 ```
 
 Example output:

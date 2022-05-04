@@ -43,5 +43,4 @@ switch(config-if)# end
 3. Administrators can add ports to the MCLAG interface
 4. The output of the `show` commands is correct
 
-
-[Back to Index](../index.md)
+[Back to Index](../README.md)

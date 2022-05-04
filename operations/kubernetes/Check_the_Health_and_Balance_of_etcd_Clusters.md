@@ -4,11 +4,9 @@ Check to see if all of the etcd clusters have healthy pods, are balanced, and ha
 
 Any clusters that do not have healthy pods will need to be rebuilt. Kubernetes cluster data will not be stored as efficiently when etcd clusters are not balanced.
 
-
 ### Prerequisites
 
 This procedure requires root privileges.
-
 
 ### Procedure
 

@@ -34,8 +34,9 @@ For Legacy Mode user procedures:
 
     Use a command of the following form:
 
+    (`ncn#`)
     ```bash
-    ncn# cray uas admin uais create OPTIONS
+    cray uas admin uais create OPTIONS
     ```
 
     The following `OPTIONS` are available for use:
@@ -53,8 +54,9 @@ For Legacy Mode user procedures:
 
     Use a command of the following form:
 
+    (`ncn#`)
     ```bash
-    ncn# cray uas create OPTIONS
+    cray uas create OPTIONS
     ```
 
     The following OPTIONS are available for use:
@@ -63,6 +65,6 @@ For Legacy Mode user procedures:
     * `--imagename <uai-image-name>` - The name of the UAI container image to be used to create the UAI. This option is not required. If omitted the default UAI image will be used.
     Both the default UAI image and anything specified here will be overridden by a default UAI Class if a default UAI Class is configured.
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: Examining a UAI Using a Direct Administrative Command](Examine_a_UAI_Using_a_Direct_Administrative_Command.md)

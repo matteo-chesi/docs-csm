@@ -18,6 +18,6 @@ From a resiliency perspective, that number could be considerably smaller (3 for 
 It does not make sense from either perspective, however, to over-subscribe the available number of host nodes (except, perhaps during a temporary outage)
 since that will result in no additional resiliency and the potential for network traffic and resource consumption hot spots.
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: Broker Mode UAI Management](Broker_Mode_UAI_Management.md)

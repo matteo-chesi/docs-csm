@@ -20,7 +20,7 @@ List the details of all the volumes registered in UAS.
 * Retrieve the list in TOML.
 
     ```bash
-    ncn-m001-pit# cray uas admin config volumes list
+    ncn-m001-cray uas admin config volumes list
     ```
 
     Example output:
@@ -55,7 +55,7 @@ List the details of all the volumes registered in UAS.
 * Retrieve the list in YAML format.
 
     ```bash
-    ncn-m001-pit# cray uas admin config volumes list --format yaml
+    ncn-m001-cray uas admin config volumes list --format yaml
     ```
 
     Example output:
@@ -87,7 +87,7 @@ List the details of all the volumes registered in UAS.
 * Retrieve the list in JSON format.
 
     ```bash
-    ncn-m001-pit# cray uas admin config volumes list --format json
+    ncn-m001-cray uas admin config volumes list --format json
     ```
 
     Example output:
@@ -150,6 +150,6 @@ Volume names do need to be unique within any given UAI and are far more useful w
 
 The `volume_id` is a unique identifier used to identify the UAS volume when examining, updating or deleting a volume and when linking a volume to a UAI class. It is assigned automatically by UAS.
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: Add a Volume to UAS](Add_a_Volume_to_UAS.md)

@@ -25,23 +25,26 @@ To override a value that is defined in an Ansible role in a configuration reposi
 3.  Capture the variable name in the `roles/[role name]/defaults/main.yml` file.
 4.  Create a new directory and edit a file with the role name.
 
+    (`ncn#`)
     ```bash
-    ncn# mkdir -p group_vars/all && touch group_vars/all/[role name].yml
+    mkdir -p group_vars/all && touch group_vars/all/[role name].yml
     ```
 
 5.  Set the variable to a new value in the file.
 
+    (`ncn#`)
     ```bash
-    ncn# echo '[variable name]: [new variable value]' >> group_vars/all/[role name].yml
+    echo '[variable name]: [new variable value]' >> group_vars/all/[role name].yml
     ```
 
 6.  Stage the file in the Git branch, commit it, and promote the change.
 
 This change will be applied to all nodes by using the group name `all`. To narrow the variable scope to a specific group \(`Compute` for example\), use the group name instead of `all` as follows:
 
+(`ncn#`)
 ```bash
-ncn# mkdir -p group_vars/Compute && touch group_vars/Compute/[role name].yml
-ncn# echo '[variable name]: [new variable value]' >> group_vars/Compute/[role name].yml
+mkdir -p group_vars/Compute && touch group_vars/Compute/[role name].yml
+echo '[variable name]: [new variable value]' >> group_vars/Compute/[role name].yml
 ```
 
 To narrow the variable scope to a single node create the file in the `host_vars/[node xname]/[role name].yaml` and override the value.
@@ -54,8 +57,9 @@ To override role variables for roles that exist across multiple repositories, co
 
 To add more functionality to a playbook provided by a configuration repository, it is considered best practice to leave the existing playbook unmodified \(if possible\) to not have merge conflicts when new versions of the playbook are installed. For instance, if a site.yml playbook needs to be extended with a custom site-custom.yml playbook, consider creating a new playbook that imports and runs them both. For example, the `site-all.yml` playbook.
 
+(`ncn#`)
 ```bash
-ncn# cat site-all.yml
+cat site-all.yml
 - import_playbook: site.yml
 - import_playbook: site-custom.yml
 ```

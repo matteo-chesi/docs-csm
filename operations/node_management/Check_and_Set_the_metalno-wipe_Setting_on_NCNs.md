@@ -12,16 +12,18 @@ This procedure requires administrative privileges.
 
 1.  Change to the /opt/cray/platform-utils directory on any master or worker NCN.
 
+    (`ncn#`)
     ```bash
-    ncn# cd /opt/cray/platform-utils
+    cd /opt/cray/platform-utils
     ```
 
 2.  Run the `./ncnGetXnames.sh` script.
 
     The output will include a listing of all of the NCNs, their component names (xnames), and what the `metal.no-wipe` setting is for each.
 
+    (`ncn#`)
     ```bash
-    ncn# ./ncnGetXnames.sh
+    ./ncnGetXnames.sh
     ```
 
     Example output:
@@ -54,8 +56,9 @@ This procedure requires administrative privileges.
 
     1.  Generate a token from any master or worker NCN.
 
+        (`ncn#`)
         ```bash
-        ncn# export TOKEN=$(curl -k -s -S -d grant_type=client_credentials -d client_id=admin-client \
+        export TOKEN=$(curl -k -s -S -d grant_type=client_credentials -d client_id=admin-client \
         -d client_secret=`kubectl get secrets admin-client-auth -o jsonpath='{.data.client-secret}' \
         | base64 -d` https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token \
         | jq -r '.access_token')
@@ -63,14 +66,16 @@ This procedure requires administrative privileges.
 
     2.  Update the `metal.no-wipe` settings.
 
+        (`ncn#`)
         ```bash
-        ncn# /tmp/csi handoff bss-update-param --set metal.no-wipe=1
+        /tmp/csi handoff bss-update-param --set metal.no-wipe=1
         ```
 
     3.  Run the `./ncnGetXnames.sh` script again to verify the `metal.no-wipe` settings have been reset as expected.
 
+        (`ncn#`)
         ```bash
-        ncn# ./ncnGetXnames.sh
+        ./ncnGetXnames.sh
         ```
 
         Example output:

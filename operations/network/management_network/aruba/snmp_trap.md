@@ -37,4 +37,4 @@ default
 2. Administrators can log trap events
 3. Administrators can successfully trigger a trap event
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

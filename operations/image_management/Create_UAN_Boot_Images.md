@@ -30,8 +30,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     Upon successful installation of the UAN product, the UAN configuration, image recipes, and prebuilt boot images are cataloged in this ConfigMap. This information is required for this procedure.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl get cm -n services cray-product-catalog -o json | jq -r .data.uan
+    kubectl get cm -n services cray-product-catalog -o json | jq -r .data.uan
     ```
 
     Example output:
@@ -54,14 +55,16 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
 2.  Generate the password hash for the `root` user. Replace PASSWORD with the desired `root` password.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# openssl passwd -6 -salt $(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c4) PASSWORD
+    openssl passwd -6 -salt $(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c4) PASSWORD
     ```
 
 3.  Obtain the HashiCorp Vault `root` token.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl get secrets -n vault cray-vault-unseal-keys -o jsonpath='{.data.vault-root}' \
+    kubectl get secrets -n vault cray-vault-unseal-keys -o jsonpath='{.data.vault-root}' \
     | base64 -d; echo
     ```
 
@@ -69,8 +72,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     The vault login command will request a token. That token value is the output of the previous step. The vault read secret/uan command verifies that the hash was stored correctly. This password hash will be written to the UAN for the `root` user by CFS.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl exec -itn vault cray-vault-0 -- sh
+    kubectl exec -itn vault cray-vault-0 -- sh
     export VAULT_ADDR=http://cray-vault:8200
     vault login
     vault write secret/uan root_password='HASH'
@@ -79,8 +83,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
 5.  Obtain the password for the `crayvcs` user from the Kubernetes secret for use in the next command.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl get secret -n services vcs-user-credentials \
+    kubectl get secret -n services vcs-user-credentials \
     --template={{.data.vcs_password}} | base64 --decode
     ```
 
@@ -88,9 +93,10 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     The repository is in the VCS/Gitea service and the location is reported in the cray-product-catalog Kubernetes ConfigMap in the `configuration.clone_url` key. The CRAY\_EX\_HOSTNAME from the `clone_url` is replaced with `api-gw-service-nmn.local` in the command that clones the repository.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# git clone https://api-gw-service-nmn.local/vcs/cray/uan-config-management.git
-    ncn-m001# cd uan-config-management && git checkout cray/uan/PRODUCT_VERSION && git pull
+    git clone https://api-gw-service-nmn.local/vcs/cray/uan-config-management.git
+    cd uan-config-management && git checkout cray/uan/PRODUCT_VERSION && git pull
     ```
 
 7.  Create a branch using the imported branch from the installation to customize the UAN image.
@@ -99,8 +105,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     Modifying the cray/uan/PRODUCT\_VERSION branch that was created by the UAN product installation is not allowed by default.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# git checkout -b integration && git merge cray/uan/PRODUCT_VERSION
+    git checkout -b integration && git merge cray/uan/PRODUCT_VERSION
     ```
 
 8.  Configure a root user in the UAN image by adding the encrypted password of the root user from /etc/shadow on an NCN worker to the file group\_vars/Application/passwd.yml. Skip this step if the root user is already configured in the image.
@@ -125,10 +132,11 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     These and other Ansible files do not necessarily need to be modified for UAN image creation.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# vim group_vars/Application/vars.yml
-    ncn-m001# git add group_vars/Application/vars.yml
-    ncn-m001# git commit -m "Add vars.yml customizations"
+    vim group_vars/Application/vars.yml
+    git add group_vars/Application/vars.yml
+    git commit -m "Add vars.yml customizations"
     ```
 
 10. Verify that the System Layout Service \(SLS\) and the uan\_interfaces configuration role refer to the Mountain Node Management Network by the same name. Skip this step if there are no Mountain cabinets in the HPE Cray EX system.
@@ -149,15 +157,17 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     2.  Stage and commit the network name change.
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# git add roles/uan_interfaces/tasks/main.yml
-        ncn-m# git commit -m "Add Mountain cabinet support"
+        git add roles/uan_interfaces/tasks/main.yml
+        git commit -m "Add Mountain cabinet support"
         ```
 
 11. Push the changes to the repository using the proper credentials, including the password obtained previously.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# git push --set-upstream origin integration
+    git push --set-upstream origin integration
     ```
 
     Enter the appropriate credentials when prompted:
@@ -171,8 +181,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
 12. Capture the most recent commit for reference in setting up a CFS configuration and navigate to the parent directory.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# git rev-parse --verify HEAD
+    git rev-parse --verify HEAD
     ```
 
     `ecece54b1eb65d484444c4a5ca0b244b329f4667` is an example commit that could be returned.
@@ -180,7 +191,7 @@ This guide only details how to apply UAN-specific configuration to the UAN image
     Navigate back to the parent directory:
 
     ```
-    ncn-m001# cd ..
+    cd ..
     ```
 
     The configuration parameters have been stored in a branch in the UAN Git repository. The next phase of the process is initiating the Configuration Framework Service \(CFS\) to customize the image.
@@ -215,8 +226,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     In the following example, the JSON file created in the previous step is named uan-config-PRODUCT\_VERSION.json only the details for the UAN layer are shown.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray cfs configurations update uan-config-PRODUCT_VERSION \
+    cray cfs configurations update uan-config-PRODUCT_VERSION \
                       --file ./uan-config-PRODUCT_VERSION.json \
                       --format json
     ```
@@ -242,8 +254,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     1.  Untar the 1.4.0 Day Zero Patch tarball if it is not untarred already.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# tar -xvf shasta-1.4.0-p2.tar
+        tar -xvf shasta-1.4.0-p2.tar
         ```
 
         Example output:
@@ -275,46 +288,50 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
         Replace IMAGE\_ID in the following export command with the IMS image ID recorded in Step 1.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# export UAN_IMAGE_ID=IMAGE_ID
-        ncn-m001# cray artifacts get boot-images ${UAN_IMAGE_ID}/rootfs \
+        export UAN_IMAGE_ID=IMAGE_ID
+        cray artifacts get boot-images ${UAN_IMAGE_ID}/rootfs \
         ${UAN_IMAGE_ID}.squashfs
-        ncn-m001# la ${UAN_IMAGE_ID}.squashfs
+        la ${UAN_IMAGE_ID}.squashfs
         -rw-r--r-- 1 root root 1.5G Mar 17 19:35 f3ba09d7-e3c2-4b80-9d86-0ee2c48c2214.squashfs
         ```
 
     3.  Mount the squashfs file and copy its contents to a different directory.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# mkdir mnt
-        ncn-m001# mkdir UAN-1.4.0-day-zero
-        ncn-m001# mount -t squashfs ${UAN_IMAGE_ID}.squashfs mnt -o ro,loop
-        ncn-m001# cp -a mnt UAN-1.4.0-day-zero
-        ncn-m001# umount mnt
-        ncn-m001# rmdir mnt
+        mkdir mnt
+        mkdir UAN-1.4.0-day-zero
+        mount -t squashfs ${UAN_IMAGE_ID}.squashfs mnt -o ro,loop
+        cp -a mnt UAN-1.4.0-day-zero
+        umount mnt
+        rmdir mnt
         ```
 
     4.  Copy the new RPMs into the new image directory.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cp 1.4.0-p2/rpms/* UAN-1.4.0-day-zero/
-        ncn-m001# cd UAN-1.4.0-day-zero/
+        cp 1.4.0-p2/rpms/* UAN-1.4.0-day-zero/
+        cd UAN-1.4.0-day-zero/
         ```
 
     5.  Chroot into the new image directory.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# chroot . bash
+        chroot . bash
         ```
 
     6.  Update, erase, and install RPMs in the new image directory.
 
         ```bash
-        chroot-ncn-m001# rpm -Uv cray-dvs-*.rpm
-        chroot-ncn-m001# rpm -e cray-network-config
-        chroot-ncn-m001# rpm -e slingshot-network-config-full
-        chroot-ncn-m001# rpm -e slingshot-network-config
-        chroot-ncn-m001# rpm -iv slingshot-network-config-full-1.1.7-20210318093253_83fab52-sles15sp1.x86_64.rpm \
+        chroot-rpm -Uv cray-dvs-*.rpm
+        chroot-rpm -e cray-network-config
+        chroot-rpm -e slingshot-network-config-full
+        chroot-rpm -e slingshot-network-config
+        chroot-rpm -iv slingshot-network-config-full-1.1.7-20210318093253_83fab52-sles15sp1.x86_64.rpm \
         slingshot-network-config-1.1.7-20210318093253_83fab52-sles15sp1.x86_64.rpm \
         cray-network-config-1.1.7-20210318094806_b409053-sles15sp1.x86_64.rpm
         ```
@@ -322,7 +339,7 @@ This guide only details how to apply UAN-specific configuration to the UAN image
     7.  Generate a new initrd to match the updated image by running the `/tmp/images.sh` script. Then wait for this script to complete before continuing.
 
         ```bash
-        chroot-ncn-m001# /tmp/images.sh
+        chroot-/tmp/images.sh
         ```
 
         The output of this script will contain error messages. These error messages can be ignored as long as the message dracut: \*\*\* Creating initramfs image file appears at the end.
@@ -332,18 +349,19 @@ This guide only details how to apply UAN-specific configuration to the UAN image
     9.  Exit the chroot environment and delete the packages.
 
         ```bash
-        chroot-ncn-m001# exit
+        chroot-exit
         exit
-        ncn-m001# rm *.rpm
-        ncn-m001# cd ..
+        rm *.rpm
+        cd ..
         ```
 
     10. Verify that there is only one subdirectory in the `lib/modules` directory of the image.
 
         The existence of more than one subdirectory indicates a mismatch between the kernel of the image and the DVS RPMs that were installed in the previous step.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# la UAN-1.4.0-day-zero/lib/modules/
+        la UAN-1.4.0-day-zero/lib/modules/
         ```
 
         Example output:
@@ -357,8 +375,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     11. Resquash the new image directory.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# mksquashfs UAN-1.4.0-day-zero UAN-1.4.0-day-zero.squashfs
+        mksquashfs UAN-1.4.0-day-zero UAN-1.4.0-day-zero.squashfs
         ```
 
         Example output:
@@ -372,8 +391,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     12. Create a new IMS image registration and save the id field in an environment variable.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray ims images create --name UAN-1.4.0-day-zero
+        cray ims images create --name UAN-1.4.0-day-zero
         ```
 
         Example output:
@@ -382,23 +402,24 @@ This guide only details how to apply UAN-specific configuration to the UAN image
         name = "UAN-1.4.0-day-zero"
         created = "2021-03-17T20:23:05.576754+00:00"
         id = "ac31e971-f990-4b5f-821d-c0c18daefb6e"
-        ncn-m001# export NEW_IMAGE_ID=ac31e971-f990-4b5f-821d-c0c18daefb6e
+        export NEW_IMAGE_ID=ac31e971-f990-4b5f-821d-c0c18daefb6e
         ```
 
     13. Upload the new image, initrd, and kernel to S3 using the id from the previous step.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray artifacts create boot-images ${NEW_IMAGE_ID}/rootfs \
+        cray artifacts create boot-images ${NEW_IMAGE_ID}/rootfs \
         UAN-1.4.0-day-zero.squashfs
         artifact = "ac31e971-f990-4b5f-821d-c0c18daefb6e/UAN-1.4.0-day-zero.rootfs"
         Key = "ac31e971-f990-4b5f-821d-c0c18daefb6e/UAN-1.4.0-day-zero.rootfs"
 
-        ncn-m001# cray artifacts create boot-images ${NEW_IMAGE_ID}/initrd \
+        cray artifacts create boot-images ${NEW_IMAGE_ID}/initrd \
         initrd
         artifact = "ac31e971-f990-4b5f-821d-c0c18daefb6e/UAN-1.4.0-day-zero.initrd"
         Key = "ac31e971-f990-4b5f-821d-c0c18daefb6e/UAN-1.4.0-day-zero.initrd"
 
-        ncn-m001# cray artifacts create boot-images ${NEW_IMAGE_ID}/kernel \
+        cray artifacts create boot-images ${NEW_IMAGE_ID}/kernel \
         vmlinuz
         artifact = "ac31e971-f990-4b5f-821d-c0c18daefb6e/UAN-1.4.0-day-zero.kernel"
         Key = "ac31e971-f990-4b5f-821d-c0c18daefb6e/UAN-1.4.0-day-zero.kernel"
@@ -407,8 +428,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
     14. After uploading the new image, initrd, and kernel to S3, use the `cray artifacts`
         command to get the S3 generated etag value for each artifact.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray artifacts describe boot-images ${NEW_IMAGE_ID}/rootfs
+        cray artifacts describe boot-images ${NEW_IMAGE_ID}/rootfs
         [artifact]
         AcceptRanges = "bytes"
         LastModified = "2021-05-05T00:25:21+00:00"
@@ -419,10 +441,10 @@ This guide only details how to apply UAN-specific configuration to the UAN image
         [artifact.Metadata]
         md5sum = "cb6a8934ad3c483e740c648238800e93"
 
-        ncn-m001# cray artifacts describe boot-images ${NEW_IMAGE_ID}/initrd
+        cray artifacts describe boot-images ${NEW_IMAGE_ID}/initrd
         [...]
 
-        ncn-m001# cray artifacts describe boot-images ${NEW_IMAGE_ID}/kernel
+        cray artifacts describe boot-images ${NEW_IMAGE_ID}/kernel
 
         [...]
         ```
@@ -433,8 +455,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     15. Obtain the md5sum of the SquashFS image, initrd, and kernel.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# md5sum UAN-1.4.0-day-zero.squashfs initrd vmlinuz
+        md5sum UAN-1.4.0-day-zero.squashfs initrd vmlinuz
         ```
 
         Example output:
@@ -447,8 +470,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     16. Use the image ID from Step 1 to print out all the IMS details about the current UAN image.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray ims images describe c880251d-b275-463f-8279-e6033f61578b
+        cray ims images describe c880251d-b275-463f-8279-e6033f61578b
         ```
 
         Example output:
@@ -466,10 +490,11 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     17. Use the path of the `manifest.json` file to download that JSON to a local file.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray artifacts get boot-images \
+        cray artifacts get boot-images \
         c880251d-b275-463f-8279-e6033f61578b/manifest.json uan-manifest.json
-        ncn-m001# cat uan-manifest.json
+        cat uan-manifest.json
         {
             "artifacts": [
                 {
@@ -511,29 +536,33 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     19. Update the value for the `"created"` line in the manifest with the output of the following command:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# date '+%Y%m%d%H%M%S'
+        date '+%Y%m%d%H%M%S'
         ```
 
     20. Verify that the modified JSON file is still valid.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cat manifest.json | jq
+        cat manifest.json | jq
         ```
 
     21. Save the changes to the file.
 
     22. Upload the updated `manifest.json` file.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray artifacts create boot-images \
+        cray artifacts create boot-images \
         ${NEW_IMAGE_ID}/manifest.json uan-manifest.json
         ```
 
     23. Update the IMS image to use the new `uan-manifest.json` file.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray ims images update ${NEW_IMAGE_ID} \
+        cray ims images update ${NEW_IMAGE_ID} \
         --link-type s3 --link-path s3://boot-images/${NEW_IMAGE_ID}/manifest.json \
         --link-etag 6d04c3a4546888ee740d7149eaecea68
         ```
@@ -553,8 +582,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
 17. Create a CFS session to perform preboot image customization of the UAN image.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray cfs sessions create --name uan-config-PRODUCT_VERSION \
+    cray cfs sessions create --name uan-config-PRODUCT_VERSION \
                       --configuration-name uan-config-PRODUCT_VERSION \
                       --target-definition image \
                       --target-group Application $NEW_IMAGE_ID \
@@ -565,8 +595,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     The following command will produce output while the process is running. If the CFS session completes successfully, an IMS image ID will appear in the output.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray cfs sessions describe uan-config-PRODUCT_VERSION --format json | jq
+    cray cfs sessions describe uan-config-PRODUCT_VERSION --format json | jq
     ```
 
 ### Prepare UAN Boot Session Templates
@@ -575,8 +606,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     These component names (xnames) are needed for Step 20.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm state components list --role Application --subrole UAN --format json | jq -r .Components[].ID
+    cray hsm state components list --role Application --subrole UAN --format json | jq -r .Components[].ID
     ```
 
     Example output:
@@ -638,8 +670,9 @@ This guide only details how to apply UAN-specific configuration to the UAN image
 
     The following command uses the JSON session template file to save a session template in BOS. This step allows administrators to boot UANs by referring to the session template name.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray bos sessiontemplate create \
+    cray bos sessiontemplate create \
                        --name uan-sessiontemplate-PRODUCT_VERSION \
                        --file uan-sessiontemplate-PRODUCT_VERSION.json
     /sessionTemplate/uan-sessiontemplate-PRODUCT_VERSION

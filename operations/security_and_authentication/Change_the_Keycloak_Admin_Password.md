@@ -17,8 +17,9 @@ This procedure uses SYSTEM\_DOMAIN\_NAME as an example for the DNS name of the n
     - Username: `admin`
     - The password can be obtained with the following command:
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get secret -n services keycloak-master-admin-auth \
+    kubectl get secret -n services keycloak-master-admin-auth \
                  --template={{.data.password}} | base64 --decode
     ```
 
@@ -31,8 +32,9 @@ This procedure uses SYSTEM\_DOMAIN\_NAME as an example for the DNS name of the n
 1. Copy the directory `vendor/stash.us.cray.com/scm/shasta-cfg/stable/utils` to your desired working directory, and run the following commands from that work directory (not the `utils` directory).
 1. Save a local copy of the `customizations.yaml` file.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' |
+    kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' |
          base64 -d > customizations.yaml
     ```
 
@@ -68,28 +70,32 @@ This procedure uses SYSTEM\_DOMAIN\_NAME as an example for the DNS name of the n
 
 1. Upload the modified `customizations.yaml` file to Kubernetes.
 
+   (`ncn#`)
    ```bash
-   ncn# kubectl delete secret -n loftsman site-init
-   ncn# kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
+   kubectl delete secret -n loftsman site-init
+   kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
    ```
 
 1. Encrypt the values after changing the `customizations.yaml` file.
 
+    (`ncn#`)
     ```bash
-    ncn# ./utils/secrets-seed-customizations.sh customizations.yaml
+    ./utils/secrets-seed-customizations.sh customizations.yaml
     ```
 
     If the above command complains that it cannot find `certs/sealed_secrets.crt` then you can run the following commands to create it:
 
+    (`ncn#`)
     ```bash
-    ncn# mkdir -p certs &&
+    mkdir -p certs &&
          ./utils/bin/linux/kubeseal --controller-name sealed-secrets --fetch-cert > certs/sealed_secrets.crt
     ```
 
 1. Create a local copy of the `platform.yaml` file.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get cm -n loftsman loftsman-platform -o jsonpath='{.data.manifest\.yaml}'  > platform.yaml
+    kubectl get cm -n loftsman loftsman-platform -o jsonpath='{.data.manifest\.yaml}'  > platform.yaml
     ```
 
 1. Edit the `platform.yaml` to only include the `cray-keycloak` chart and all its current data.
@@ -118,32 +124,36 @@ This procedure uses SYSTEM\_DOMAIN\_NAME as an example for the DNS name of the n
 
 1. Generate the manifest that will be used to redeploy the chart with the modified resources.
 
+    (`ncn#`)
     ```bash
-    ncn# manifestgen -c customizations.yaml -i platform.yaml -o manifest.yaml
+    manifestgen -c customizations.yaml -i platform.yaml -o manifest.yaml
     ```
 
 1. Re-apply the `cray-keycloak` Helm chart with the updated `customizations.yaml` file.
 
     This will update the `keycloak-master-admin-auth` SealedSecret which will cause the SealedSecret controller to update the Secret.
 
+    (`ncn#`)
     ```bash
-    ncn# loftsman ship --charts-path ${PATH_TO_RELEASE}/helm --manifest-path ./manifest.yaml
+    loftsman ship --charts-path ${PATH_TO_RELEASE}/helm --manifest-path ./manifest.yaml
     ```
 
 1. Verify that the Secret has been updated.
 
     Give the SealedSecret controller a few seconds to update the Secret, then run the following command to see the current value of the Secret:
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get secret -n services keycloak-master-admin-auth \
+    kubectl get secret -n services keycloak-master-admin-auth \
                  --template={{.data.password}} | base64 --decode
     ```
 
 1. Save an updated copy of `customizations.yaml` to the `site-init` secret in the `loftsman` Kubernetes namespace.
 
+    (`ncn#`)
     ```bash
-    ncn# CUSTOMIZATIONS=$(base64 < customizations.yaml  | tr -d '\n')
-    ncn# kubectl get secrets -n loftsman site-init -o json |
+    CUSTOMIZATIONS=$(base64 < customizations.yaml  | tr -d '\n')
+    kubectl get secrets -n loftsman site-init -o json |
             jq ".data.\"customizations.yaml\" |= \"$CUSTOMIZATIONS\"" |
             kubectl apply -f -
     ```

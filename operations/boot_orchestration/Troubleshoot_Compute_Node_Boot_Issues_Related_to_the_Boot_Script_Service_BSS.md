@@ -21,8 +21,9 @@ Encryption of compute node logs is not enabled, so the passwords may be passed i
 
 2.  Check that BSS is running.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl get pods -n services -o wide | grep cray-bss | grep -v -etcd-
+    kubectl get pods -n services -o wide | grep cray-bss | grep -v -etcd-
     ```
 
     Example output:
@@ -35,39 +36,45 @@ Encryption of compute node logs is not enabled, so the passwords may be passed i
 
     -   If nodes are identified by their host names, execute the following:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray bss bootparameters list --hosts HOST_NAME
+        cray bss bootparameters list --hosts HOST_NAME
         ```
 
     -   If nodes are identified by their node IDs, execute the following:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray bss bootparameters list --nids NODE_ID
+        cray bss bootparameters list --nids NODE_ID
         ```
 
 4.  View the entire BSS contents.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray bss dumpstate list
+    cray bss dumpstate list
     ```
 
 5.  View the actual boot script.
 
     Using hosts:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray bss bootscript list --host HOST_NAME
+    cray bss bootscript list --host HOST_NAME
     ```
 
     Using the MAC address to get the actual boot script:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray bss bootscript list --mac MAC_ADDRESS
+    cray bss bootscript list --mac MAC_ADDRESS
     ```
 
     Using node IDs to retrieve boot parameters:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray bss bootscript list --nid NODE_ID
+    cray bss bootscript list --nid NODE_ID
     ```
 

@@ -8,8 +8,9 @@ Users can expect that staging the image and generating an inventory will be a lo
 
 In order to use the `image` target definition, an image must be registered with the IMS. For example, if the image ID is 5d64c8b2-4f0e-4b2e-b334-51daba16b7fb, use `jq` along with the CLI `--format json` output option to determine if the image ID is known to IMS:
 
+(`ncn#`)
 ```bash
-ncn# cray ims images list --format json |
+cray ims images list --format json |
 jq -r 'any(.[]; .id == "5d64c8b2-4f0e-4b2e-b334-51daba16b7fb")'
 true
 ```
@@ -18,8 +19,9 @@ To create a CFS session for image customization, provide a session name, the nam
 
 > **WARNING:** If a CFS session is created with an ID that is not known to IMS, CFS will not fail and will instead wait for the image ID to become available in IMS.
 
+(`ncn#`)
 ```bash
-ncn# cray cfs sessions create --name example \
+cray cfs sessions create --name example \
 --configuration-name configurations-example \
 --target-definition image \
 --target-group Compute IMS_IMAGE_ID
@@ -65,8 +67,9 @@ Example output:
 
 When an image customization CFS session is complete, use the CFS `describe` command to show the IMS image ID that results from the applied configuration:
 
+(`ncn#`)
 ```bash
-ncn# cray cfs sessions describe example --format json | jq .status.artifacts
+cray cfs sessions describe example --format json | jq .status.artifacts
 ```
 
 Example output:

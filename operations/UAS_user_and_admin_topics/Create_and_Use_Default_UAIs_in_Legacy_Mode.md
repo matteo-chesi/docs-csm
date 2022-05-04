@@ -99,6 +99,6 @@ vers> cray uas delete --uai-list uai-vers-01b26dd1
 results = [ "Successfully deleted uai-vers-01b26dd1",]
 ```
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: List Available UAI Images in Legacy Mode](List_Available_UAI_Images_in_Legacy_Mode.md)

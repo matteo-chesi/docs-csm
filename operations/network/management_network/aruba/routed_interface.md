@@ -25,6 +25,5 @@ switch# show <ip|ipv6> interface IFACE
 3. The interface is up, and you can validate the IP address and subnet are correct
 4. Administrators can ping from the switch to the client and from the client to the switch
 
-
-[Back to Index](../index.md)
+[Back to Index](../README.md)
 

@@ -34,7 +34,6 @@ In older versions of containerd, there are cases where the `/var/lib/containerd`
 
    Follow the [Reboot_NCNs](../node_management/Reboot_NCNs.md) process to properly cordon/drain the NCN and reboot. Generally this final step will free up space in `/var/lib/containerd`.
 
-
 ### Restart containerd
 
 If the containerd service is restarted on a worker node, this may cause the sonar-jobs-watcher pod running on that worker node to fail when attempting to cleanup unneeded containers. For example:
@@ -94,6 +93,5 @@ If the containerd service is restarted on a worker node, this may cause the sona
     ```
 
     `daemonset.apps/sonar-jobs-watcher restarted` will be returned when the pods have restarted.
-
 
 To learn more in general about containerd, refer to [https://containerd.io/](https://containerd.io/).

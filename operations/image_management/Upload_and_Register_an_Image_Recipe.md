@@ -21,8 +21,9 @@ Download and expand recipe archives from S3 and IMS. Modify and upload a recipe 
 
     There may be multiple records returned. Ensure that the correct record is selected in the returned data.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims recipes list
+    cray ims recipes list
     ```
 
     Excerpt from example output:
@@ -32,7 +33,7 @@ Download and expand recipe archives from S3 and IMS. Modify and upload a recipe 
     id = "76ef564d-47d5-415a-bcef-d6022a416c3c"
     name = "cray-sles15-barebones"
     created = "2020-02-05T19:24:22.621448+00:00"
-    
+
     [results.link]
     path = "s3://ims/recipes/76ef564d-47d5-415a-bcef-d6022a416c3c/cray-sles15-barebones.tgz"
     etag = "28f3d78c8cceca2083d7d3090d96bbb7"
@@ -41,25 +42,28 @@ Download and expand recipe archives from S3 and IMS. Modify and upload a recipe 
 
 1. Create variables for the S3 `bucket` and `key` values from the S3 `path` in the returned data of the previous step.
 
+    (`ncn#`)
     ```bash
-    ncn# S3_ARTIFACT_BUCKET=ims
-    ncn# S3_ARTIFACT_KEY=recipes/76ef564d-47d5-415a-bcef-d6022a416c3c/cray-sles15-barebones.tgz
-    ncn# ARTIFACT_FILENAME=cray-sles15-barebones.tgz
+    S3_ARTIFACT_BUCKET=ims
+    S3_ARTIFACT_KEY=recipes/76ef564d-47d5-415a-bcef-d6022a416c3c/cray-sles15-barebones.tgz
+    ARTIFACT_FILENAME=cray-sles15-barebones.tgz
     ```
 
 1. Download the recipe archive.
 
     Use the variables created in the previous step when running the following command.
 
+    (`ncn#`)
     ```bash
-    ncn# cray artifacts get $S3_ARTIFACT_BUCKET $S3_ARTIFACT_KEY $ARTIFACT_FILENAME
+    cray artifacts get $S3_ARTIFACT_BUCKET $S3_ARTIFACT_KEY $ARTIFACT_FILENAME
     ```
 
 1. Expand the recipe with `tar`.
 
+    (`ncn#`)
     ```bash
-    ncn# mkdir image-recipe
-    ncn# tar xvf $ARTIFACT_FILENAME -C image-recipe
+    mkdir image-recipe
+    tar xvf $ARTIFACT_FILENAME -C image-recipe
     ```
 
 1. Modify the recipe by editing the files and subdirectories in the `image-recipe` directory.
@@ -78,27 +82,31 @@ Download and expand recipe archives from S3 and IMS. Modify and upload a recipe 
 
     This step should be done after the recipe has been changed.
 
+    (`ncn#`)
     ```bash
-    ncn# cd image-recipe
+    cd image-recipe
     ```
 
 1. Set an environment variable for the name of the file that will contain the archive of the image recipe.
 
+    (`ncn#`)
     ```bash
-    ncn# ARTIFACT_FILE=my_recipe.tgz
+    ARTIFACT_FILE=my_recipe.tgz
     ```
 
 1. Create a `tgz` archive of the image recipe.
 
+    (`ncn#`)
     ```bash
-    ncn# tar cvfz ../$ARTIFACT_FILE .
-    ncn# cd ..
+    tar cvfz ../$ARTIFACT_FILE .
+    cd ..
     ```
 
 1. Create a new IMS recipe record.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims recipes create --name "My Recipe" \
+    cray ims recipes create --name "My Recipe" \
             --recipe-type kiwi-ng --linux-distribution sles15
     ```
 
@@ -114,8 +122,9 @@ Download and expand recipe archives from S3 and IMS. Modify and upload a recipe 
 
 1. Create a variable for the `id` value in the returned data.
 
+    (`ncn#`)
     ```bash
-    ncn# IMS_RECIPE_ID=2233c82a-5081-4f67-bec4-4b59a60017a6
+    IMS_RECIPE_ID=2233c82a-5081-4f67-bec4-4b59a60017a6
     ```
 
 1. Upload the customized recipe to S3.
@@ -123,14 +132,16 @@ Download and expand recipe archives from S3 and IMS. Modify and upload a recipe 
     It is suggested as a best practice that the S3 object name start with `recipes/` and contain the IMS recipe ID,
     in order to remove ambiguity.
 
+    (`ncn#`)
     ```bash
-    ncn# cray artifacts create ims recipes/$IMS_RECIPE_ID/$ARTIFACT_FILE $ARTIFACT_FILE
+    cray artifacts create ims recipes/$IMS_RECIPE_ID/$ARTIFACT_FILE $ARTIFACT_FILE
     ```
 
 1. Update the IMS recipe record with the S3 path to the recipe archive.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims recipes update $IMS_RECIPE_ID --link-type s3 \
+    cray ims recipes update $IMS_RECIPE_ID --link-type s3 \
             --link-path s3://ims/recipes/$IMS_RECIPE_ID/$ARTIFACT_FILE
     ```
 

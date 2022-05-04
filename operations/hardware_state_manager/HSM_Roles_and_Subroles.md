@@ -44,8 +44,9 @@ Custom roles and subroles can also be created and added to the HSM. New roles or
 
 To add new roles/subroles, add them to the cray-hms-base-config configmap under data->hms_config.json.HMSExtendedDefinitions.(Sub)Role:
 
+(`ncn#`)
 ```bash
-ncn# kubectl edit configmap -n services cray-hms-base-config
+kubectl edit configmap -n services cray-hms-base-config
 
 data:
   hms_config.json: |-

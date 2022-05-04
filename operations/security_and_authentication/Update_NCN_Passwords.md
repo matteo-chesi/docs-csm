@@ -26,23 +26,24 @@ changed to `secret/csm/users/root password=...`. You must set the password in
 the new location using the _Configure Root Password in Vault_ procedure below
 for it to be applied to the NCNs.
 
-<a name="configure_root_password_in_vault"></a>
 ## Procedure: Configure Root Password in Vault
 
 1. Generate a new password hash for the root user. Type in your new password
    after running the `read` command. The echo will verify that the hash is set
    to the password you expect.
 
+   (`ncn#`)
    ```bash
-   ncn# read -s NEWPASSWORD
-   ncn# openssl passwd -6 -salt $(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c4) "$NEWPASSWORD"
-   ncn# echo "Password: $NEWPASSWORD"
+   read -s NEWPASSWORD
+   openssl passwd -6 -salt $(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c4) "$NEWPASSWORD"
+   echo "Password: $NEWPASSWORD"
    ```
 
 1. Get the [HashiCorp Vault](HashiCorp_Vault.md) root token:
 
+   (`ncn#`)
    ```bash
-   ncn# kubectl get secrets -n vault cray-vault-unseal-keys -o jsonpath='{.data.vault-root}' | base64 -d; echo
+   kubectl get secrets -n vault cray-vault-unseal-keys -o jsonpath='{.data.vault-root}' | base64 -d; echo
    ```
 
 1. Write the password hash from step 1 to the [HashiCorp Vault](HashiCorp_Vault.md).
@@ -53,8 +54,9 @@ for it to be applied to the NCNs.
    **NOTE:**: It is important to enclose the hash in single quotes to preserve
    any special characters.
 
+   (`ncn#`)
    ```bash
-   ncn# kubectl exec -itn vault cray-vault-0 -- sh
+   kubectl exec -itn vault cray-vault-0 -- sh
    cray-vault-0# export VAULT_ADDR=http://cray-vault:8200
    cray-vault-0# vault login
    cray-vault-0# vault write secret/csm/users/root password='<INSERT HASH HERE>' [... other fields (see warning below) ...]
@@ -89,8 +91,9 @@ procedure above.
    Replace the branch name in the JSON below with the commit in the CSM
    configuration management Git repository that is in use.
 
+   (`ncn#`)
    ```bash
-   ncn# cat ncn-password-update-config.json
+   cat ncn-password-update-config.json
    ```
 
    Example output:
@@ -108,14 +111,16 @@ procedure above.
    }
    ```
 
+   (`ncn#`)
    ```bash
-   ncn# cray cfs configurations update ncn-password-update --file ./ncn-password-update-config.json
+   cray cfs configurations update ncn-password-update --file ./ncn-password-update-config.json
    ```
 
 1. Create a CFS configuration session to apply the password update.
 
+   (`ncn#`)
    ```bash
-   ncn# cray cfs sessions create --name ncn-password-update-`date +%Y%m%d%H%M%S` --configuration-name ncn-password-update
+   cray cfs sessions create --name ncn-password-update-`date +%Y%m%d%H%M%S` --configuration-name ncn-password-update
    ```
 
    **NOTE:** Subsequent password changes need only update the password hash in

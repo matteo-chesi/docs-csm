@@ -175,7 +175,6 @@ The following example shows going from CSM 1.2 to CSM 1.0 switch configuration.
 
 The switch will then boot to the desired configuration.
 
-
 ## Mellanox
 
 #### Save a configuration file from running system (going from one CSM release to the other for the first time)

@@ -2,13 +2,13 @@
 
 A session template must be created before starting a session with the Boot Orchestration Service \(BOS\). Session templates are managed via the Cray CLI with the cray bos sessiontemplate commands.
 
-
 ### Get the Framework for a Session Template
 
 When creating a new BOS session template, it can be helpful to start with a framework and then edit it as needed. Use the following command to retrieve the BOS session template framework:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray bos sessiontemplatetemplate list --format json
+cray bos sessiontemplatetemplate list --format json
 ```
 
 Example output:
@@ -44,8 +44,9 @@ Example output:
 
 The following command takes a JSON input file that contains the information required to create a new BOS session template. It reads it in and creates an actual BOS session template using the BOS API.
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray bos sessiontemplate create --file INPUT_FILE --name NEW_TEMPLATE_NAME
+cray bos sessiontemplate create --file INPUT_FILE --name NEW_TEMPLATE_NAME
 ```
 
 The following is an example of an input file:
@@ -121,8 +122,9 @@ curl -i -X POST -s https://api-gw-service-nmn.local/apis/bos/v1/sessiontemplate 
 
 Either script above will generate the following session template:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray bos sessiontemplate describe session_template1 --format json
+cray bos sessiontemplate describe session_template1 --format json
 ```
 
 Example output:
@@ -152,13 +154,13 @@ Example output:
 }
 ```
 
-
 ### List All Session Templates
 
 Use the following command to view all of the available session templates:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray bos sessiontemplate list --format json
+cray bos sessiontemplate list --format json
 ```
 
 Example output:
@@ -192,13 +194,13 @@ Example output:
 [...]
 ```
 
-
 ### Show Details for a Session Template
 
 View the details for a specific session template. In the following example, the session template name is cle-1.2.0.
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray bos sessiontemplate describe SESSION_TEMPLATE_NAME --format json
+cray bos sessiontemplate describe SESSION_TEMPLATE_NAME --format json
 ```
 
 Example output:
@@ -232,7 +234,8 @@ Example output:
 
 Remove an existing session template with the following command:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray bos sessiontemplate delete SESSIONTEMPLATE_NAME
+cray bos sessiontemplate delete SESSIONTEMPLATE_NAME
 ```
 

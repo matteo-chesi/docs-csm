@@ -4,8 +4,9 @@ The artifacts \(objects\) available for use on the system are created and manage
 
 All operations with the cray artifacts command assume that the user has already been authenticated. If the user has not been authenticated with the Cray CLI, run the following command:
 
+(`ncn#`)
 ```bash
-ncn# cray auth login
+cray auth login
 ```
 
 Enter the appropriate credentials when prompted:
@@ -23,8 +24,9 @@ Password:
 
 There are several S3 buckets available that can be used to upload and download files with the `cray artifacts` command. To see the list of available S3 buckets:
 
+(`ncn#`)
 ```bash
-ncn# cray artifacts buckets list
+cray artifacts buckets list
 ```
 
 Example output:
@@ -39,8 +41,9 @@ Use the `cray artifacts create` command to create an object and upload it to S3.
 
 In the example below, S3\_BUCKET is a placeholder for the bucket name, site/repos/repo.tgz is the object name, and /path/to/repo.tgz is the location of the file to be uploaded to S3 on the local file system.
 
+(`ncn#`)
 ```bash
-ncn# cray artifacts create S3_BUCKET site/repos/repo.tgz /path/to/repo.tgz
+cray artifacts create S3_BUCKET site/repos/repo.tgz /path/to/repo.tgz
 ```
 
 Example output:
@@ -58,14 +61,16 @@ When interacting with Cray services, use the artifact value returned by the `cra
 
 Artifacts are downloaded with the cray artifacts get command. Provide the object name, the bucket, and a file path to download the artifact in order to use this command.
 
+(`ncn#`)
 ```bash
-ncn# cray artifacts get S3_BUCKET S3_OBJECT_KEY DOWNLOAD_FILEPATH
+cray artifacts get S3_BUCKET S3_OBJECT_KEY DOWNLOAD_FILEPATH
 ```
 
 For example:
 
+(`ncn#`)
 ```bash
-ncn# cray artifacts get boot-images 5c5b6ae5-64da-4212-887a-301087a17099 /path/to/downloads/dl-repo.tgz
+cray artifacts get boot-images 5c5b6ae5-64da-4212-887a-301087a17099 /path/to/downloads/dl-repo.tgz
 ```
 
 No output is shown unless an error occurs.
@@ -74,8 +79,9 @@ No output is shown unless an error occurs.
 
 Artifacts are removed from buckets with the `cray artifacts delete` command. Provide the object name and the bucket to delete it.
 
+(`ncn#`)
 ```bash
-ncn# cray artifacts delete S3_BUCKET S3_OBJECT_KEY
+cray artifacts delete S3_BUCKET S3_OBJECT_KEY
 ```
 
 No output is shown unless an error occurs.
@@ -84,8 +90,9 @@ No output is shown unless an error occurs.
 
 Use the `cray artifacts list` command to list all artifacts in a bucket.
 
+(`ncn#`)
 ```bash
-ncn# cray artifacts list S3_BUCKET
+cray artifacts list S3_BUCKET
 ```
 
 Example output:
@@ -111,8 +118,9 @@ Details of an artifact object in a bucket are found with the `cray artifacts des
 
 **IMPORTANT:** The Cray-specific metadata provided by this command is automatically generated. This metadata should be considered deprecated and should not be used for future development.
 
+(`ncn#`)
 ```bash
-ncn# cray artifacts describe S3_BUCKET S3_OBJECT_KEY
+cray artifacts describe S3_BUCKET S3_OBJECT_KEY
 ```
 
 Example output:

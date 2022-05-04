@@ -27,14 +27,16 @@ CFS will clone the additional inventory Git repository and use the default branc
 
 Use the following command to set the additionalInventoryUrl value:
 
+(`ncn#`)
 ```bash
-ncn# cray cfs options update \
+cray cfs options update \
 --additional-inventory-url https://api-gw-service-nmn.local/vcs/cray/inventory.git
 ```
 
 Use the following command to unset the additionalInventoryUrl value:
 
+(`ncn#`)
 ```bash
-ncn# cray cfs options update --additional-inventory-url ""
+cray cfs options update --additional-inventory-url ""
 ```
 

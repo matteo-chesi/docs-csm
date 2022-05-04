@@ -21,10 +21,11 @@ by ConMan and to connect to a console.
 
 1. Find the `cray-console-operator` pod.
 
+    (`ncn#`)
     ```bash
-    ncn# OP_POD=$(kubectl get pods -n services \
+    OP_POD=$(kubectl get pods -n services \
             -o wide|grep cray-console-operator|awk '{print $1}')
-    ncn# echo $OP_POD
+    echo $OP_POD
     ```
 
     Example output:
@@ -34,10 +35,11 @@ by ConMan and to connect to a console.
 
 1. Find the cray-console-node pod that is connected to the node. Be sure to substitute the actual component name (xname) of the node in the command below.
 
+    (`ncn#`)
     ```bash
-    ncn# XNAME=<xname>
-    ncn# NODEPOD=$(kubectl -n services exec $OP_POD -c cray-console-operator -- sh -c "/app/get-node $XNAME" | jq .podname | sed 's/"//g')
-    ncn# echo $NODEPOD
+    XNAME=<xname>
+    NODEPOD=$(kubectl -n services exec $OP_POD -c cray-console-operator -- sh -c "/app/get-node $XNAME" | jq .podname | sed 's/"//g')
+    echo $NODEPOD
     ```
 
     Example output:
@@ -47,8 +49,9 @@ by ConMan and to connect to a console.
 
 1. Log into the `cray-console-node` container in this pod:
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl exec -n services -it $NODEPOD -c cray-console-node -- bash
+    kubectl exec -n services -it $NODEPOD -c cray-console-node -- bash
     ```
 
     Example output:

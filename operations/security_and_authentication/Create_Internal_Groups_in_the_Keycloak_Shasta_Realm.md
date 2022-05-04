@@ -14,7 +14,6 @@ New Keycloak groups can be used to group users for authentication.
     --template={{.data.password}} | base64 --decode
     ```
 
-
 ### Procedure
 
 1.  Click the Groups text in the Manage section in the navigation area on the left side of the screen.
@@ -30,7 +29,6 @@ New Keycloak groups can be used to group users for authentication.
 6.  Add the gidNumber attribute by setting the Key to gidNumber, and the Value to the gidNumber of the group. Click the **Add** button on the row.
 
 7.  Click the **Save** button at the bottom of the page.
-
 
 Once the groups are added to Keycloak, add users to the group and follow the instructions in [Re-Sync Keycloak Users to Compute Nodes](Resync_Keycloak_Users_to_Compute_Nodes.md) to update the groups on the compute nodes.
 

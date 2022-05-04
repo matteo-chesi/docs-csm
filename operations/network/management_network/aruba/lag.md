@@ -84,4 +84,4 @@ F - Aggregable I - Individual
 2. Administrators can add ports to a LAG
 3. Administrators can configure a LAG interface
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

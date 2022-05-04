@@ -4,8 +4,9 @@ Describes how to view the logs of BOS operations with Kubernetes.
 
 When a Boot Orchestration Service \(BOS\) session is created, it will return a job ID. This ID can be used to locate the Boot Orchestration Agent \(BOA\) Kubernetes job that executes the session. For example:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray bos session create --template-uuid SESSIONTEMPLATE_NAME --operation Boot
+cray bos session create --template-uuid SESSIONTEMPLATE_NAME --operation Boot
 ```
 
 Example output:
@@ -22,19 +23,20 @@ type = "GET"
 
 All BOS Kubernetes pods operate in the services namespace.
 
-
 ### Find the BOA Kubernetes Job
 
 Use the following command to locate the Kubernetes BOA pod.
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl get pods -n services | grep -E "NAME | BOS_SESSION_JOB_ID"
+kubectl get pods -n services | grep -E "NAME | BOS_SESSION_JOB_ID"
 ```
 
 For example:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl get pods -n services | grep -E "NAME | boa-a939bd32-9d27-433f-afc2-735e77ec8e58"
+kubectl get pods -n services | grep -E "NAME | boa-a939bd32-9d27-433f-afc2-735e77ec8e58"
 NAME                                                              READY   STATUS      RESTARTS   AGE
 boa-a939bd32-9d27-433f-afc2-735e77ec8e58-ztscd                    0/2     Completed   0          16m
 ```
@@ -55,28 +57,29 @@ boa-a939bd32-9d27-433f-afc2-735e77ec8e58   1/1           13m        15m
 
 The Kubernetes BOA pod name is not a one-to-one match with the BOA job name. The pod name has -XXXX appended to it, where 'X' is a hexadecimal digit.
 
-
 ### View the BOA Log
 
 Use the following command to look at the BOA pod's logs.
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl logs -n services KUBERNETES_BOA_POD_ID -c boa
+kubectl logs -n services KUBERNETES_BOA_POD_ID -c boa
 ```
 
 For example:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl logs -n services boa-a939bd32-9d27-433f-afc2-735e77ec8e58 -c boa
+kubectl logs -n services boa-a939bd32-9d27-433f-afc2-735e77ec8e58 -c boa
 ```
-
 
 ### View the Configuration Framework Service \(CFS\) Log
 
 If a session template has CFS enabled, then BOA will attempt to configure the nodes during a boot, reboot, or configure operation. Use the BOA job ID to find the CFS job that BOA launched to configure the nodes.
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray cfs sessions describe BOA_JOB_ID
+cray cfs sessions describe BOA_JOB_ID
 ```
 
 For example:
@@ -128,8 +131,9 @@ For example:
 
 Use the Kubernetes CFS job ID in the returned output above to find the CFS pod ID. It is the pod with three containers listed, not two.
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl -n services get pods|grep KUBERNETES_CFS_JOB_ID
+kubectl -n services get pods|grep KUBERNETES_CFS_JOB_ID
 ```
 
 Example output:
@@ -141,10 +145,10 @@ cfs-85e3e48f-6795-4570-b379-347b05b39dbe-cvr54               0/3   Completed   0
 
 View the pod's logs for the Ansible container:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl -n services logs -f -c ansible KUBERNETES_CFS_POD_ID
+kubectl -n services logs -f -c ansible KUBERNETES_CFS_POD_ID
 ```
-
 
 ### View the BOS log
 
@@ -152,8 +156,9 @@ The BOS log shows when a session was launched. It also logs any errors encounter
 
 The BOS Kubernetes pod ID can be found with the following command:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl get pods -n services | grep bos | grep -v etcd
+kubectl get pods -n services | grep bos | grep -v etcd
 ```
 
 Example output:
@@ -164,8 +169,9 @@ cray-bos-d97cf465c-klcrw                             2/2     Running     0      
 
 Examine the logs:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl logs BOS_POD_ID
+kubectl logs BOS_POD_ID
 ```
 
 BOS uses an etcd database. Looking at the etcd logs is typically not necessary.

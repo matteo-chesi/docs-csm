@@ -20,24 +20,27 @@ Use one of the following commands to find the model name for the node type in us
 
 ### HPE Nodes
 
+  (`ncn-m001#`)
   ```bash
-  ncn-m001# curl -k -u root:password https://ipaddressOfBMC/redfish/v1/Systems/1 | jq .Model
+  curl -k -u root:password https://ipaddressOfBMC/redfish/v1/Systems/1 | jq .Model
   ```
 
 ### Gigabyte Nodes
 
+  (`ncn-m001#`)
   ```bash
-  ncn-m001# curl -k -u root:password https://ipaddressOfBMC/redfish/v1/Systems/Self | jq .Model
+  curl -k -u root:password https://ipaddressOfBMC/redfish/v1/Systems/Self | jq .Model
   ```
 
 ## Get the Firmware Images
 
 1. View a list of images stored in FAS that are ready to be flashed:
-    
+
     In the following example, `ModelName` is the name from the previous command.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray fas images list --format json | jq '.[] | .[] | select(.models | index("ModelName"))'
+    cray fas images list --format json | jq '.[] | .[] | select(.models | index("ModelName"))'
     ```
 
     Locate the image in the returned output that is required to `ncn-m001` firmware and/or BIOS.
@@ -48,8 +51,9 @@ Use one of the following commands to find the model name for the node type in us
 
 1. Get the firmware images using the `s3URL` path from the previous step.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray artifacts get fw-update 4e5f569a603311eb96b582a8e219a16d/image.RBU image.RBU
+    cray artifacts get fw-update 4e5f569a603311eb96b582a8e219a16d/image.RBU image.RBU
     ```
 
     `4e5f569a603311eb96b582a8e219a16d/image.RBU` is the path in the `s3URL`.
@@ -61,8 +65,9 @@ Use one of the following commands to find the model name for the node type in us
 
 1. Start a webserver from the directory containing the downloaded image:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# python3 -m http.server 8770
+    python3 -m http.server 8770
     ```
 
     1. Update BMC:
@@ -72,8 +77,9 @@ Use one of the following commands to find the model name for the node type in us
        * `ipaddressOfM001` = IP address of `ncn-m001` node
        * `filename` = Filename of the downloaded image
 
+       (`ncn-m001#`)
        ```bash
-       ncn-m001# curl -k -u root:passwd https://ipaddressOfBMC/redfish/v1/UpdateService/Actions/SimpleUpdate -d '{"ImageURI":"http://ipaddressOfM001:8770/filename", "TransferProtocol":"HTTP", "UpdateComponent":"BMC"}'
+       curl -k -u root:passwd https://ipaddressOfBMC/redfish/v1/UpdateService/Actions/SimpleUpdate -d '{"ImageURI":"http://ipaddressOfM001:8770/filename", "TransferProtocol":"HTTP", "UpdateComponent":"BMC"}'
        ```
 
     2. Update BIOS:
@@ -83,8 +89,9 @@ Use one of the following commands to find the model name for the node type in us
        * `ipaddressOfM001` = IP address of `ncn-m001` node
        * `filename` = Filename of the downloaded image
 
+       (`ncn-m001#`)
        ```bash
-       ncn-m001# curl -k -u root:passwd https://ipaddressOfBMC/redfish/v1/UpdateService/Actions/SimpleUpdate -d '{"ImageURI":"http://ipaddressOfM001:8770/filename", "TransferProtocol":"HTTP", "UpdateComponent":"BIOS"}'
+       curl -k -u root:passwd https://ipaddressOfBMC/redfish/v1/UpdateService/Actions/SimpleUpdate -d '{"ImageURI":"http://ipaddressOfM001:8770/filename", "TransferProtocol":"HTTP", "UpdateComponent":"BIOS"}'
        ```
 
        > After updating BIOS, `ncn-m001` will need to be rebooted. Follow the [Reboot NCNs](../node_management/Reboot_NCNs.md) procedure to reboot `ncn-m001`.

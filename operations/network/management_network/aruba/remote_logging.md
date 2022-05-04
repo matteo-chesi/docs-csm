@@ -17,4 +17,4 @@ switch(config)# logging IP-ADDR
 1. Administrators can configure remote logging
 1. Administrators can see the log files from the switch on the remote server
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

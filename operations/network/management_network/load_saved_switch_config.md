@@ -23,7 +23,6 @@ This procedure needs to be done on all mgmt switches.
 
     Ensure that the proper checkpoints exist. `CSM1_0` and `CSM1_2` are used in this example.
 
-
     Example:
 
     ```
@@ -41,9 +40,7 @@ This procedure needs to be done on all mgmt switches.
 
 ## Dell
 
-
     Ensure that the proper config files exist. `CSM1_0` and `CSM1_2` are used in this example.
-
 
     ```
     sw-leaf-001# dir config
@@ -80,7 +77,6 @@ This procedure needs to be done on all mgmt switches.
 1. View the configuration files.
 
     Ensure that the proper checkpoints exist. `CSM1_0` and `CSM1_2` are used in this example.
-
 
     ```
     sw-spine-001 [standalone: master] (config) # show configuration files

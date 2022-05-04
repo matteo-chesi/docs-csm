@@ -14,8 +14,9 @@ This procedure requires administrative privileges.
 
 1. Scale the `cray-console-operator` pods to 0 replicas.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services scale --replicas=0 deployment/cray-console-operator
+    kubectl -n services scale --replicas=0 deployment/cray-console-operator
     ```
 
     Example output:
@@ -27,14 +28,16 @@ This procedure requires administrative privileges.
 
     The following command will give no output when the service is no longer running.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services get pods | grep console-operator
+    kubectl -n services get pods | grep console-operator
     ```
 
 1. Scale the `cray-console-node` pods to 0 replicas.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services scale --replicas=0 statefulset/cray-console-node
+    kubectl -n services scale --replicas=0 statefulset/cray-console-node
     ```
 
     Example output:
@@ -46,16 +49,18 @@ This procedure requires administrative privileges.
 
     The following command will give no output when the service is no longer running.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services get pods | grep console-node
+    kubectl -n services get pods | grep console-node
     ```
 
 ## Re-enable Procedure
 
 1. Scale the `cray-console-operator` service back to 1 replica. It will scale the `cray-console-node` pods after it starts operation.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services scale --replicas=1 deployment/cray-console-operator
+    kubectl -n services scale --replicas=1 deployment/cray-console-operator
     ```
 
     Example output:
@@ -65,8 +70,9 @@ This procedure requires administrative privileges.
 
 1. Verify services are running again.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n services get pods | grep -e console-operator -e console-node
+    kubectl -n services get pods | grep -e console-operator -e console-node
     ```
 
     Example output:

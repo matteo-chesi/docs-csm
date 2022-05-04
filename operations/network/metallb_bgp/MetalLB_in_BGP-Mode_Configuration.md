@@ -20,8 +20,9 @@ peers:
 
 To retrieve data about BGP peers:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl get cm config -n metallb-system
+kubectl get cm config -n metallb-system
 ```
 
 The speakers get their peering configuration from the MetalLB ConfigMap. This configuration specifies the IP address of the spine or aggregate switch, as well as the Autonomous System Number \(ASN\) for the speaker and the switch with which it is peering. This ASN should be the same for both.

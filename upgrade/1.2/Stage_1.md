@@ -4,8 +4,9 @@
 
 1. Run `ncn-upgrade-ceph-nodes.sh` for `ncn-s001`. Follow output of the script carefully. The script will pause for manual interaction.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/ncn-upgrade-ceph-nodes.sh ncn-s001
+    /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/ncn-upgrade-ceph-nodes.sh ncn-s001
     ```
 
     > **NOTE:** The root password for the node may need to be reset after it is rebooted.
@@ -30,9 +31,10 @@
 
 1. After `ncn-upgrade-ceph-nodes.sh` has successfully run for all storage nodes, then rescan the SSH keys on all storage nodes.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# grep -oP "(ncn-s\w+)" /etc/hosts | sort -u | xargs -t -i ssh {} 'truncate --size=0 ~/.ssh/known_hosts'
-    ncn-m001# grep -oP "(ncn-s\w+)" /etc/hosts | sort -u | xargs -t -i ssh {} 'grep -oP "(ncn-s\w+|ncn-m\w+|ncn-w\w+)" /etc/hosts | sort -u | xargs -t -i ssh-keyscan -H \{\} >> /root/.ssh/known_hosts'
+    grep -oP "(ncn-s\w+)" /etc/hosts | sort -u | xargs -t -i ssh {} 'truncate --size=0 ~/.ssh/known_hosts'
+    grep -oP "(ncn-s\w+)" /etc/hosts | sort -u | xargs -t -i ssh {} 'grep -oP "(ncn-s\w+|ncn-m\w+|ncn-w\w+)" /etc/hosts | sort -u | xargs -t -i ssh-keyscan -H \{\} >> /root/.ssh/known_hosts'
     ```
 
 1. Deploy `node-exporter` and `alertmanager`.
@@ -41,8 +43,9 @@
 
     1. Deploy `node-exporter` and `alertmanager`.
 
+        (`ncn-s#`)
         ```bash
-        ncn-s# ceph orch apply node-exporter && ceph orch apply alertmanager
+        ceph orch apply node-exporter && ceph orch apply alertmanager
         ```
 
         Expected output looks similar to the following:
@@ -56,8 +59,9 @@
 
         > **IMPORTANT:** There should be one `node-exporter` container per Ceph node.
 
+        (`ncn-s#`)
         ```bash
-        ncn-s# ceph orch ps --daemon_type node-exporter
+        ceph orch ps --daemon_type node-exporter
         ```
 
         Expected output on a system with three Ceph nodes should look similar to the following:
@@ -73,8 +77,9 @@
 
         > **IMPORTANT:** There should be a single `alertmanager` container for the cluster.
 
+        (`ncn-s#`)
         ```bash
-        ncn-s# ceph orch ps --daemon_type alertmanager
+        ceph orch ps --daemon_type alertmanager
         ```
 
         Expected output looks similar to the following:
@@ -86,9 +91,10 @@
 
 1. Update BSS to ensure that the Ceph images are loaded if a node is rebuilt.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# . /usr/share/doc/csm/upgrade/1.2/scripts/ceph/lib/update_bss_metadata.sh
-    ncn-m001# update_bss_storage
+    . /usr/share/doc/csm/upgrade/1.2/scripts/ceph/lib/update_bss_metadata.sh
+    update_bss_storage
     ```
 
 ## Stage completed

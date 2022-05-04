@@ -29,36 +29,41 @@ Creating a partition is very similar to creating a group. Members can either be 
 
 Create a new partition with an empty members list and two optional tags:
 
+(`ncn-m#`)
 ```screen
-ncn-m# cray hsm partitions create --name PARTITION_NAME \
+cray hsm partitions create --name PARTITION_NAME \
 --tags TAG1,TAG2 \
 --description DESCRIPTION_OF_PARTITION_NAME
 ```
 
 Create a new partition with a pre-set members list:
 
+(`ncn-m#`)
 ```screen
-ncn-m# cray hsm partitions create --name PARTITION_NAME \
+cray hsm partitions create --name PARTITION_NAME \
 --description DESCRIPTION OF PARTITION_NAME \
 --members-ids MEMBER_ID,MEMBER_ID,MEMBER_ID,MEMBER_ID
 ```
 
 Create a new partition:
 
+(`ncn-m#`)
 ```screen
-ncn-m# cray hsm partitions create -v --label PARTITION_LABEL
+cray hsm partitions create -v --label PARTITION_LABEL
 ```
 
 Add a description of the partition:
 
+(`ncn-m#`)
 ```screen
-ncn-m# cray hsm partitions update test_group --description "Description of partition"
+cray hsm partitions update test_group --description "Description of partition"
 ```
 
 Add a new component to the partition:
 
+(`ncn-m#`)
 ```screen
-ncn-m# cray hsm partitions members create --id XNAME PARTITION_LABEL
+cray hsm partitions members create --id XNAME PARTITION_LABEL
 ```
 
 ### Retrieve Partition Information
@@ -67,8 +72,9 @@ Information about a partition is retrieved with the partition name.
 
 Retrieve all fields for a partition, including the members list:
 
+(`ncn-m#`)
 ```screen
-ncn-m# cray hsm partitions describe PARTITION_NAME
+cray hsm partitions describe PARTITION_NAME
 ```
 
 ### Delete a Partition
@@ -77,7 +83,8 @@ Once a partition is deleted, the former members will not have a partition assign
 
 Delete a partition so all members are no longer in it:
 
+(`ncn-m#`)
 ```screen
-ncn-m# cray hsm partitions delete PARTITION_NAME
+cray hsm partitions delete PARTITION_NAME
 ```
 

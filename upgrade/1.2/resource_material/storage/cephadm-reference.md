@@ -4,15 +4,17 @@
 ## Traditional Ceph commands
 
 On `ncn-s001`, `ncn-s002`, or `ncn-s003`:
+(`ncn-s#`)
 ```bash
-ncn-s# cephadm shell
+cephadm shell
 ```
 
 The previous command creates a container and opens an interactive shell with access to run Ceph commands the traditional way.
 
 Or optionally, you can execute your command as follos:
+(`ncn-s#`)
 ```bash
-ncn-s# cephadm shell -- ceph -s
+cephadm shell -- ceph -s
 ```
 
 ## Ceph Device Operations
@@ -21,14 +23,16 @@ There are multiple ways to do Ceph device operations now.
 
 ### Using `cephadm`
 
+(`ncn-s#`)
 ```bash
-ncn-s# cephadm ceph-volume
+cephadm ceph-volume
 ```
 
 ### Using `cephadm shell`
 
+(`ncn-s#`)
 ```bash
-ncn-s# cephadm shell -- ceph-volume
+cephadm shell -- ceph-volume
 ```
 
 Optionally you can start a `cephadm shell`, then run `ceph-volume` commands from there. The following example shows doing this on `ncn-s002`:
@@ -43,13 +47,15 @@ Using recent ceph image registry.local/ceph/ceph@sha256:4506cf7b74fd97978cb130cb
 
 ### Using `ceph orch`
 
+(`ncn-s#`)
 ```bash
-ncn-s# ceph orch device ls
+ceph orch device ls
 ```
 
 Optionally you can specify a single node name to just list that node's drives:
 
+(`ncn-s#`)
 ```bash
-ncn-s# ceph orch device ls ncn-s002
+ceph orch device ls ncn-s002
 ```
 

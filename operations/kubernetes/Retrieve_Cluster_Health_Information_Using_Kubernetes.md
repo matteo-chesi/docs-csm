@@ -2,11 +2,11 @@
 
 The `kubectl` CLI commands can be used to retrieve information about the Kubernetes cluster components.
 
-
 ### Retrieve Node Status
 
+(`ncn#`)
 ```bash
-ncn# kubectl get nodes
+kubectl get nodes
 ```
 
 Example output:
@@ -23,8 +23,9 @@ ncn-w003   Ready    <none>                 8d    v1.20.13
 
 ### Retrieve Pod Status
 
+(`ncn#`)
 ```bash
-ncn# kubectl get pods options
+kubectl get pods options
 ```
 
 Example output:
@@ -48,14 +49,16 @@ kvstore-3-5b658b9bd9-n9dgt              1/1       Running   1          11d
 
 ### Retrieve Information about Individual Pods
 
+(`ncn#`)
 ```bash
-ncn# kubectl describe pod POD_NAME -n NAMESPACE_NAME
+kubectl describe pod POD_NAME -n NAMESPACE_NAME
 ```
 
 ### Retrieve a List of Healthy Pods
 
+(`ncn#`)
 ```bash
-ncn# kubectl get pods -A | grep -e 'Completed|Running'
+kubectl get pods -A | grep -e 'Completed|Running'
 ```
 
 Example output:
@@ -80,8 +83,9 @@ istio-system      istio-init-crd-11-1.2.10-dcp4h                     0/1     Com
 
 ### Retrieve a List of Unhealthy Pods
 
+(`ncn#`)
 ```bash
-ncn# kubectl get pods -A | grep -e 'Creating|ImagePull|Error|Init|Crash'
+kubectl get pods -A | grep -e 'Creating|ImagePull|Error|Init|Crash'
 ```
 
 Example output:
@@ -100,8 +104,9 @@ services   cray-reds-77b9575457-qx7m5                 0/2    Init:2/4           
 
 ### Retrieve Service Status
 
+(`ncn#`)
 ```bash
-ncn# kubectl get services -n NAMESPACE_NAME
+kubectl get services -n NAMESPACE_NAME
 ```
 
 Example output:
@@ -120,8 +125,9 @@ kvstore-3          ClusterIP   10.108.198.177   <none>       2181/TCP,2888/TCP,3
 
 ### Retrieve Status of Pods in a Specific Namespace
 
+(`ncn#`)
 ```bash
-ncn# kubectl get pods -n NAMESPACE_NAME
+kubectl get pods -n NAMESPACE_NAME
 ```
 
 Example output:
@@ -148,7 +154,8 @@ weave-net-xnlm9                  2/2       Running   30         11d
 
 ### Retrieve Pod Logs
 
+(`ncn#`)
 ```bash
-ncn# kubectl logs -n NAMESPACE_NAME POD_NAME
+kubectl logs -n NAMESPACE_NAME POD_NAME
 ```
 

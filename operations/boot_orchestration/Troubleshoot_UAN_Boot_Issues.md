@@ -34,8 +34,9 @@ For UAN nodes that have more than one PCI card installed, `ifmap=net2:nmn0` is t
 
 UANs require CPS and DVS to boot from images. These services are configured in dracut to retrieve the rootfs and mount it. If the image fails to download, check that DVS and CPS are both healthy, and DVS is running on all worker nodes. Run the following commands to check DVS and CPS:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001#  kubectl get nodes -l cps-pm-node=True -o custom-columns=":metadata.name" --no-headers
+ kubectl get nodes -l cps-pm-node=True -o custom-columns=":metadata.name" --no-headers
 ```
 
 Example output:
@@ -45,8 +46,9 @@ ncn-w001
 ncn-w002
 ```
 
+(`ncn-m001#`)
 ```bash
-ncn-m001#  for node in `kubectl get nodes -l cps-pm-node=True -o custom-columns=":metadata.name" --no-headers`; do
+ for node in `kubectl get nodes -l cps-pm-node=True -o custom-columns=":metadata.name" --no-headers`; do
 ssh $node "lsmod | grep '^dvs '"
 ```
 

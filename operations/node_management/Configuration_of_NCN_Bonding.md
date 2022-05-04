@@ -16,7 +16,6 @@ The bond configuration exists across three files on an NCN. These files may vary
 
     Routing table selecting, which is critical for NCN PXE to work.
 
-
 The following is an example of `ifcfg-bond0`:
 
 ```bash

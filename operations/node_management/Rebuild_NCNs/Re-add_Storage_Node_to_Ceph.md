@@ -84,8 +84,9 @@ Use the following procedure to re-add a Ceph node to the Ceph cluster.
 
 1. Change the mode of the script.
 
+   (`ncn-s#`)
    ```bash
-   ncn-s# chmod u+x /srv/cray/scripts/common/join_ceph_cluster.sh
+   chmod u+x /srv/cray/scripts/common/join_ceph_cluster.sh
    ```
 
 1. In a separate window, log into one of the first three storage nodes (`ncn-s001`, `ncn-s002`, or `ncn-s003`) and execute the following:
@@ -150,8 +151,9 @@ Use the following procedure to re-add a Ceph node to the Ceph cluster.
 
    If necessary, fail over the `ceph-mgr` daemon with the following command:
 
+   (`ncn-s#`)
    ```bash
-   ncn-s# ceph mgr fail
+   ceph mgr fail
    ```
 
 ## Regenerate Rados-GW Load Balancer Configuration for the Rebuilt Nodes
@@ -163,8 +165,9 @@ This is automated as part of the install, but administrators may have to regener
 
    - Configure Rados Gateway containers with the complete list of nodes it should be running on:
 
+     (`ncn-s#`)
      ```bash
-     ncn-s# ceph orch apply rgw site1 zone1 --placement="<node1 node2 node3 node4 ... >"
+     ceph orch apply rgw site1 zone1 --placement="<node1 node2 node3 node4 ... >"
      ```
 
 1. Verify Rados Gateway is running on the desired nodes.
@@ -184,8 +187,9 @@ This is automated as part of the install, but administrators may have to regener
 
 1. Add nodes into `HAproxy` and `KeepAlived`.
 
+   (`ncn-s#`)
    ```bash
-   ncn-s# pdsh -w ncn-s00[1-(end node number)] -f 2 \
+   pdsh -w ncn-s00[1-(end node number)] -f 2 \
                    'source /srv/cray/scripts/metal/update_apparmor.sh
                     reconfigure-apparmor; /srv/cray/scripts/metal/generate_haproxy_cfg.sh > /etc/haproxy/haproxy.cfg
                     systemctl enable haproxy.service

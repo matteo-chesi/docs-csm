@@ -28,8 +28,9 @@ The label can be configured by setting the following values to True in the custo
 
 The label can be set by editing the Kubernetes ConfigMap by running the following command:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl edit cm -n services cray-node-labels
+kubectl edit cm -n services cray-node-labels
 ```
 
 Edit the following section as desired \(save and close by hitting the **ESC** key and typing **:wq**\):
@@ -47,7 +48,8 @@ Edit the following section as desired \(save and close by hitting the **ESC** ke
 
 To view the labels applied to each node:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl get nodes --show-labels
+kubectl get nodes --show-labels
 ```
 

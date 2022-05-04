@@ -287,7 +287,7 @@ This section provides an example of how to configure the management network.
     1. Verify the connection is going over the HSN with a traceroute:
 
         ```
-        ncn-m001# % traceroute 10.101.8.113
+        % traceroute 10.101.8.113
         traceroute to 10.101.8.113 (10.101.8.113), 64 hops max, 52 byte packets
           1  172.30.252.234 (172.30.252.234)  37.652 ms  37.930 ms  36.574 ms
           2  10.103.255.228 (10.103.255.228)  37.684 ms  37.180 ms  36.765 ms
@@ -305,7 +305,7 @@ This section provides an example of how to configure the management network.
     1. Listen on all the HSN interfaces for ping/traceroute while you ping the external facing IP address. In this example, the IP address is 10.101.8.113.
 
         ```
-        ncn-m001# nodes=$(kubectl get nodes| awk '{print $1}' | grep  ncn-w | awk -vORS=, '{print $1}'); pdsh -w ${nodes} "tcpdump -envli hsn0 icmp"
+        nodes=$(kubectl get nodes| awk '{print $1}' | grep  ncn-w | awk -vORS=, '{print $1}'); pdsh -w ${nodes} "tcpdump -envli hsn0 icmp"
 
         ncn-w002: tcpdump: listening on hsn0, link-type EN10MB (Ethernet), capture size 262144 bytes
         ncn-w003: tcpdump: listening on hsn0, link-type EN10MB (Ethernet), capture size 262144 bytes
@@ -315,4 +315,4 @@ This section provides an example of how to configure the management network.
         ncn-w003: 04:59:36.825591 98:5d:82:71:ba:2d > 02:00:00:00:00:1e, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 54, id 33996, offset 0, flags [none], proto ICMP (1), length 84)
         ```
 
-[Back to Index](./index.md)
+[Back to Index](.README.md)

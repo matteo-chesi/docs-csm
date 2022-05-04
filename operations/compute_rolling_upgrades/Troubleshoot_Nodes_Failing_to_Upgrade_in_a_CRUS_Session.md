@@ -6,19 +6,18 @@ When a nodes are marked as failed they are added to the failed node group associ
 
 Complete a CRUS session that did not successfully upgrade all of the intended compute nodes.
 
-
 ### Prerequisites
 
 - A CRUS upgrade session has completed with a group of nodes that failed to upgrade.
 - The Cray command line interface \(CLI\) tool is initialized and configured on the system.
 
-
 ### Procedure
 
 1.  Determine which nodes failed the upgrade by listing the contents of the Hardware State Manager \(HSM\) group that was set up for failed nodes.
 
+    (`ncn#`)
     ```bash
-    ncn# cray hsm groups describe FAILED_NODES_GROUP
+    cray hsm groups describe FAILED_NODES_GROUP
     ```
 
     Example output:
@@ -45,8 +44,9 @@ Complete a CRUS session that did not successfully upgrade all of the intended co
 
         This group should be empty.
 
+        (`ncn#`)
         ```bash
-        ncn# cray hsm groups create --label NEW_FAILED_NODES_GROUP \
+        cray hsm groups create --label NEW_FAILED_NODES_GROUP \
         --description 'Failed Node Group for my Compute Node upgrade'
         ```
 
@@ -54,8 +54,9 @@ Complete a CRUS session that did not successfully upgrade all of the intended co
 
         Use the label of the failed node group from the original upgrade session as the starting label, and use the new failed node group as the failed label. The rest of the parameters need to be the same ones that were used in the original upgrade.
 
+        (`ncn#`)
         ```bash
-        ncn# cray crus session create \
+        cray crus session create \
         --starting-label OLD_FAILED_NODES_GROUP \
         --upgrading-label node-group \
         --failed-label NEW_FAILED_NODES_GROUP \

@@ -9,8 +9,9 @@ on first boot. Run the following Goss test to validate this is the case.
 
 ### 1.1 Error messages
 
+(`ncn#`)
 ```console
-ncn# /opt/cray/tests/ncn-resources/hms/hms-test/hms_run_ct_smoke_tests_ncn-resources.sh
+/opt/cray/tests/ncn-resources/hms/hms-test/hms_run_ct_smoke_tests_ncn-resources.sh
 {"ID":"x3007c0s12b0","LastDiscoveryStatus":"HTTPsGetFailed"}
 {"ID":"x3007c0s15b0","LastDiscoveryStatus":"HTTPsGetFailed"}
 {"ID":"x3007c0s16b0","LastDiscoveryStatus":"HTTPsGetFailed"}
@@ -18,8 +19,9 @@ FAIL: smd_discovery_status_test found no successfully discovered endpoints
 '/opt/cray/tests/ncn-smoke/hms/hms-smd/smd_discovery_status_test_ncn-smoke.sh' exited with status code: 1
 ```
 
+(`ncn#`)
 ```console
-ncn# curl https://api-gw-services-nmn.local/PATH
+curl https://api-gw-services-nmn.local/PATH
 curl: (60) SSL certificate problem: self signed certificate in certificate chain
 More details here: https://curl.haxx.se/docs/sslcerts.html
 
@@ -30,18 +32,20 @@ how to fix it, please visit the web page mentioned above.
 
 ### 1.2 Solution
 
+(`ncn#`)
 ```console
-ncn# goss -g /opt/cray/tests/install/ncn/tests/goss-platform-ca-certs-match-cloud-init.yaml v
+goss -g /opt/cray/tests/install/ncn/tests/goss-platform-ca-certs-match-cloud-init.yaml v
 ```
 
 If this test fails, then run the following commands in order to update the `platform-ca`.
 
+(`ncn#`)
 ```console
-ncn# mv /var/lib/ca-certificates/ca-bundle.pem /root/ca-bundle.pem.bak
-ncn# curl http://10.92.100.71:8888/meta-data | jq -r  '.Global."ca-certs".trusted[]' \
+mv /var/lib/ca-certificates/ca-bundle.pem /root/ca-bundle.pem.bak
+curl http://10.92.100.71:8888/meta-data | jq -r  '.Global."ca-certs".trusted[]' \
         > /etc/pki/trust/anchors/platform-ca-certs.crt
-ncn# update-ca-certificates
-ncn# systemctl restart containerd
+update-ca-certificates
+systemctl restart containerd
 ```
 
 Note: This will save a copy of the original CA bundle in `/root/ca-bundle.pem.bak`.
@@ -73,8 +77,9 @@ of the system's bundle. This normally happens if `pip install` is used to
 install an application with a `certifi` dependency. To see the version of `certifi`
 on the system, run `pip show certifi`.
 
+(`ncn#`)
 ```console
-ncn# pip show certifi
+pip show certifi
 Name: certifi
 Version: 2021.10.8
 Summary: Python package for providing Mozilla's CA Bundle.
@@ -92,8 +97,9 @@ then uninstall this `certifi` package in order to trust the
 platform CA. The following command shows the expected output on a CSM v1.3
 system.
 
+(`ncn#`)
 ```console
-ncn# pip show certifi
+pip show certifi
 Name: certifi
 Version: 2018.1.18
 Summary: Python package for providing Mozilla's CA Bundle.
@@ -111,10 +117,11 @@ reinstall the `certifi` RPM that ships with SLES. If this is not possible,
 run the following commands to replace the `ca-bundle` that `certifi` uses
 with a link to the system's `ca-bundle`.
 
+(`ncn#`)
 ```bash
-ncn# CERTIFIDIR="$(pip show certifi | grep Location | awk '{print $2}')/certifi"
-ncn# mv "$CERTIFIDIR"/cacert.pem "$CERTIFIDIR"/cacert.pem.orig
-ncn# ln -s /var/lib/ca-certificates/ca-bundle.pem "$CERTIFIDIR"/cacert.pem
+CERTIFIDIR="$(pip show certifi | grep Location | awk '{print $2}')/certifi"
+mv "$CERTIFIDIR"/cacert.pem "$CERTIFIDIR"/cacert.pem.orig
+ln -s /var/lib/ca-certificates/ca-bundle.pem "$CERTIFIDIR"/cacert.pem
 ```
 
 ## 3 SSL validation only fails with `podman` and/or pulling down Kubernetes containers
@@ -136,8 +143,9 @@ registry.local: Get https://registry.local/v2/: x509: certificate signed by unkn
 
 Restart the `containerd` service.
 
+(`ncn#`)
 ```console
-ncn# systemctl restart containerd
+systemctl restart containerd
 ```
 
 ## 4 `update-ca-certificates` fails to add `platform-ca` to `ca-bundle`
@@ -166,13 +174,15 @@ how to fix it, please visit the web page mentioned above.
 
 Run the following commands on the affected node to regenerate the `ca-bundle.pem` file with the `platform-ca-certs.crt` file included.
 
+(`ncn#`)
 ```bash
-ncn# rm -v /var/lib/ca-certificates/ca-bundle.pem
-ncn# update-ca-certificates
+rm -v /var/lib/ca-certificates/ca-bundle.pem
+update-ca-certificates
 ```
 
 If these issues are suspected to have caused problems with `cfs-state-reporter`, then restart the `cfs-state-reporter` service:
 
+(`ncn#`)
 ```bash
-ncn# systemctl restart cfs-state-reporter
+systemctl restart cfs-state-reporter
 ```

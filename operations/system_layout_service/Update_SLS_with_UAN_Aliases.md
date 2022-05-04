@@ -74,7 +74,6 @@ is being monitored by conman for console logs.
    }'
    ```
 
-
    Using the response from the previous step, we can build the following command. The hostname for this uan is `uan01`, and this is reflected in the added `Aliases` field in the UAN's `ExtraProperties`.
 
    ```json

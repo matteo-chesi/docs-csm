@@ -8,8 +8,9 @@ Switches must be powered on and operating. This procedure is optional if switch 
 
 From the command line on any NCN run:
 
+(`ncn#`)
 ```bash
-ncn# grep 'sw-' /etc/hosts
+grep 'sw-' /etc/hosts
 ```
 
 Example output:
@@ -34,8 +35,9 @@ For each switch:
 
 Example:
 
+ (`ncn#`)
  ```bash
- ncn# ssh admin@sw-spine-001.nmn
+ ssh admin@sw-spine-001.nmn
  admin@sw-spine-001 password:
  sw-spine-001# write memory
  sw-spine-001# exit
@@ -52,8 +54,9 @@ On Dell and Mellanox based systems, all spine and any leaf switches will be Mell
 
 Mellanox Example:
 
+ (`ncn#`)
  ```bash
- ncn# ssh admin@sw-spine-001.nmn
+ ssh admin@sw-spine-001.nmn
  admin@sw-spine-001 password:
  sw-spine-001# enable
  sw-spine-001# write memory
@@ -62,8 +65,9 @@ Mellanox Example:
 
 Dell Example:
 
+ (`ncn#`)
  ```bash
- ncn# ssh admin@sw-leaf-bmc-001
+ ssh admin@sw-leaf-bmc-001
  admin@sw-leaf-bmc-001s password:
  sw-leaf-001# write memory
  sw-leaf-001# exit
@@ -76,8 +80,9 @@ Edge switches are accessible from the ClusterStor management network and the CSM
 
 Example:
 
+ (`ncn#`)
  ```bash
- ncn# ssh admin@cls01053n00
+ ssh admin@cls01053n00
  admin@cls01053n00 password:
 
  cls01053n00# ssh r0-100gb-sw01

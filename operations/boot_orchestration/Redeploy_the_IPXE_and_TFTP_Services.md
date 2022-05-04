@@ -12,8 +12,9 @@ This procedure requires administrative privileges.
 
 1.  Find the iPXE and TFTP deployments.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl get deployments -n services|egrep 'tftp|ipxe'
+    kubectl get deployments -n services|egrep 'tftp|ipxe'
     ```
 
     Example output:
@@ -25,9 +26,10 @@ This procedure requires administrative privileges.
 
 2.  Delete the deployments for the iPXE and TFTP services.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services delete deployment cray-tftp
-    ncn-m001# kubectl -n services delete deployment cray-ipxe
+    kubectl -n services delete deployment cray-tftp
+    kubectl -n services delete deployment cray-ipxe
     ```
 
 3.  Check the status of Ceph.
@@ -36,8 +38,9 @@ This procedure requires administrative privileges.
 
     1.  Check the health of the Ceph cluster.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph -s
+        ceph -s
         ```
 
         Example output:
@@ -67,8 +70,9 @@ This procedure requires administrative privileges.
 
     2.  Obtain more information on the health of the cluster.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph health detail
+        ceph health detail
         ```
 
         Example output:
@@ -81,8 +85,9 @@ This procedure requires administrative privileges.
 
     3.  Show the status of all CephFS components.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph fs status
+        ceph fs status
         ```
 
         Example output:
@@ -112,16 +117,18 @@ This procedure requires administrative privileges.
 
         This step should only be done if a health warning is shown in the previous substeps.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# for i in 1 2 3 ; do ansible ncn-m00$i -m shell -a "systemctl restart ceph-mds@ncn-m00$i"; done
+        for i in 1 2 3 ; do ansible ncn-m00$i -m shell -a "systemctl restart ceph-mds@ncn-m00$i"; done
         ```
 
 4.  Failover the ceph-mds daemon.
 
     This step should only be done if a health warning still exists after restarting the ceph-mds service.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph mds fail ncn-m002
+    ceph mds fail ncn-m002
     ```
 
     The initial output will display the following:
@@ -176,8 +183,9 @@ This procedure requires administrative privileges.
 
     The output for the command below should empty. If an output is displayed, such as in the example below, then the resources have not been deleted.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl get pvc -n services|grep tftp
+    kubectl get pvc -n services|grep tftp
     ```
 
     Example of resources not being deleted in returned output:
@@ -188,24 +196,27 @@ This procedure requires administrative privileges.
 
     *Optional:* Use the following command to delete the associated PVC.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services delete pvc PVC_NAME
+    kubectl -n services delete pvc PVC_NAME
     ```
 
 6.  Deploy the TFTP service.
 
     Wait for the TFTP pods to come online and verify the PVC was created.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# loftsman helm upgrade cray-tftp loftsman/cray-tftp
+    loftsman helm upgrade cray-tftp loftsman/cray-tftp
     ```
 
 7.  Deploy the iPXE service.
 
     This may take a couple of minutes and may show up in error state. Wait a couple minutes and it will go to running.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# loftsman helm upgrade cms-ipxe loftsman/cms-ipxe
+    loftsman helm upgrade cms-ipxe loftsman/cms-ipxe
     ```
 
 8.  Log into the iPXE pod and verify the iPXE file was created.
@@ -214,28 +225,32 @@ This procedure requires administrative privileges.
 
     1.  Find the iPXE pod ID.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# kubectl get pods -n services --no-headers -o wide | grep cray-ipxe | awk '{print $1}'
+        kubectl get pods -n services --no-headers -o wide | grep cray-ipxe | awk '{print $1}'
         ```
 
     2.  Log into the pod using the iPXE pod ID.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# kubectl exec -n services -it IPXE_POD_ID /bin/sh
+        kubectl exec -n services -it IPXE_POD_ID /bin/sh
         ```
 
         To see the containers in the pod:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# kubectl describe pod/CRAY-IPXE_POD_NAME -n services
+        kubectl describe pod/CRAY-IPXE_POD_NAME -n services
         ```
 
 9.  Log into the TFTP pods and verify it is seeing the correct file size.
 
     1.  Find the TFTP pod ID.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# kubectl get pods -n services --no-headers -o wide | grep cray-tftp | awk '{print $1}'
+        kubectl get pods -n services --no-headers -o wide | grep cray-tftp | awk '{print $1}'
         ```
 
         Example output:
@@ -254,8 +269,9 @@ This procedure requires administrative privileges.
 
     2.  Log into the pod using the TFTP pod ID.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# kubectl exec -n services -it TFTP_POD_ID /bin/sh
+        kubectl exec -n services -it TFTP_POD_ID /bin/sh
         ```
 
     3.  Change to the /var/lib/tftpboot directory.

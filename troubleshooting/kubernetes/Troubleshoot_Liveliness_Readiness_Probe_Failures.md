@@ -42,6 +42,5 @@ This procedure requires administrative privileges.
 
     An HTTP Response of 2\*\* or 3\*\* from the curl test is considered success. For example, a response of 200 OK.
 
-
 If there is an unhealthy event where the pod still exists and the curl test still fails, please contact support.
 

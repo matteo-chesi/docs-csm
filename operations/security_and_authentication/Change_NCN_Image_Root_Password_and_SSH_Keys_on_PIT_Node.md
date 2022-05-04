@@ -21,8 +21,9 @@ This step is required. **There is no default root password and no default SSH ke
    set the root password. Optionally, set a local timezone (UTC is the default). If you choose to create new SSH keys, then specify
    the directory where these keys are located with the `-d` argument to the script, in addition to the other required options.
 
+   (`pit#`)
    ```console
-   pit# ${$CSM_PATH}/ncn-image-modification.sh -h
+   ${$CSM_PATH}/ncn-image-modification.sh -h
    Usage: ncn-image-modification.sh [-p] [-d dir] [ -z timezone] [-k kubernetes-squashfs-file] [-s storage-squashfs-file] [ssh-keygen arguments]
 
           This script semi-automates the process of changing the timezone, root
@@ -78,9 +79,10 @@ This step is required. **There is no default root password and no default SSH ke
    `America/Chicago`. This example will prompt the administrator to enter a root password after
    each squashed image is unsquashed.
 
+   (`pit#`)
    ```bash
-   pit# cd ${PITDATA}/data/
-   pit# ${CSM_PATH}/ncn-image-modification.sh -p -z America/Chicago \
+   cd ${PITDATA}/data/
+   ${CSM_PATH}/ncn-image-modification.sh -p -z America/Chicago \
                                               -d /my/pre-existing/keys \
                                               -k $(find . -name "kubernetes-*.squashfs" | sort -V | tail -1) \
                                               -s $(find . -name "storage-ceph-*.squashfs" | sort -V | tail -1)
@@ -91,10 +93,11 @@ This step is required. **There is no default root password and no default SSH ke
    password hash that exists on the PIT node. This example will not prompt the administrator for
    any input after it is invoked.
 
+   (`pit#`)
    ```bash
-   pit# cd ${PITDATA}/data/
-   pit# export SQUASHFS_ROOT_PW_HASH=$(awk -F':' /^root:/'{print $2}' < /etc/shadow)
-   pit# ${CSM_PATH}/ncn-image-modification.sh -p \
+   cd ${PITDATA}/data/
+   export SQUASHFS_ROOT_PW_HASH=$(awk -F':' /^root:/'{print $2}' < /etc/shadow)
+   ${CSM_PATH}/ncn-image-modification.sh -p \
                                               -t rsa \
                                               -N "" \
                                               -k $(find . -name "kubernetes-*.squashfs" | sort -V | tail -1) \
@@ -106,8 +109,9 @@ This step is required. **There is no default root password and no default SSH ke
 
 1. Set the boot links.
 
+   (`pit#`)
    ```bash
-   pit# cd && set-sqfs-links.sh
+   cd && set-sqfs-links.sh
    ```
 
 ## Cleanup
@@ -116,6 +120,7 @@ This step is required. **There is no default root password and no default SSH ke
 
    These may be removed now, or after verifying that the nodes are able to boot successfully with the new images.
 
+   (`pit#`)
    ```bash
-   pit# cd ${PITDATA}/data/ && rm -rvf ceph/old k8s/old
+   cd ${PITDATA}/data/ && rm -rvf ceph/old k8s/old
    ```

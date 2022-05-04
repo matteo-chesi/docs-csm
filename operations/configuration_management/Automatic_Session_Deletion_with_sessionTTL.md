@@ -16,8 +16,9 @@ This requires that the Cray command line interface is configured. See [Configure
 
 Update the `sessionTTL` using the following command:
 
+(`ncn#`)
 ```bash
-ncn# cray cfs options update --session-ttl 24h
+cray cfs options update --session-ttl 24h
 ```
 
 Example output will contain a line resembling the following:
@@ -30,6 +31,7 @@ sessionTTL = "24h"
 
 To disable the `sessionTTL` feature, use an empty string as the argument of the `--session-ttl` flag:
 
+(`ncn#`)
 ```bash
-ncn# cray cfs options update --session-ttl ""
+cray cfs options update --session-ttl ""
 ```

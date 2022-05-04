@@ -12,17 +12,18 @@ This example will add an alias to the `pbs_service` in the Node Management Netwo
 
 1.  Retrieve the SLS data for the network the service resides in.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# export TOKEN=$(curl -s -k -S -d grant_type=client_credentials \
+    export TOKEN=$(curl -s -k -S -d grant_type=client_credentials \
     -d client_id=admin-client -d client_secret=`kubectl get secrets admin-client-auth \
     -o jsonpath='{.data.client-secret}' | base64 -d` \
     https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token \
     | jq -r '.access_token')
 
-    ncn-m001# curl -s -k -H "Authorization: Bearer ${TOKEN}" \
+    curl -s -k -H "Authorization: Bearer ${TOKEN}" \
     https://api-gw-service-nmn.local/apis/sls/v1/networks/NMN|jq > NMN.json
 
-    ncn-m001# cp NMN.json NMN.json.bak
+    cp NMN.json NMN.json.bak
     ```
 
 2.  Edit the NMN.json file and add the desired alias in the ExtraProperties.Subnets section.
@@ -43,8 +44,9 @@ This example will add an alias to the `pbs_service` in the Node Management Netwo
 
 3.  Upload the updated NMN.json file to SLS.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# curl -s -k -H "Authorization: Bearer ${TOKEN}" --header \
+    curl -s -k -H "Authorization: Bearer ${TOKEN}" --header \
     "Content-Type: application/json" --request PUT --data @NMN.json \
     https://api-gw-service-nmn.local/apis/sls/v1/networks/NMN
     ```

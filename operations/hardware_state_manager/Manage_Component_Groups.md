@@ -34,16 +34,18 @@ The members list may be set initially with the full list of member IDs, or can b
 
 Create a new non-exclusive group with an empty members list and two optional tags:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups create --label GROUP_LABEL \
+cray hsm groups create --label GROUP_LABEL \
 --tags TAG1,TAG2 \
 --description DESCRIPTION_OF_GROUP_LABEL
 ```
 
 Create a new group with a pre-set members list, which is part of an exclusive group:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups create --label GROUP_LABEL \
+cray hsm groups create --label GROUP_LABEL \
 --description DESCRIPTION_OF_GROUP_LABEL \
 --exclusive-group EXCLUSIVE_GROUP_LABEL \
 --members-ids MEMBER_ID,MEMBER_ID,MEMBER_ID
@@ -51,20 +53,23 @@ ncn-m# cray hsm groups create --label GROUP_LABEL \
 
 Create a new group:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups create -v --label GROUP_LABEL
+cray hsm groups create -v --label GROUP_LABEL
 ```
 
 Add a description of the group:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups update test_group --description "Description of group"
+cray hsm groups update test_group --description "Description of group"
 ```
 
 Add a new component to a group:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups members create --id XNAME GROUP_LABEL
+cray hsm groups members create --id XNAME GROUP_LABEL
 ```
 
 ### Retrieve a Group
@@ -73,8 +78,9 @@ Retrieve the complete group object to learn more about a group. This is also sub
 
 Retrieve all fields for a group, including the members list:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups describe GROUP_LABEL
+cray hsm groups describe GROUP_LABEL
 ```
 
 ### Delete a Group
@@ -83,7 +89,8 @@ Entire groups can be removed. The group label is deleted and removed from all me
 
 Delete a group with the following command:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups delete GROUP_LABEL
+cray hsm groups delete GROUP_LABEL
 ```
 

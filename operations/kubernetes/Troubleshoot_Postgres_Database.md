@@ -10,8 +10,6 @@ General Postgres Troubleshooting Topics
 - [Cluster member missing](#Missing)
 - [Postgres leader missing](#leader)
 
-<a name="patronictl"></a>
-
 ## The `patronictl` tool
 
 The `patronictl` tool is used to call a REST API that interacts with Postgres databases. It handles a variety of tasks, such as listing cluster members and the replication
@@ -28,8 +26,6 @@ Use the following command for more information on the `patronictl` command:
 ```bash
 postgres@keycloak-postgres-0:~$ patronictl --help
 ```
-
-<a name="unavailable"></a>
 
 ## Database unavailable
 
@@ -53,8 +49,6 @@ If the database is unavailable, check if [Disk Full](#diskfull) is the cause of 
 ```bash
 ncn-mw# kubectl logs -l app.kubernetes.io/name=postgres-operator -n services
 ```
-
-<a name="diskfull"></a>
 
 ## Database disk full
 
@@ -141,8 +135,6 @@ To recover the cluster member that had failed to start because of disk pressure,
     ```
 
 If disk issues persist or exist on multiple nodes and the above does not resolve the issue, then see the [Recover from Postgres WAL Event](Recover_from_Postgres_WAL_Event.md) procedure.
-
-<a name="lag"></a>
 
 ## Replication lagging
 
@@ -480,8 +472,6 @@ Alerts exist in Prometheus for the following:
 When alert notifications are configured, replication issues can be detected quickly. If the replication issue persists such that the database becomes unavailable, recovery
 will likely be much more involved. Catching such issues as soon as possible is desired. See
 [Configure Prometheus Email Alert Notifications](../system_management_health/Configure_Prometheus_Email_Alert_Notifications.md).
-
-<a name="syncfailed"></a>
 
 ## Postgres status `SyncFailed`
 
@@ -824,8 +814,6 @@ Kubernetes secret and update the password in the database.
             done
     ```
 
-<a name="missing"></a>
-
 ## Cluster member missing
 
 Most services expect to maintain a Postgres cluster consisting of three pods for resiliency (SMA is one exception where only two pods are expected to exist).
@@ -901,8 +889,6 @@ the `keycloak-postgres` cluster resource so that three pods are running.
         ```bash
         ncn-mw# kubectl logs "${POSTGRESQL}-0" -c postgres -n ${NAMESPACE}
         ```
-
-<a name="leader"></a>
 
 ## Postgres leader missing
 

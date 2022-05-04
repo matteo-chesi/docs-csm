@@ -25,8 +25,8 @@ The upgrader requires only two inputs:
 
 An example of this would be:
 
-```bash
-ncn# ./sls_updater_csm_1.2.py \
+(`ncn#`)
+```bash./sls_updater_csm_1.2.py \
         --sls-input-file sls_input_file.json \
         --bican-user-network-name CAN
 ```
@@ -36,8 +36,8 @@ Likely using default VLAN and Network values will not be what is desired: The CA
 
 In this case an example minimal usable input while using CAN, would be:
 
-```bash
-ncn# ./sls_updater_csm_1.2.py \
+(`ncn#`)
+```bash./sls_updater_csm_1.2.py \
         --sls-input-file sls_input_file.json \
         --bican-user-network-name CAN \
         --customer-access-network <CAN VLAN ID> <CAN NETORK CIDR>
@@ -45,8 +45,8 @@ ncn# ./sls_updater_csm_1.2.py \
 
 For CHN the analog minimal usable input would be:
 
-```bash
-ncn# ./sls_updater_csm_1.2.py \
+(`ncn#`)
+```bash./sls_updater_csm_1.2.py \
         --sls-input-file sls_input_file.json \
         --bican-user-network-name CHN \
         --customer-highspeed-network <CHN VLAN ID> <CHN NETWORK CIDR>
@@ -71,8 +71,8 @@ Note that `external-dns` preservation is mutually exclusive from `ncns`. This is
 
 A very common (and recommended) next step minimal command line is as follows for a system desiring the CHN with no change of the `external-dns` value:
 
-```bash
-ncn# ./sls_updater_csm_1.2.py \
+(`ncn#`)
+```bash./sls_updater_csm_1.2.py \
         --sls-input-file sls_input_file.json \
         --bican-user-network-name CHN \
         --customer-highspeed-network <CHN VLAN ID> <CHN NETWORK CIDR> \
@@ -86,8 +86,8 @@ existing CAN/CMN addresses on manager, worker, and storage NCNs during the upgra
 
 For example, using:
 
-```bash
-ncn# ./sls_updater_csm_1.2.py --sls-input-file sls_input_file.json --bican-user-network-name CAN \
+(`ncn#`)
+```bash./sls_updater_csm_1.2.py --sls-input-file sls_input_file.json --bican-user-network-name CAN \
         --customer-access-network 6 10.103.11.128/25 --preserve-existing-subnet-for-cmn external-dns
 ```
 
@@ -179,8 +179,9 @@ The focus of the process that follows will be on the CMN IP allocations. The sam
 
 2. An educated first pass is to run the updater while preserving the external-dns IP only and look for the CMN output:
 
+    (`ncn#`)
     ```bash
-    ncn# ./sls_updater_csm_1.2.py \
+    ./sls_updater_csm_1.2.py \
             --sls-input-file sls_input_file.json \
             --bican-user-network-name CHN \
             --customer-highspeed-network 55 172.16.0.0/16 \
@@ -217,8 +218,9 @@ The focus of the process that follows will be on the CMN IP allocations. The sam
 
 5. The next run of the upgrader for the example looks like:
 
+    (`ncn#`)
     ```bash
-    ncn# ./sls_updater_csm_1.2.py \
+    ./sls_updater_csm_1.2.py \
         --sls-input-file sls_input_file.json \
         --bican-user-network-name CHN \
         --customer-highspeed-network 55 172.16.0.0/16 \

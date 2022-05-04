@@ -4,15 +4,13 @@ The most noteworthy changes since the previous release are described here.
 
 ### Topics
 
-   * [New Features](#new_features)
-   * [Deprecated Features](#deprecated_features)
-   * [Removed Features](#removed_features)
-   * [Other Changes](#other_changes)
-
+   * [New Features](#new-features)
+   * [Deprecated Features](#deprecated-features)
+   * [Removed Features](#removed-features)
+   * [Other Changes](#other-changes)
 
 ## Details
 
-<a name="new_features"></a>
 ### New Features
 
 The following features are new in this release:
@@ -35,7 +33,6 @@ The following features are new in this release:
    * NCN user password and SSH key management is available for both root and
      non-root users via NCN personalization. Please refer to [Configure Non-Compute Nodes with CFS](../operations/CSM_product_management/Configure_Non-Compute_Nodes_with_CFS.md).
 
-<a name="deprecated_features"></a>
 ### Deprecated Features
 
 The following features are no longer supported and are planned to be removed in a future release:
@@ -49,7 +46,6 @@ The following features are no longer supported and are planned to be removed in 
         * Performing a GET on the session status for a boot set (i.e. `/v1/session/{session_id}/status/{boot_set_name}`) currently returns a status code of 201, but instead it should return a status code of 200. This will be corrected to return 200.
    * The Compute Rolling Upgrade Service (CRUS) will be deprecated in the CSM-1.3.0 release. Enhanced BOS functionality will replace CRUS. This includes the ability to stage changes to nodes that can be acted upon later when the node reboots. It also includes the ability to reboot nodes without specifying any boot artifacts. This latter ability relies on the artifacts already having been staged.
 
-<a name="removed_features"></a>
 ### Removed Features
 
 The following features have been completely removed:
@@ -57,6 +53,5 @@ The following features have been completely removed:
    * cray-conman pod. This has been replaced by cray-console-node.
    * CFS v1 API and CLI. The v2 API/CLI has been the default since CSM 0.9 (Shasta 1.4).
 
-<a name="other_changes"></a>
 ### Other Changes
 

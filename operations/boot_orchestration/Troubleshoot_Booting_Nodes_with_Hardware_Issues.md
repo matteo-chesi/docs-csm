@@ -6,8 +6,9 @@ If a node included in a Boot Orchestration Service \(BOS\) session template is h
 
 The following is example log output from a node with hardware issues, resulting in a failed BOS session:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl logs BOS_POD_ID
+kubectl logs BOS_POD_ID
 ```
 
 Example output:

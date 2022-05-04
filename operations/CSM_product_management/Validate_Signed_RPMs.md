@@ -14,16 +14,18 @@ The RPMs will vary on compute, application, worker, master, and storage nodes. C
 
     1. Find the signing key.
 
+       (`ncn-m001#`)
        ```bash
-       ncn-m001# curl LINK_TO_KEY_IN_CRAYPORT
+       curl LINK_TO_KEY_IN_CRAYPORT
        ```
 
     * **Kubernetes Secret:**
 
     1. Find the key and write it to a file.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# kubectl -n services get secrets hpe-signing-key -o jsonpath='{.data.gpg-pubkey}' | base64 -d | tee hpe-signing-key.asc
+        kubectl -n services get secrets hpe-signing-key -o jsonpath='{.data.gpg-pubkey}' | base64 -d | tee hpe-signing-key.asc
         ```
 
         Example output:
@@ -70,8 +72,9 @@ The RPMs will vary on compute, application, worker, master, and storage nodes. C
 
    Replace the *PATH-TO-KEY* value in the following command with the path to the signing key.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# rpm -qpi PATH-TO-KEY/hpe-signing-key.asc
+   rpm -qpi PATH-TO-KEY/hpe-signing-key.asc
    ```
 
    Example output:
@@ -133,22 +136,25 @@ The RPMs will vary on compute, application, worker, master, and storage nodes. C
 
 1. Import the signing key after validating the issuer.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# rpm --import hpe-singing-key.asc
+    rpm --import hpe-singing-key.asc
     ```
 
 1. Search for the signed packages using the version number from the previous step.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE} %{SIGGPG:pgpsig}\n' | grep '9da39f44'
+    rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE} %{SIGGPG:pgpsig}\n' | grep '9da39f44'
     ```
 
 1. Validate the signature on an RPM.
 
     The RPM in this example is *csm-install-workarounds-0.1.11-20210504151148_bf748be.src.rpm*.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# rpm -Kvv csm-install-workarounds-0.1.11-20210504151148_bf748be.src.rpm
+    rpm -Kvv csm-install-workarounds-0.1.11-20210504151148_bf748be.src.rpm
     ```
 
     Example output:

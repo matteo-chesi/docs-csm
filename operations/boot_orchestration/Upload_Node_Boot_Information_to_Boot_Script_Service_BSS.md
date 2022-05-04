@@ -130,7 +130,6 @@ Because the parameters that must be specified in the PUT command are lengthy, th
     localhost# cray bss bootparameters list
     ```
 
-
 Boot information has been added to BSS in preparation for iPXE booting all nodes in the list of host names or NIDs.
 
 As part of power up the nodes in the host name or NID list, the next step is to reboot the nodes.

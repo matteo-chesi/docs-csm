@@ -57,7 +57,6 @@ There are three different ways to specify the nodes inside a boot set in a BOS s
     "node_list": ["x3000c0s19b1n0", "x3000c0s19b1n1", "x3000c0s19b2n0"]
     ```
 
-
 -   **Node groups**
 
     The `"node_groups"` value is a list of groups defined by the Hardware State Manager \(HSM\). Each group may contain zero or more nodes. Groups can be arbitrarily defined.

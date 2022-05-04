@@ -6,7 +6,6 @@ Restoring the etcd cluster from backup is only meant to be used in a catastrophi
 
 The etcd cluster needs to be restored from a backup when the Kubernetes cluster and master nodes are being rebuilt.
 
-
 ### Prerequisites
 
 The Kubernetes cluster on master nodes is being rebuilt.
@@ -17,8 +16,9 @@ The Kubernetes cluster on master nodes is being rebuilt.
 
     The following command lists the available backups. It must be run from the /opt/cray/platform-utils/s3 directory.
 
+    (`ncn#`)
     ```bash
-    ncn# ./list-objects.py --bucket-name etcd-backup
+    ./list-objects.py --bucket-name etcd-backup
     ```
 
     Example output:
@@ -38,23 +38,25 @@ The Kubernetes cluster on master nodes is being rebuilt.
 
     1.  Retrieve the backup from S3 and uncompress it.
 
+        (`ncn#`)
         ```bash
-        ncn# mkdir /tmp/etcd_restore
-        ncn# cd /opt/cray/platform-utils/s3
-        ncn# ./download-file.py --bucket-name etcd-backup \
+        mkdir /tmp/etcd_restore
+        cd /opt/cray/platform-utils/s3
+        ./download-file.py --bucket-name etcd-backup \
         --key-name bare-metal/etcd-backup-2020-02-04-18-50-03.tar.gz \
         --file-name /tmp/etcd_restore/etcd-backup-2020-02-04-18-50-03.tar.gz
-        ncn# cd /tmp/etcd_restore
-        ncn# gunzip etcd-backup-2020-02-04-18-50-03.tar.gz
-        ncn# tar -xvf etcd-backup-2020-02-04-18-50-03.tar
-        ncn# mv etcd-backup-2020-02-04-18-50-03/etcd-dump.bin /tmp
+        cd /tmp/etcd_restore
+        gunzip etcd-backup-2020-02-04-18-50-03.tar.gz
+        tar -xvf etcd-backup-2020-02-04-18-50-03.tar
+        mv etcd-backup-2020-02-04-18-50-03/etcd-dump.bin /tmp
         ```
 
     2.  Push the file to the other NCN master nodes.
 
+        (`ncn#`)
         ```bash
-        ncn# scp /tmp/etcd-dump.bin ncn-m002:/tmp
-        ncn# scp /tmp/etcd-dump.bin ncn-m003:/tmp
+        scp /tmp/etcd-dump.bin ncn-m002:/tmp
+        scp /tmp/etcd-dump.bin ncn-m003:/tmp
         ```
 
 1.  Prepare to restore the member directory for `ncn-m001`.
@@ -63,22 +65,25 @@ The Kubernetes cluster on master nodes is being rebuilt.
 
     2.  Create a new temporary /tmp/etcd\_restore directory.
 
+        (`ncn-m001#`)
         ```screen
-        ncn-m001# mkdir /tmp/etcd_restore
+        mkdir /tmp/etcd_restore
         ```
 
     3.  Change to the /tmp/etcd_restore directory.
 
+        (`ncn-m001#`)
         ```screen
-        ncn-m001# cd /tmp/etcd_restore
+        cd /tmp/etcd_restore
         ```
 
     4.  Retrieve the 'initial-cluster' and 'initial-advertise-peer-urls' values from the `kubeadmcfg.yaml` file.
 
         The returned values will be used in the next step.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# grep -e initial-cluster: -e initial-advertise-peer-urls: \
+        grep -e initial-cluster: -e initial-advertise-peer-urls: \
         /etc/kubernetes/kubeadmcfg.yaml
         ```
 
@@ -91,8 +96,9 @@ The Kubernetes cluster on master nodes is being rebuilt.
 
     5.  Restore the member directory.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ETCDCTL_API=3 etcdctl --cacert /etc/kubernetes/pki/etcd/ca.crt \
+        ETCDCTL_API=3 etcdctl --cacert /etc/kubernetes/pki/etcd/ca.crt \
           --cert /etc/kubernetes/pki/etcd/server.crt \
           --key /etc/kubernetes/pki/etcd/server.key \
           --name ncn-m001 \
@@ -108,22 +114,25 @@ The Kubernetes cluster on master nodes is being rebuilt.
 
     2.  Create a new temporary /tmp/etcd\_restore directory.
 
+        (`ncn-m002#`)
         ```bash
-        ncn-m002# mkdir /tmp/etcd_restore
+        mkdir /tmp/etcd_restore
         ```
 
     3.  Change to the `/tmp/etcd_restore` directory.
 
+        (`ncn-m002#`)
         ```bash
-        ncn-m002# cd /tmp/etcd_restore
+        cd /tmp/etcd_restore
         ```
 
     4.  Retrieve the 'initial-cluster' and 'initial-advertise-peer-urls' values from the `kubeadmcfg.yaml` file.
 
         The returned values will be used in the next step.
 
+        (`ncn-m002#`)
         ```bash
-        ncn-m002# grep -e initial-cluster: -e initial-advertise-peer-urls: \
+        grep -e initial-cluster: -e initial-advertise-peer-urls: \
         /etc/kubernetes/kubeadmcfg.yaml
         ```
 
@@ -136,8 +145,9 @@ The Kubernetes cluster on master nodes is being rebuilt.
 
     5.  Restore the member directory.
 
+        (`ncn-m002#`)
         ```bash
-        ncn-m002# ETCDCTL_API=3 etcdctl --cacert /etc/kubernetes/pki/etcd/ca.crt \
+        ETCDCTL_API=3 etcdctl --cacert /etc/kubernetes/pki/etcd/ca.crt \
         --cert /etc/kubernetes/pki/etcd/server.crt \
         --key /etc/kubernetes/pki/etcd/server.key \
         --name ncn-m002 \
@@ -198,14 +208,16 @@ The Kubernetes cluster on master nodes is being rebuilt.
 
     1.  Stop the cluster on `ncn-m001`.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# systemctl stop etcd
+        systemctl stop etcd
         ```
 
     2.  Stop the cluster on `ncn-m002`.
 
+        (`ncn-m002#`)
         ```bash
-        ncn-m002# systemctl stop etcd
+        systemctl stop etcd
         ```
 
     3.  Stop the cluster on `ncn-m003`.
@@ -220,18 +232,20 @@ The Kubernetes cluster on master nodes is being rebuilt.
 
     1.  Start the cluster on `ncn-m001`.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# rm -rf /var/lib/etcd/member
-        ncn-m001# mv ncn-m001.etcd/member/ /var/lib/etcd/
-        ncn-m001# systemctl start etcd
+        rm -rf /var/lib/etcd/member
+        mv ncn-m001.etcd/member/ /var/lib/etcd/
+        systemctl start etcd
         ```
 
     2.  Start the cluster on `ncn-m002`.
 
+        (`ncn-m002#`)
         ```bash
-        ncn-m002# rm -rf /var/lib/etcd/member
-        ncn-m002# mv ncn-m002.etcd/member/ /var/lib/etcd/
-        ncn-m002# systemctl start etcd
+        rm -rf /var/lib/etcd/member
+        mv ncn-m002.etcd/member/ /var/lib/etcd/
+        systemctl start etcd
         ```
 
     3.  Start the cluster on `ncn-m003`.
@@ -244,8 +258,9 @@ The Kubernetes cluster on master nodes is being rebuilt.
 
 1. Confirm the membership of the cluster.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ETCDCTL_API=3 etcdctl --cacert /etc/kubernetes/pki/etcd/ca.crt \
+    ETCDCTL_API=3 etcdctl --cacert /etc/kubernetes/pki/etcd/ca.crt \
     --cert /etc/kubernetes/pki/etcd/server.crt \
     --key /etc/kubernetes/pki/etcd/server.key member list
     ```

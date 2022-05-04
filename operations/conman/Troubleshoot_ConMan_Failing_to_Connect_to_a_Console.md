@@ -12,10 +12,11 @@ This procedure requires administrative privileges.
 
 1. Find the `cray-console-operator` pod.
 
+    (`ncn#`)
     ```bash
-    ncn# OP_POD=$(kubectl get pods -n services \
+    OP_POD=$(kubectl get pods -n services \
             -o wide|grep cray-console-operator|awk '{print $1}')
-    ncn# echo $OP_POD
+    echo $OP_POD
     ```
 
     Example output:
@@ -25,16 +26,18 @@ This procedure requires administrative privileges.
 
 1. Set the `XNAME` variable to the component name (xname) of the node whose console is of interest.
 
+    (`ncn#`)
     ```bash
-    ncn# XNAME=<xname>
+    XNAME=<xname>
     ```
 
 1. Find the `cray-console-node` pod that is connecting with the console.
 
+    (`ncn#`)
     ```bash
-    ncn# NODE_POD=$(kubectl -n services exec $OP_POD -c cray-console-operator -- sh -c \
+    NODE_POD=$(kubectl -n services exec $OP_POD -c cray-console-operator -- sh -c \
         "/app/get-node $XNAME" | jq .podname | sed 's/"//g')
-    ncn# echo $NODE_POD
+    echo $NODE_POD
     ```
 
     Example output:
@@ -49,9 +52,10 @@ This procedure requires administrative privileges.
 
     1. Find the worker node on which this pod is running.
 
+        (`ncn#`)
         ```bash
-        ncn# WNODE=$(kubectl get pods -o custom-columns=:.spec.nodeName -n services --no-headers $NODE_POD)
-        ncn# echo $WNODE
+        WNODE=$(kubectl get pods -o custom-columns=:.spec.nodeName -n services --no-headers $NODE_POD)
+        echo $WNODE
         ```
 
         Example output:
@@ -61,8 +65,9 @@ This procedure requires administrative privileges.
 
     1. `ssh` to the worker node that the pod is running on.
 
+        (`ncn#`)
         ```bash
-        ncn# ssh $WNODE
+        ssh $WNODE
         ```
 
     1. Check that the BMC for this node is accessible from this worker.
@@ -70,8 +75,9 @@ This procedure requires administrative privileges.
         The component name (xname) of the BMC is the same as the node, but with the node designation at the
         end removed. For example if the node is `x3000c0s15b0n0`, the BMC is `x3000c0s15b0`.
 
+        (`ncn-w#`)
         ```bash
-        ncn-w# ping BMC_XNAME
+        ping BMC_XNAME
         PING x3000c0s7b0.hmn (10.254.1.7) 56(84) bytes of data.
         From ncn-m002.hmn (10.254.1.18) icmp_seq=1 Destination Host Unreachable
         From ncn-m002.hmn (10.254.1.18) icmp_seq=2 Destination Host Unreachable
@@ -90,8 +96,9 @@ This procedure requires administrative privileges.
 
     1. Check the log information for the node.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl -n services logs $NODE_POD cray-console-node | grep $XNAME
+        kubectl -n services logs $NODE_POD cray-console-node | grep $XNAME
         ```
 
         If something else is using the connection, there will be log entries like the following:
@@ -110,11 +117,12 @@ This procedure requires administrative privileges.
 
         > `read -s` is used to prevent the password from appearing in the command history.
 
+        (`ncn#`)
         ```bash
-        ncn# USERNAME=root
-        ncn# read -s IPMI_PASSWORD
-        ncn# export IPMI_PASSWORD
-        ncn# ipmitool -H <BMC_XNAME> -U $USERNAME -E -I lanplus sol deactivate
+        USERNAME=root
+        read -s IPMI_PASSWORD
+        export IPMI_PASSWORD
+        ipmitool -H <BMC_XNAME> -U $USERNAME -E -I lanplus sol deactivate
         ```
 
     1. Retry ConMan to verify the connection has been reestablished.

@@ -4,12 +4,10 @@ Use this procedure to clear the etcd cluster NOSPACE alarm. Once it is set it wi
 
 Defragging the database cluster and clearing the etcd cluster NOSPACE alarm will free up database space.
 
-
 ### Prerequisites
 
 - This procedure requires root privileges
 - The etcd clusters are in a healthy state
-
 
 ### Procedure
 

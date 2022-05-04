@@ -8,8 +8,6 @@ The following workflows are included in this section:
   - [Reconfigure Nodes](#reconfigure)
   - [Power Off Nodes](#power-off)
 
-<a name="boot-and-configure"></a>
-
 ### Boot and Configure Nodes
 
 **Use Case:** Administrator powers on and configures select compute nodes.
@@ -122,8 +120,6 @@ Mentioned in this workflow:
 
     CFS runs Ansible on the nodes and applies post-boot configuration \(also called node personalization\). CFS then communicates the results back to BOA.
 
-<a name="reconfigure"></a>
-
 ### Reconfigure Nodes
 
 **Use Case:** Administrator reconfigures compute nodes that are already booted and configured.
@@ -183,8 +179,6 @@ Mentioned in this workflow:
 7.  **CFS to BOA**
 
     CFS then communicates the results back to BOA.
-
-<a name="power-off"></a>
 
 ### Power Off Nodes
 

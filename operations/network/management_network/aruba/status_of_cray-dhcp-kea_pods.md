@@ -6,8 +6,9 @@ Use this procedure to verify the status of the `cray-dhcp-kea` pods and services
 
 1. Check if the Kea DHCP services are running.
 
+    (`ncn#`)
     ```text
-    ncn# kubectl get -n services pods | grep kea
+    kubectl get -n services pods | grep kea
     ```
 
     The following services should be returned as output:
@@ -22,8 +23,9 @@ Use this procedure to verify the status of the `cray-dhcp-kea` pods and services
 
 2. View the Kea pods.
 
+    (`ncn#`)
     ```text
-    ncn# kubectl get pods -n services -o wide | grep kea
+    kubectl get pods -n services -o wide | grep kea
     ```
 
     A list of the following pods will be returned as output:
@@ -37,4 +39,4 @@ Use this procedure to verify the status of the `cray-dhcp-kea` pods and services
 
     This output will also show which worker node the kea-dhcp pod is currently on.
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

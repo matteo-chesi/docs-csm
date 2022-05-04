@@ -16,20 +16,23 @@ The following is an example of group members:
 
 Retrieve just the members array for a group:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups members list GROUP_LABEL
+cray hsm groups members list GROUP_LABEL
 ```
 
 Retrieve only the members of a group that are also in a specific partition:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups members list --partition PARTITION_NAME GROUP_LABEL
+cray hsm groups members list --partition PARTITION_NAME GROUP_LABEL
 ```
 
 Retrieve only the members of a group that are not in any partition currently:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups members list --partition NULL GROUP_LABEL
+cray hsm groups members list --partition NULL GROUP_LABEL
 ```
 
 ### Add Group Members
@@ -38,14 +41,16 @@ Add a single component to a group. The only time this is not permitted is if the
 
 Add a component to a group:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups members create --id MEMBER_ID GROUP_LABEL
+cray hsm groups members create --id MEMBER_ID GROUP_LABEL
 ```
 
 For example:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups members create --id x1c0s0b0n0 blue
+cray hsm groups members create --id x1c0s0b0n0 blue
 ```
 
 ### Remove Group Members
@@ -54,13 +59,15 @@ Single members with the specified component name (xname) are removed from the gi
 
 Remove a member from a group:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups members delete MEMBER_ID GROUP_LABEL
+cray hsm groups members delete MEMBER_ID GROUP_LABEL
 ```
 
 For example:
 
+(`ncn-m#`)
 ```bash
-ncn-m# cray hsm groups members delete x1c0s0b0n0 blue
+cray hsm groups members delete x1c0s0b0n0 blue
 ```
 

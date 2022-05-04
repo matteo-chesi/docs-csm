@@ -24,16 +24,18 @@ There are multiple ways to do Ceph device operations now.
 
 ### Use `cephadm`
 
+(`ncn-s#`)
 ```bash
-ncn-s# cephadm ceph-volume
+cephadm ceph-volume
 ```
 
 ### Use `cephadm shell`
 
 Optionally, this can be done by invoking a `cephadm` shell by appending a `ceph` command to the `cephadm` command.
 
+(`ncn-s#`)
 ```bash
-ncn-s# cephadm shell -- ceph-volume
+cephadm shell -- ceph-volume
 ```
 
 ### Use `ceph orch`

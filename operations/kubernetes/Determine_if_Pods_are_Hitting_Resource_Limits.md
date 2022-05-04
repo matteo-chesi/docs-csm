@@ -10,7 +10,6 @@ Identify pods that are hitting resource limits in order to increase the resource
 
 `kubectl` is installed.
 
-
 ### Procedure
 
 1.  Use the detect\_cpu\_throttling.sh script to determine if any pods are being CP throttled.
@@ -128,7 +127,6 @@ Identify pods that are hitting resource limits in order to increase the resource
         ```bash
         ncn-w001# kubectl get pod -A | grep prometheus
         ```
-
 
 Follow the procedure to increase the resource limits for the pods identified in this procedure. See [Increase Pod Resource Limits](Increase_Pod_Resource_Limits.md).
 

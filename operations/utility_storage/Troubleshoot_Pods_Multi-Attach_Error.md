@@ -26,8 +26,9 @@ This procedure requires administrative privileges.
 
     The returned Persistent Volume Claim \(PVC\) information will be needed in future steps.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services describe pod POD_ID
+    kubectl -n services describe pod POD_ID
     ```
 
     Example output:
@@ -47,8 +48,9 @@ This procedure requires administrative privileges.
 
 1. Retrieve the Ceph volume.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl describe -n NAMESPACE pv PVC_NAME
+    kubectl describe -n NAMESPACE pv PVC_NAME
     ```
 
     Example output:
@@ -87,14 +89,16 @@ This procedure requires administrative privileges.
 
         Take a note of the returned IP address.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# rbd status CEPH_POOL_NAME/CEPH_IMAGE_NAME
+        rbd status CEPH_POOL_NAME/CEPH_IMAGE_NAME
         ```
 
         For example:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# rbd status kube/kubernetes-dynamic-pvc-3ce9ec37-846b-11ea-acae-86f521872f4c
+        rbd status kube/kubernetes-dynamic-pvc-3ce9ec37-846b-11ea-acae-86f521872f4c
         Watchers:
             watcher=**10.252.0.4**:0/3520479722 client.689192 cookie=18446462598732840976
         ```
@@ -103,8 +107,9 @@ This procedure requires administrative privileges.
 
         Take note of the returned host name.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# grep IP_ADDRESS /etc/hosts
+        grep IP_ADDRESS /etc/hosts
         ```
 
         Example output:
@@ -115,8 +120,9 @@ This procedure requires administrative privileges.
 
 1. SSH to the host name returned in the previous step.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ssh HOST_NAME
+    ssh HOST_NAME
     ```
 
 1. Unmap the device.
@@ -125,8 +131,9 @@ This procedure requires administrative privileges.
 
         Use the CEPH\_IMAGE\_NAME value returned in step 4.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# rbd showmapped|grep CEPH_IMAGE_NAME
+        rbd showmapped|grep CEPH_IMAGE_NAME
         ```
 
         Example output:
@@ -139,14 +146,16 @@ This procedure requires administrative privileges.
 
     1. Verify it is not in use by an unstopped container.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# mount|grep RBD_NUMBER
+        mount|grep RBD_NUMBER
         ```
 
         If no mount points are returned, proceed to the next step. If mount points are returned, run the following command:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# unmount MOUNT_POINT
+        unmount MOUNT_POINT
         ```
 
         **Troubleshooting:** If that still does not succeed, use the unmount `-f` option.
@@ -155,18 +164,21 @@ This procedure requires administrative privileges.
 
     1. Unmap the device.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# rbd unmap -o force /dev/RBD_NUMBER
+        rbd unmap -o force /dev/RBD_NUMBER
         ```
 
 1. Check the status of the pod.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl get pod -n NAMESPACE POD_NAME
+    kubectl get pod -n NAMESPACE POD_NAME
     ```
 
     **Troubleshooting:** If the pod status has not changes, try deleting the pod to restart it.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl delete pod -n NAMESPACE POD_NAME
+    kubectl delete pod -n NAMESPACE POD_NAME
     ```

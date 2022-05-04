@@ -32,4 +32,4 @@ switch# show aaa <server-groups|authentication>
 3. The output of the `show` commands is correct
 4. Administrators can successfully access the switch using credentials validated by the RADIUS server
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

@@ -19,8 +19,9 @@ The following are examples of incorrect parameters:
 
     Deleting a CRUS session that is in progress will terminate the session and move all of the unfinished nodes into the group said up for failed nodes. The time frame for recognizing a delete request, cleaning up, and deleting the session is roughly a minute. A session being deleted will move to a DELETING status immediately upon receiving a delete request, which will prevent further processing of the upgrade in that session.
 
+    (`ncn#`)
     ```bash
-    ncn# cray crus session delete CRUS_UPGRADE_ID
+    cray crus session delete CRUS_UPGRADE_ID
     ```
 
     Example output:
@@ -44,8 +45,9 @@ The following are examples of incorrect parameters:
 
     Ensure the correct parameters are used when restarting the session.
 
+    (`ncn#`)
     ```bash
-    ncn# cray crus session create \
+    cray crus session create \
     --starting-label slurm-nodes \
     --upgrading-label node-group \
     --failed-label failed-node-group \

@@ -14,8 +14,6 @@ This guide runs through the most common issues and shows what is needed in order
     2.7. [Verify the switches are forwarding DHCP traffic.](#verify-the-switches)
 3. [Computes/UANs/Application Nodes](#computes-uans-applications-nodes)
 
-<a name="ncns-on-install"></a>
-
 ## 1. NCNs on install
 
 * Verify the DNSMASQ configuration file matches what is configured on the switches.
@@ -97,8 +95,6 @@ exit
 
 * You should be able to ping the MTL router from `ncn-m001`.
 
-<a name="ncn-m001-on-reboot"></a>
-
 ## 2. `ncn-m001` on reboot or NCN boot
 
 * Common Error messages.
@@ -107,8 +103,6 @@ exit
 
 * Verify the `ip helper-address` on VLAN 1 on the switches. This is the same configuration as above for the "Mellanox Configuration" and "Aruba Configuration".
 
-<a name="Verify-DHCP-packets"></a>
-
 ## 2.1. Verify DHCP packets can be forwarded from the workers to the MTL network (VLAN1)
 
 * If the Worker nodes cannot reach the metal network DHCP will fail.
@@ -116,8 +110,9 @@ exit
 * This can normally be achieved by having a default route
 * TEST
 
+(`ncn-w#`)
 ```bash
-ncn-w# ping 10.1.0.
+ping 10.1.0.
 PING 10.1.0.1 (10.1.0.1) 56(84) bytes of data.
 64 bytes from 10.1.0.1: icmp_seq=1 ttl=64 time=0.361 ms
 64 bytes from 10.1.0.1: icmp_seq=2 ttl=64 time=0.145 ms
@@ -125,11 +120,10 @@ PING 10.1.0.1 (10.1.0.1) 56(84) bytes of data.
 
 * If this fails you may have a misconfigured CAN or need to add a route to the MTL network.
 
+(`ncn-w#`)
 ```bash
-ncn-w# ip route add 10.1.0.0/16 via 10.252.0.1 dev vlan
+ip route add 10.1.0.0/16 via 10.252.0.1 dev vlan
 ```
-
-<a name="verify-bgp"></a>
 
 ## 2.2. Verify BGP
 
@@ -177,8 +171,6 @@ Neighbor          V    AS           MsgRcvd   MsgSent   TblVer    InQ    OutQ   
 10.252.1.9        4    65533        18010     20671     39        0      0      6:05:52:03    ESTABLISHED/6
 ```
 
-<a name="verify-route-to-tftp"></a>
-
 ## 2.3. Verify route to TFTP
 
 * On BOTH Aruba switches we need a single route to the TFTP server 10.92.100.60. This is needed because there are issues with Aruba
@@ -198,8 +190,6 @@ Displaying ipv4 routes selected for forwarding
 * This route can be a static route or a BGP route that is pinned to a single worker. (1.4.2 patch introduces the BGP pinned route)
 * Verify that you can ping the next hop of this route.
 * For the example above we would ping 10.252.1.9. If this is not reachable this is your problem.
-
-<a name="test-tftp-traffic"></a>
 
 ## 2.4. Test TFTP traffic (Aruba Only)
 
@@ -222,14 +212,13 @@ Received 1007200 bytes in 2.2 seconds
 * You can see here that the `ipxe.efi` binary is downloaded three times in a row. When we have seen issues with ECMP hashing this
 would fail intermittently.
 
-<a name="check-dhcp-lease"></a>
-
 ## 2.5. Check DHCP lease is getting allocated
 
 * Check the KEA logs and verify that the lease is getting allocated.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl logs -n services pod/$(kubectl get -n services pods |
+    kubectl logs -n services pod/$(kubectl get -n services pods |
             grep kea | head -n1 | cut -f 1 -d ' ') -c cray-dhcp-kea
     ```
 
@@ -244,8 +233,6 @@ would fail intermittently.
     2021-06-21 16:44:31.124 INFO  [kea-dhcp4.leases/18.139837089017472] DHCP4_LEASE_ADVERT [hwtype=1 14:02:ec:d9:79:88], cid=[no info], tid=0xe87fad10: lease 10.252.1.16 will be advertised
     ```
 
-<a name="verify-the-dhcp-traffic"></a>
-
 ## 2.6. Verify the DHCP traffic on the Workers
 
 * We have ran into issues on HPE servers and Aruba switches where the source address of the DHCP Offer is the MetalLB address
@@ -253,8 +240,9 @@ of KEA `10.92.100.222`. The source address of the DHCP Reply/Offer **needs** to 
 Worker.
 * Here is how to look at DHCP traffic on the workers.
 
+    (`ncn-w#`)
     ```bash
-    ncn-w# tcpdump -envli bond0 port 67 or 68
+    tcpdump -envli bond0 port 67 or 68
     ```
 
 * You are looking for the source IP address of the DHCP Reply/Offer.
@@ -283,8 +271,6 @@ this is below.
 * If you run into this, the only solution that we have found so far is restarting KEA and making sure that it gets moved to a different
 worker. We believe this has something to do with conntrack.
 
-<a name="verify-the-switches"></a>
-
 ## 2.7. Verify the switches are forwarding DHCP traffic
 
 * If you still cannot PXE boot, the IP-Helper may be breaking on the switch.
@@ -293,8 +279,6 @@ worker. We believe this has something to do with conntrack.
   * On an Aruba or Mellanox switch, delete the entire VLAN configuration and re-apply it, in order for the DHCP traffic to come back.
   * On a Dell switch, do a reboot in order to restore DHCP traffic.
 * The underlying cause of IP-Helper breaking is not yet known.
-
-<a name="computes-uans-applications-nodes"></a>
 
 ## 3. Compute Nodes/UANs/Application Nodes
 

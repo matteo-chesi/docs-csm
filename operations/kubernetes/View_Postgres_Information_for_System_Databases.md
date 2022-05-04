@@ -2,11 +2,9 @@
 
 Postgres uses SQL language to store and manage databases on the system. This procedure describes how to view and obtain helpful information about system databases, as well as the types of data being stored.
 
-
 ### Prerequisites
 
 This procedure requires administrative privileges.
-
 
 ### Procedure
 

@@ -6,16 +6,18 @@ A number of tools can be used to analyze and debug issues encountered during the
 
 Use `nmap` to send out DHCP discover requests to test DHCP. `nmap` can be installed using the following command:
 
+(`ncn#`)
 ```bash
-ncn# zypper install nmap
+zypper install nmap
 ```
 
 To reach the DHCP server, the request generally needs to be sent over the Node Management network \(NMN\) from a non-compute node \(NCN\).
 
 In the following example, `nmap` is used to send a broadcast request over the `eth1` interface:
 
+(`ncn#`)
 ```bash
-ncn# nmap --script broadcast-dhcp-discover -e eth1
+nmap --script broadcast-dhcp-discover -e eth1
 ```
 
 ## Wireshark
@@ -70,8 +72,9 @@ long as it targets the NMN.
 
 Install the TFTP client using the following command:
 
+(`ncn#`)
 ```bash
-ncn# zypper install atftp
+zypper install atftp
 ```
 
 The `atftp` TFTP client can be used to request files from the TFTP server. The TFTP server is on the NMN and listens on port 69. The TFTP server sends the `ipxe.efi` file as the
@@ -79,8 +82,9 @@ response in this example.
 
 Request the files:
 
+(`ncn#`)
 ```console
-ncn# atftp
+atftp
 tftp> connect 10.100.160.2 69
 tftp> get ipxe.efi test-ipxe.efi
 tftp> quit
@@ -88,8 +92,9 @@ tftp> quit
 
 List the files:
 
+(`ncn#`)
 ```bash
-ncn# ls -l test-ipxe.efi
+ls -l test-ipxe.efi
 ```
 
 Example output:
@@ -110,17 +115,19 @@ There are two tools that can be used to access a BMC's console via SOL:
 
     > `read -s` is used to prevent the password from being written to the screen or the shell history.
 
+    (`ncn#`)
     ```bash
-    ncn# export USERNAME=root
-    ncn# read -s IPMI_PASSWORD
-    ncn# export IPMI_PASSWORD
-    ncn# ipmitool -I lanplus -U $USERNAME -E -H <node_management_network_IP_address_of_node> sol activate
+    export USERNAME=root
+    read -s IPMI_PASSWORD
+    export IPMI_PASSWORD
+    ipmitool -I lanplus -U $USERNAME -E -H <node_management_network_IP_address_of_node> sol activate
     ```
 
     Example:
 
+    (`ncn#`)
     ```bash
-    ncn# ipmitool -I lanplus -U $USERNAME -E -H  10.100.165.2 sol activate
+    ipmitool -I lanplus -U $USERNAME -E -H  10.100.165.2 sol activate
     ```
 
 - ConMan

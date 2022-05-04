@@ -1058,7 +1058,6 @@ https-server vrf default
 https-server vrf mgmt
 ```
 
-
 ##### Below is the desired state of a system running this configuration.
 - two ospf neighbors on the Customer vrf.
 - two default routes.

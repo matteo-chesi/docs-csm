@@ -33,8 +33,9 @@ This procedure requires administrative privileges and will require at least two 
 
     The following example shows only six OSDs in use.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# watch -n 10 ceph -s
+    watch -n 10 ceph -s
     ```
 
     Example output:
@@ -72,8 +73,9 @@ This procedure requires administrative privileges and will require at least two 
 
    The following example is utilizing ncn-s001. Ensure the correct host for the situation is used.
 
+   (`ncn-s001#`)
    ```bash
-   ncn-s001# ceph orch device ls
+   ceph orch device ls
    ```
 
    Example output:
@@ -86,8 +88,9 @@ This procedure requires administrative privileges and will require at least two 
 
    > **NOTE:** The drive in question is reporting available. The following steps are going to erase that drive so PLEASE make sure to verify that drive is not being used.
 
+   (`ncn-s001#`)
    ```bash
-   ncn-s001# podman ps
+   podman ps
    ```
 
    Example output:
@@ -107,8 +110,9 @@ This procedure requires administrative privileges and will require at least two 
 
    Repeat this step for all drives on the storage node\(s\) that have unused storage which should be added to Ceph.
 
+   (`ncn-s001#`)
    ```bash
-   ncn-s001# ceph orch device zap ncn-s001 /dev/sdb (optional --force)
+   ceph orch device zap ncn-s001 /dev/sdb (optional --force)
    ```
 
    Proceed to the next step after all of the OSDs have been added to the storage nodes.
@@ -144,8 +148,9 @@ This procedure requires administrative privileges and will require at least two 
     recovery: 559 MiB/s, 187 objects/s
     ```
 
+   (`ncn-s001#`)
    ```bash
-   ncn-s001# ceph orch ps --daemon_type osd ncn-s001
+   ceph orch ps --daemon_type osd ncn-s001
    ```
 
    Example output:

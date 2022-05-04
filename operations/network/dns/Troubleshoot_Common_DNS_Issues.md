@@ -33,8 +33,9 @@ Use the `dig` or `nslookup` commands directly against the Unbound resolver. A ho
 - The `ANSWER SECTION` value exists with a valid hostname and IP address
 - A `QUERY` value exists that has the `status: NOERROR` message
 
+(`ncn#`)
 ```bash
-ncn# dig HOSTNAME @10.92.100.225
+dig HOSTNAME @10.92.100.225
 ```
 
 Example output:
@@ -64,8 +65,9 @@ If either of the commands fail to meet the two conditions mentioned above, colle
 
 If there no record in the Unbound pod, that is also an indication that the host is not in DNS.
 
+(`ncn#`)
 ```bash
-ncn# kubectl describe -n services configmaps cray-dns-unbound | grep XNAME
+kubectl describe -n services configmaps cray-dns-unbound | grep XNAME
 ```
 
 Example output:
@@ -82,8 +84,9 @@ Example output:
 
 Use the following command to check the logs. Any logs with a message saying `ERROR` or `Exception` are an indication that the Unbound service is not healthy.
 
+(`ncn#`)
 ```bash
-ncn# kubectl logs -n services -l app.kubernetes.io/instance=cray-dns-unbound -c cray-dns-unbound
+kubectl logs -n services -l app.kubernetes.io/instance=cray-dns-unbound -c cray-dns-unbound
 ```
 
 Example output:
@@ -113,8 +116,9 @@ Example output:
 
 To view the DNS Helper logs:
 
+(`ncn#`)
 ```bash
-ncn# kubectl logs -n services pod/$(kubectl get -n services pods | \
+kubectl logs -n services pod/$(kubectl get -n services pods | \
 grep unbound | tail -n 1 | cut -f 1 -d ' ') -c manager | tail -n4
 ```
 
@@ -199,8 +203,9 @@ ncn-mw# tcpdump -envli bond0.nmn0 port 53
 
 If the IP address returned by the `ping` command is different than the IP address returned by the `dig` command, restart `nscd` on the impacted node. This is done with the following command:
 
+(`ncn#`)
 ```bash
-ncn# systemctl restart nscd.service
+systemctl restart nscd.service
 ```
 
 Attempt to `ping` or `ssh` to the IP address that was experiencing issues after restarting `nscd`.
@@ -209,16 +214,18 @@ Attempt to `ping` or `ssh` to the IP address that was experiencing issues after 
 
 Search for a DHCP lease by checking active leases for the service:
 
+(`ncn#`)
 ```bash
-ncn# curl -s -k -H "Authorization: Bearer ${TOKEN}" -X POST -H \
+curl -s -k -H "Authorization: Bearer ${TOKEN}" -X POST -H \
 "Content-Type: application/json" \-d '{ "command": "lease4-get-all",  "service": \
 [ "dhcp4" ] }' https://api-gw-service-nmn.local/apis/dhcp-kea |jq
 ```
 
 For example:
 
+(`ncn#`)
 ```bash
-ncn# curl -s -k -H "Authorization: Bearer ${TOKEN}" -X \
+curl -s -k -H "Authorization: Bearer ${TOKEN}" -X \
 POST -H "Content-Type: application/json" \-d '{ "command": "lease4-get-all",  "service": \
 [ "dhcp4" ] }' https://api-gw-service-nmn.local/apis/dhcp-kea \
 |jq|grep x3000c0s19b4  -A 6 -B 4

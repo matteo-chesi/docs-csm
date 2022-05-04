@@ -6,7 +6,6 @@ This topic provides directions on constructing the `application_node_config.yaml
 * [Background](#background)
 * [Directions](#directions)
 
-<a name="prerequisites"></a>
 ## Prerequisites
 
 The `application_node_config.yaml` file can be constructed from information from one of the following sources:
@@ -14,7 +13,6 @@ The `application_node_config.yaml` file can be constructed from information from
 - The SHCD Excel spreadsheet for the system
 - The `hmn_connections.json` file generated from the system's SHCD
 
-<a name="background"></a>
 ## Background
 
 ### SHCD and hmn_connections.json
@@ -41,7 +39,6 @@ Example `hmn_connections.json` row representing an application node with SourceN
 { "Source": "uan01", "SourceRack": "x3000", "SourceLocation": "u19", "DestinationRack": "x3000", "DestinationLocation": "u14", "DestinationPort": "j37" }
 ```
 
-<a name="directions"></a>
 ## Directions
 
 1. Create a file called `application_node_config.yaml` with the following contents.
@@ -79,8 +76,7 @@ Example `hmn_connections.json` row representing an application node with SourceN
       test("^((mn|wn|sn|nid|cn|cn\\-|pdu)\\d+|.*(cmc|rcm|kvm|door).*|x\\d+p\\d*|sw-.+|columbia$)"; "i") | not)'
     ```
 
-    <a name="hmn-connections-example-output"></a>
-    Example `hmn_connections.json` output:
+        Example `hmn_connections.json` output:
 
     ```json
     {"Source":"gateway01","SourceRack":"x3000","SourceLocation":"u29","DestinationRack":"x3000","DestinationLocation":"u32","DestinationPort":"j42"},

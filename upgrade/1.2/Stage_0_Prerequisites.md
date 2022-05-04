@@ -15,17 +15,16 @@ backup of Workload Manager configuration data and files is created. Once complet
 - [Stage 0.2 - Update SLS](#update-sls)
 - [Stage 0.3 - Upgrade Management Network](#update-management-network)
 - [Stage 0.4 - Prerequisites Check](#prerequisites-check)
-- [Stage 0.5 - Backup Workload Manager Data](#backup_workload_manager)
-- [Stage completed](#stage_completed)
-
-<a name="prepare-assets"></a>
+- [Stage 0.5 - Backup Workload Manager Data](#backup-workload-manager)
+- [Stage completed](#stage-completed)
 
 ## Stage 0.1 - Prepare assets
 
 1. Set the `CSM_RELEASE` variable to the **target** CSM version of this upgrade.
 
+   (`ncn-m001#`)
    ```bash
-    ncn-m001# CSM_RELEASE=csm-1.2.0
+    CSM_RELEASE=csm-1.2.0
    ```
 
 1. Follow either the [Direct download](#direct-download) or [Manual copy](#manual-copy) procedure.
@@ -41,8 +40,9 @@ backup of Workload Manager configuration data and files is created. Once complet
 
    > **Important:** The upgrade scripts expect the `docs-csm` RPM to be located at `/root/docs-csm-latest.noarch.rpm`; that is why this command copies it there.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# wget https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp2/docs-csm/1.2/noarch/docs-csm-latest.noarch.rpm \
+   wget https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp2/docs-csm/1.2/noarch/docs-csm-latest.noarch.rpm \
                 -O /root/docs-csm-latest.noarch.rpm &&
              rpm -Uvh --force /root/docs-csm-latest.noarch.rpm
    ```
@@ -51,18 +51,20 @@ backup of Workload Manager configuration data and files is created. Once complet
 
    In other words, the full URL to the CSM release `tar` file must be `${ENDPOINT}${CSM_RELEASE}.tar.gz`
 
-   **NOTE** This step is optional for Cray/HPE internal installs, if `ncn-m001` can reach the internet.
+  > **`NOTE`** This step is optional for Cray/HPE internal installs, if `ncn-m001` can reach the internet.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# ENDPOINT=https://put.the/url/here/
+   ENDPOINT=https://put.the/url/here/
    ```
 
 1. Run the script.
 
-   **NOTE** For Cray/HPE internal installs, if `ncn-m001` can reach the internet, then the `--endpoint` argument may be omitted.
+  > **`NOTE`** For Cray/HPE internal installs, if `ncn-m001` can reach the internet, then the `--endpoint` argument may be omitted.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --endpoint "${ENDPOINT}"
+   /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --endpoint "${ENDPOINT}"
    ```
 
 1. Skip the `Manual copy` subsection.
@@ -73,7 +75,7 @@ backup of Workload Manager configuration data and files is created. Once complet
 
 1. Copy the `docs-csm` RPM package and CSM release `tar` file to `ncn-m001`.
 
-   See [Update Product Stream](../../update_product_stream/index.md).
+   See [Update Product Stream](../../update_product_stream/README.md).
 
 1. Copy the documentation RPM to `/root` and install it.
 
@@ -82,24 +84,25 @@ backup of Workload Manager configuration data and files is created. Once complet
    > - Replace the `PATH_TO_DOCS_RPM` below with the location of the RPM on `ncn-m001`.
    > - The upgrade scripts expect the `docs-csm` RPM to be located at `/root/docs-csm-latest.noarch.rpm`; that is why this command copies it there.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# cp PATH_TO_DOCS_RPM /root/docs-csm-latest.noarch.rpm &&
+   cp PATH_TO_DOCS_RPM /root/docs-csm-latest.noarch.rpm &&
              rpm -Uvh --force /root/docs-csm-latest.noarch.rpm
    ```
 
 1. Set the `CSM_TAR_PATH` variable to the full path to the CSM `tar` file on `ncn-m001`.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# CSM_TAR_PATH=/path/to/${CSM_RELEASE}.tar.gz
+   CSM_TAR_PATH=/path/to/${CSM_RELEASE}.tar.gz
    ```
 
 1. Run the script.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --tarball-file "${CSM_TAR_PATH}"
+   /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --tarball-file "${CSM_TAR_PATH}"
    ```
-
-<a name="update-sls"></a>
 
 ## Stage 0.2 - Update SLS
 
@@ -109,7 +112,7 @@ CSM 1.2 introduces the bifurcated CAN (BICAN) as well as network configuration c
 upgrade and its sequence of events, see the [SLS upgrade `README`](scripts/sls/README.SLS_Upgrade.md).
 
 The SLS data upgrade is a critical step in moving to CSM 1.2. Upgraded SLS data is used in DNS and management network configuration. For details to aid in understanding and
-decision making, see the [Management Network User Guide](../../operations/network/management_network/index.md).
+decision making, see the [Management Network User Guide](../../operations/network/management_network/README.md).
 
 One detail which must not be overlooked is that the existing Customer Access Network (CAN) will be migrated or retrofitted into the new Customer Management Network (CMN) while
 minimizing changes. A new CAN (or CHN) network is then created. Pivoting the existing CAN to the new CMN allows administrative traffic (already on the CAN) to remain as-is while
@@ -122,40 +125,45 @@ the correct options for the specific environment are used. Two examples are give
 
 1. Obtain a token.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# export TOKEN=$(curl -s -k -S -d grant_type=client_credentials -d client_id=admin-client \
+   export TOKEN=$(curl -s -k -S -d grant_type=client_credentials -d client_id=admin-client \
                                 -d client_secret=`kubectl get secrets admin-client-auth -o jsonpath='{.data.client-secret}' | base64 -d` \
                                 https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token | jq -r '.access_token')
    ```
 
 1. Create a working directory.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# mkdir /root/sls_upgrade && cd /root/sls_upgrade
+   mkdir /root/sls_upgrade && cd /root/sls_upgrade
    ```
 
 1. Extract SLS data to a file.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# curl -k -H "Authorization: Bearer ${TOKEN}" https://api-gw-service-nmn.local/apis/sls/v1/dumpstate | jq -S . > sls_input_file.json
+   curl -k -H "Authorization: Bearer ${TOKEN}" https://api-gw-service-nmn.local/apis/sls/v1/dumpstate | jq -S . > sls_input_file.json
    ```
 
 ### Migrate SLS data JSON to CSM 1.2
 
 - Example 1: The CHN as the system default route (will by default output to `migrated_sls_file.json`).
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# export DOCDIR=/usr/share/doc/csm/upgrade/1.2/scripts/sls
-   ncn-m001# ${DOCDIR}/sls_updater_csm_1.2.py --sls-input-file sls_input_file.json \
+   export DOCDIR=/usr/share/doc/csm/upgrade/1.2/scripts/sls
+   ${DOCDIR}/sls_updater_csm_1.2.py --sls-input-file sls_input_file.json \
                          --bican-user-network-name CHN \
                          --customer-highspeed-network 5 10.103.11.192/26
    ```
 
 - Example 2: The CAN as the system default route, keep the generated CHN (for testing), and preserve the existing `external-dns` entry.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# export DOCDIR=/usr/share/doc/csm/upgrade/1.2/scripts/sls
-   ncn-m001# ${DOCDIR}/sls_updater_csm_1.2.py --sls-input-file sls_input_file.json \
+   export DOCDIR=/usr/share/doc/csm/upgrade/1.2/scripts/sls
+   ${DOCDIR}/sls_updater_csm_1.2.py --sls-input-file sls_input_file.json \
                          --bican-user-network-name CAN \
                          --customer-access-network 6 10.103.15.192/26 \
                          --preserve-existing-subnet-for-cmn external-dns
@@ -168,11 +176,10 @@ the correct options for the specific environment are used. Two examples are give
 
 If the following command does not complete successfully, check if the `TOKEN` environment variable is set correctly.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# curl --fail -H "Authorization: Bearer ${TOKEN}" -k -L -X POST 'https://api-gw-service-nmn.local/apis/sls/v1/loadstate' -F 'sls_dump=@migrated_sls_file.json'
+   curl --fail -H "Authorization: Bearer ${TOKEN}" -k -L -X POST 'https://api-gw-service-nmn.local/apis/sls/v1/loadstate' -F 'sls_dump=@migrated_sls_file.json'
    ```
-
-<a name="update-management-network"></a>
 
 ## Stage 0.3 - Upgrade management network
 
@@ -198,9 +205,7 @@ If the following command does not complete successfully, check if the `TOKEN` en
    - Output like the above text means that the switches have a CANU-generated configuration for CSM 1.2 in place. In this case, follow the steps in
      [Management Network 1.0 (`1.2 Preconfig`) to 1.2](../../operations/network/management_network/1.0_to_1.2_upgrade.md).
    - If the banner does NOT contain text like the above, then contact support in order to get the `1.2 Preconfig` applied to the system.
-   - See the [Management Network User Guide](../../operations/network/management_network/index.md) for more information on the management network.
-
-<a name="prerequisites-check"></a>
+   - See the [Management Network User Guide](../../operations/network/management_network/README.md) for more information on the management network.
 
 ## Stage 0.4 - Prerequisites check
 
@@ -210,9 +215,10 @@ If the following command does not complete successfully, check if the `TOKEN` en
 
    > `read -s` is used to prevent the password from being written to the screen or the shell history.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# read -s SW_ADMIN_PASSWORD
-   ncn-m001# export SW_ADMIN_PASSWORD
+   read -s SW_ADMIN_PASSWORD
+   export SW_ADMIN_PASSWORD
    ```
 
 1. Set the `NEXUS_PASSWORD` variable **only if needed**.
@@ -227,8 +233,8 @@ If the following command does not complete successfully, check if the `TOKEN` en
    > > `read -s` is used to prevent the password from being written to the screen or the shell history.
    >
    > ```bash
-   > ncn-m001# read -s NEXUS_PASSWORD
-   > ncn-m001# export NEXUS_PASSWORD
+   > read -s NEXUS_PASSWORD
+   > export NEXUS_PASSWORD
    > ```
    >
    > Otherwise, a random 32-character base-64-encoded string will be generated
@@ -236,8 +242,9 @@ If the following command does not complete successfully, check if the `TOKEN` en
 
 1. Run the script.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prerequisites.sh --csm-version ${CSM_RELEASE}
+   /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prerequisites.sh --csm-version ${CSM_RELEASE}
    ```
 
    **IMPORTANT:** If any errors are encountered, then potential fixes should be displayed where the error occurred. **If** the upgrade `prerequisites.sh` script fails and does
@@ -245,8 +252,9 @@ If the following command does not complete successfully, check if the `TOKEN` en
 
 1. Unset the `NEXUS_PASSWORD` variable, if it was set in the earlier step.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# unset NEXUS_PASSWORD
+   unset NEXUS_PASSWORD
    ```
 
 1. Commit changes to `customizations.yaml` (optional).
@@ -257,24 +265,21 @@ If the following command does not complete successfully, check if the `TOKEN` en
 
    For example:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# git clone <URL> site-init
-   ncn-m001# cd site-init
-   ncn-m001# kubectl -n loftsman get secret site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d - > customizations.yaml
-   ncn-m001# git add customizations.yaml
-   ncn-m001# git commit -m 'CSM 1.2 upgrade - customizations.yaml'
-   ncn-m001# git push
+   git clone <URL> site-init
+   cd site-init
+   kubectl -n loftsman get secret site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d - > customizations.yaml
+   git add customizations.yaml
+   git commit -m 'CSM 1.2 upgrade - customizations.yaml'
+   git push
    ```
-
-<a name="backup_workload_manager"></a>
 
 ## Stage 0.5 - Backup workload manager data
 
 To prevent any possibility of losing workload manager configuration data or files, a backup is required. Execute all backup procedures (for the workload manager in use) located in
 the `Troubleshooting and Administrative Tasks` sub-section of the `Install a Workload Manager` section of the
 `HPE Cray Programming Environment Installation Guide: CSM on HPE Cray EX`. The resulting backup data should be stored in a safe location off of the system.
-
-<a name="stage_completed"></a>
 
 ## Stage completed
 

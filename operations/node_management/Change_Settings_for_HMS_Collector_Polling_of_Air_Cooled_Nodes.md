@@ -20,23 +20,26 @@ The following are the best practices for using the HMS Collector polling:
 
   - This is done via the CAPMC `get_xname_status` command.
 
+      (`ncn#`)
       ```bash
-      ncn# cray capmc get_xname_status create --xnames LIST_OF_NODES
+      cray capmc get_xname_status create --xnames LIST_OF_NODES
       ```
 
 - Polling of air-cooled nodes should be disabled by default. Before nodes are booted, verify that `cray-hms-hmcollector` polling is disabled.
 
   - To check if polling is disabled:
 
+      (`ncn#`)
       ```bash
-      ncn# kubectl get deployments.apps -n services cray-hms-hmcollector -o json | \
+      kubectl get deployments.apps -n services cray-hms-hmcollector -o json | \
                jq '.spec.template.spec.containers[].env[]|select(.name=="POLLING_ENABLED")'
       ```
 
   - To disable polling, if it is not already:
 
+      (`ncn#`)
       ```bash
-      ncn# kubectl edit deployment -n services cray-hms-hmcollector
+      kubectl edit deployment -n services cray-hms-hmcollector
       ```
 
       Change the value for the `POLLING_ENABLED` environment variable to `false` in the `spec:` section. Save and quit the editor for the changes to take effect. The
@@ -44,16 +47,18 @@ The following are the best practices for using the HMS Collector polling:
 
 - Only enable telemetry polling when needed, such as when running jobs.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl edit deployment -n services cray-hms-hmcollector
+    kubectl edit deployment -n services cray-hms-hmcollector
     ```
 
     Change the value for the `POLLING_ENABLED` environment variable to `true` in the `spec:` section. Save and quit the editor for the changes to take effect. The `cray-hms-hmcollector` pod will automatically restart.
 
 - If BMCs are encountering issues at a high rate, increase the polling interval. Do not set the polling interval to less than the default of 10 seconds.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl edit deployment -n services cray-hms-hmcollector
+    kubectl edit deployment -n services cray-hms-hmcollector
     ```
 
     Change the value for the `POLLING_INTERVAL` environment variable to the selected rate in seconds. This value is located in the `spec:` section. Save and quit the editor
@@ -67,11 +72,12 @@ To restart the BMCs:
 
 > `read -s` is used to prevent the password from being written to the screen or the shell history.
 
+(`ncn#`)
 ```bash
-ncn# USERNAME=root
-ncn# read -s IPMI_PASSWORD
-ncn# export IPMI_PASSWORD
-ncn# ipmitool -H BMC_HOSTNAME -U $USERNAME -E -I lanplus mc reset cold
+USERNAME=root
+read -s IPMI_PASSWORD
+export IPMI_PASSWORD
+ipmitool -H BMC_HOSTNAME -U $USERNAME -E -I lanplus mc reset cold
 ```
 
 If the reset does not recover the BMCs, then use the following steps to shut down the nodes, unplug the servers, and plug them back in:
@@ -80,8 +86,9 @@ If the reset does not recover the BMCs, then use the following steps to shut dow
 
     For each server with a BMC in a bad state:
 
+    (`ncn#`)
     ```bash
-    ncn# ipmitool -H BMC_HOSTNAME -U $USERNAME -E -I lanplus chassis power soft
+    ipmitool -H BMC_HOSTNAME -U $USERNAME -E -I lanplus chassis power soft
     ```
 
     Wait 30 seconds after shutting down the nodes before proceeding.
@@ -94,14 +101,16 @@ If the reset does not recover the BMCs, then use the following steps to shut dow
 
 1. Verify that the BMCs are available again.
 
+    (`ncn#`)
     ```bash
-    ncn# ping -c 1 BMC_HOSTNAME
+    ping -c 1 BMC_HOSTNAME
     ```
 
 1. Check the power of the nodes.
 
+    (`ncn#`)
     ```bash
-    ncn# cray capmc get_xname_status create --xnames LIST_OF_NODES
+    cray capmc get_xname_status create --xnames LIST_OF_NODES
     ```
 
 After these steps, the nodes should be ready to be booted again with the Boot Orchestration Service (BOS).

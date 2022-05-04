@@ -51,4 +51,4 @@ Displaying ipv6 routes selected for forwarding
 2. Administrators can validate using the `show` command(s)
 3. Administrators can ping the connected device
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

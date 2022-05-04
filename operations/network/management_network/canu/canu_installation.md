@@ -18,4 +18,4 @@ In order to run CANU, both `python3` and `pip3` must be installed.
    linux# python3 setup.py develop --user
    ```
 
-[Back to Index](index.md)
+[Back to Index](README.md)

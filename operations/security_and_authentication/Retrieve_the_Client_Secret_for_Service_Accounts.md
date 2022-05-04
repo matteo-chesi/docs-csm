@@ -12,7 +12,6 @@ A client or service account has been created. See [Create a Service Account in K
 
 Follow the steps in only one of the sections below depending on if it is preferred to use the Keycloak REST API or Keycloak administration console UI.
 
-
 #### Use the Keycloak Administration Console UI
 
 1.  Log in to the administration console.
@@ -38,7 +37,6 @@ Follow the steps in only one of the sections below depending on if it is preferr
     ```bash
     ncn-w001# export CLIENT_SECRET=8a91fdf2-f9c5-4c7f-8da8-49cfbb97680a
     ```
-
 
 #### Use the Keycloak REST API
 

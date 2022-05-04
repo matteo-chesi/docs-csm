@@ -8,7 +8,6 @@ Aruba
 >
 > switch(config)#vrf CAN
 
-
 Move interfaces into CAN VRF
 
 * If you have existing CAN interface configuration it will be deleted once you move the interface into the new VRF. You will have to re-apply it.
@@ -301,7 +300,7 @@ traceroute to 10.101.8.113 (10.101.8.113), 64 hops max, 52 byte packets
 * You can also listen on all the HSN interfaces for ping/traceroute while you ping the external facing iP, in this example 10.101.8.113.
 
 ```
-ncn-m001# nodes=$(kubectl get nodes| awk '{print $1}' | grep  ncn-w | awk -vORS=, '{print $1}'); pdsh -w ${nodes} "tcpdump -envli hsn0 icmp"
+nodes=$(kubectl get nodes| awk '{print $1}' | grep  ncn-w | awk -vORS=, '{print $1}'); pdsh -w ${nodes} "tcpdump -envli hsn0 icmp"
 
 ncn-w002: tcpdump: listening on hsn0, link-type EN10MB (Ethernet), capture size 262144 bytes
 ncn-w003: tcpdump: listening on hsn0, link-type EN10MB (Ethernet), capture size 262144 bytes
@@ -311,4 +310,4 @@ ncn-w003:     172.25.64.129 > 10.101.8.113: ICMP echo request, id 37368, seq 0, 
 ncn-w003: 04:59:36.825591 98:5d:82:71:ba:2d > 02:00:00:00:00:1e, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 54, id 33996, offset 0, flags [none], proto ICMP (1), length 84)
 ```
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

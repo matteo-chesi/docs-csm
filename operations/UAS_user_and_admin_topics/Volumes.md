@@ -16,6 +16,6 @@ This can be controlled more precisely by defining and using [UAI Classes](UAI_Cl
 **NOTE:** As with UAI images, registering a volume with UAS creates the configuration that will be used to create a UAI. If the underlying object referred to by the volume does not exist at the time the UAI is created,
 the UAI will, in most cases, wait until the object becomes available before starting up. This will be visible in the UAI state which will eventually move to `waiting`.
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: List Volumes Registered in UAS](List_Volumes_Registered_in_UAS.md)

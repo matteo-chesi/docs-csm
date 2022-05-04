@@ -33,4 +33,4 @@ Interface loopback1 is up
 2. Administrators can give a loopback interface an IP address
 3. Administrators can validate the configuration using the `show` commands.
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

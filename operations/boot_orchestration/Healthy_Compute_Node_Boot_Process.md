@@ -40,8 +40,9 @@ The last two steps repeat until the file transfer is complete. The last block fr
 
 A healthy transaction with the Boot Script Service \(BSS\) looks similar to the following:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray bss bootscript list --mac a4:bf:01:3e:c0:a2
+cray bss bootscript list --mac a4:bf:01:3e:c0:a2
 ```
 
 Example output:

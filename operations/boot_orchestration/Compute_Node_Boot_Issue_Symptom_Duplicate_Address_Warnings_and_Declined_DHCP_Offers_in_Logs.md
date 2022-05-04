@@ -43,8 +43,9 @@ There are multiple ways to check if this problem exists:
 -   Ping the IP address and see if another component responds. Log into the component and determine its IP address. If it is the same as the IP address that DHCP is attempting to assign, then this issue does exist.
 -   Check the Address Resolution Protocol \(ARP\) cache using the `arp` command. Because it is a cache, it is possible that IP addresses can age out of the cache, so the IP address may not be present. If the address that is failing to be assigned is in the ARP cache, and it is assigned to a node with a different MAC address, then that is confirmation that this problem has occurred.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# arp
+    arp
     ```
 
     Example output:
@@ -65,7 +66,6 @@ There are multiple ways to check if this problem exists:
 
     [...]
     ```
-
 
 ### Resolution
 

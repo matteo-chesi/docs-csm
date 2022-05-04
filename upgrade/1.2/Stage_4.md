@@ -68,8 +68,9 @@ on any of the first three storage nodes (`ncn-s001`, `ncn-s002`, or `ncn-s003`).
 
 1. Check the upgrade status.
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# ceph orch upgrade status
+    ceph orch upgrade status
     ```
 
     Example output:
@@ -85,23 +86,26 @@ on any of the first three storage nodes (`ncn-s001`, `ncn-s002`, or `ncn-s003`).
 
 1. Pause and resume the upgrade.
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# ceph orch upgrade pause
-    ncn-s# ceph orch upgrade resume
+    ceph orch upgrade pause
+    ceph orch upgrade resume
     ```
 
 1. Watch `cephadm`.
 
     This command watches the `cephadm` logs. If the issue occurs again, it will give more details about which node may be having an issue.
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# ceph -W cephadm
+    ceph -W cephadm
     ```
 
 1. If the issue occurs again, then log into each of the storage nodes and perform a `podman` pull of the image.
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# podman pull registry.local/artifactory.algol60.net/csm-docker/stable/quay.io/ceph/ceph:v15.2.15
+    podman pull registry.local/artifactory.algol60.net/csm-docker/stable/quay.io/ceph/ceph:v15.2.15
     ```
 
 If these steps do not resolve the issue, then contact support for further assistance.
@@ -267,8 +271,6 @@ Verify that the upgrade has completed using the following procedure.
     ```text
     HEALTH_OK
     ```
-
-<a name="stage_completed"></a>
 
 ## Stage completed
 

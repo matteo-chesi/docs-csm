@@ -11,7 +11,7 @@ UAI host node identification is an exclusive activity, not an inclusive one, so 
 1. Identify nodes that could potentially be UAI host nodes by their Kubernetes role.
 
    ```bash
-   ncn-m001-pit# kubectl get nodes | grep -v master
+   ncn-m001-kubectl get nodes | grep -v master
    ```
 
    Example output:
@@ -29,7 +29,7 @@ UAI host node identification is an exclusive activity, not an inclusive one, so 
 2. Identify the nodes that are excluded from eligibility as UAI host nodes.
 
    ```bash
-   ncn-m001-pit# kubectl get no -l uas=False
+   ncn-m001-kubectl get no -l uas=False
    ```
 
    Example output:
@@ -49,7 +49,7 @@ UAI host node identification is an exclusive activity, not an inclusive one, so 
 UAI host nodes are determined by labeling the nodes to reject UAIs. For example:
 
 ```bash
-ncn-m001-pit# kubectl label node ncn-w001 uas=False --overwrite
+ncn-m001-kubectl label node ncn-w001 uas=False --overwrite
 ```
 
 Please note here that setting `uas=True` or any variant of that, while potentially useful for local book keeping purposes, does NOT transform the node into a UAS host node.
@@ -65,8 +65,9 @@ It can create and update node groups for management master nodes, storage nodes,
 
 The following summarizes its use:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# /opt/cray/csm/scripts/node_management/make_node_groups --help
+/opt/cray/csm/scripts/node_management/make_node_groups --help
 ```
 
 Example output:
@@ -92,8 +93,9 @@ Where:
 
 Here is an example of a dry-run that will create or update a node group for UAI host nodes:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# /opt/cray/csm/scripts/node_management/make_node_groups -N -R -u
+/opt/cray/csm/scripts/node_management/make_node_groups -N -R -u
 ```
 
 Example output:
@@ -129,6 +131,6 @@ By further adding the `uas=False` label to all worker nodes in the Kubernetes cl
 
 Further selection of UAI hosts can be achieved by any site by adding further taints to Kubernetes nodes, and configuring tolerations for those taints into specific [UAI Classes](UAI_Classes.md).
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: UAI macvlans Network Attachments](UAI_macvlans_Network_Attachments.md)

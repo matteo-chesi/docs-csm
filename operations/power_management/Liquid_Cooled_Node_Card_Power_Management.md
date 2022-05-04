@@ -63,8 +63,9 @@ Hardware State Manager.
 
 ### Get Node Power Control and Limit Settings
 
+(`ncn#`)
 ```console
-ncn# cray capmc get_power_cap create –-nids NID_LIST --format json
+cray capmc get_power_cap create –-nids NID_LIST --format json
 ```
 
 Return the current power cap settings for a node and any accelerators that
@@ -72,8 +73,9 @@ are installed. Valid settings are only returned if power limiting is enabled
 on the target nodes, those nodes are booted, and the nodes are in the Ready
 state.
 
+(`ncn#`)
 ```console
-ncn# cray capmc get_power_cap create --nids 1160 --format json
+cray capmc get_power_cap create --nids 1160 --format json
 ```
 
 Example output:
@@ -114,15 +116,17 @@ Example output:
 
 ### Get Power Limit Capabilities
 
+(`ncn#`)
 ```console
-ncn#  cray capmc get_power_cap_capabilities create –-nids NID_LIST --format json
+ cray capmc get_power_cap_capabilities create –-nids NID_LIST --format json
 ```
 
 Return the min and max power cap settings for the node list and any
 accelerators that are installed.
 
+(`ncn#`)
 ```console
-ncn# cray capmc get_power_cap_capabilities create --nids 1160 --format json
+cray capmc get_power_cap_capabilities create --nids 1160 --format json
 ```
 
 Example output:
@@ -182,16 +186,18 @@ Example output:
 
 ### Set Node Power Limit
 
+(`ncn#`)
 ```console
-ncn# cray capmc set_power_cap create --nids NID_LIST --control CONTROL_NAME VALUE --format json
+cray capmc set_power_cap create --nids NID_LIST --control CONTROL_NAME VALUE --format json
 ```
 
 Set the total power limit of the node by using the name of the node control.
 The power provided to the host CPU and memory is the total node power limit
 minus the power limits of each of the accelerators installed on the node.
 
+(`ncn#`)
 ```console
-ncn# cray capmc set_power_cap create --nids 1160 --control "Node Power Limit" 1785
+cray capmc set_power_cap create --nids 1160 --control "Node Power Limit" 1785
 ```
 
 Example output:
@@ -214,8 +220,9 @@ Multiple controls can be set at the same time on multiple nodes, but all
 target nodes must have the same set of controls available, otherwise the
 call will fail.
 
+(`ncn#`)
 ```console
-ncn# cray capmc set_power_cap create \
+cray capmc set_power_cap create \
             --nids [1160-1163] \
             --control "Node Power Limit" 1785 \
             --control "Accelerator0 Power Limit" 300 \
@@ -258,8 +265,9 @@ Example output:
 
 ### Remove Node Power Limit (Set to Default)
 
+(`ncn#`)
 ```console
-ncn# cray capmc set_power_cap create --nids NID_LIST --control CONTROL_NAME 0 --format json
+cray capmc set_power_cap create --nids NID_LIST --control CONTROL_NAME 0 --format json
 ```
 
 Reset the power limit to the default maximum. Alternatively, using the max
@@ -267,8 +275,9 @@ value returned from get_power_cap_capabilities may also be used. Multiple
 controls can be set at the same time on multiple nodes, but all target nodes
 must have the same set of controls available, otherwise the call will fail.
 
+(`ncn#`)
 ```console
-ncn# cray capmc set_power_cap create --nids 1160 --control "Node Power Limit" 0 --format json
+cray capmc set_power_cap create --nids 1160 --control "Node Power Limit" 0 --format json
 ```
 
 Example output:
@@ -294,14 +303,16 @@ Example output:
 Determine the valid power limit range for the target control by using the
 `get_power_cap_capabilities` Cray CLI option.
 
+(`ncn#`)
 ```console
-ncn# cray capmc get_power_cap_capabilities create –-nids NID_LIST --format json
+cray capmc get_power_cap_capabilities create –-nids NID_LIST --format json
 ```
 
 For example:
 
+(`ncn#`)
 ```console
-ncn# cray capmc get_power_cap_capabilities create --nids 1160 --format json
+cray capmc get_power_cap_capabilities create --nids 1160 --format json
 ```
 
 Example output:
@@ -364,27 +375,29 @@ Redfish endpoint to enable power limiting for each control. Be aware that
 the power limit for accelerators will be much lower than the power limit for
 the node.
 
+(`ncn#`)
 ```console
-ncn# limit=1985
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
+limit=1985
+curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
         https://${BMC}/redfish/v1/Chassis/${node}/Controls/NodePowerLimit \
         -d '{"ControlMode":"Automatic","SetPoint":'${limit}'}'
 ```
 
 If there are accelerators installed, enabled power limiting on those as well.
 
+(`ncn#`)
 ```console
-ncn# limit=400
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
+limit=400
+curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
         https://${BMC}/redfish/v1/Chassis/${node}/Controls/Accelerator0PowerLimit \
         -d '{"ControlMode":"Automatic","SetPoint":'${limit}'}'
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
+curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
         https://${BMC}/redfish/v1/Chassis/${node}/Controls/Accelerator1PowerLimit \
         -d '{"ControlMode":"Automatic","SetPoint":'${limit}'}'
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
+curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
         https://${BMC}/redfish/v1/Chassis/${node}/Controls/Accelerator2PowerLimit \
         -d '{"ControlMode":"Automatic","SetPoint":'${limit}'}'
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
+curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
         https://${BMC}/redfish/v1/Chassis/${node}/Controls/Accelerator3PowerLimit \
         -d '{"ControlMode":"Automatic","SetPoint":'${limit}'}'
 ```
@@ -393,25 +406,27 @@ ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
 
 Each control at the Redfish endpoint needs to be disabled.
 
+(`ncn#`)
 ```console
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" \
+curl -k -u $login:$pass -H "Content-Type: application/json" \
         -X PATCH https://${BMC}/redfish/v1/Chassis/${node}/Controls/NodePowerLimit \
         -d '{"ControlMode":"Disabled"}'
 ```
 
 If there are accelerators installed, disable power limiting on those as well.
 
+(`ncn#`)
 ```console
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
+curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
         https://${BMC}/redfish/v1/Chassis/${node}/Controls/Accelerator0PowerLimit \
         -d '{"ControlMode":"Disabled"}'
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
+curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
         https://${BMC}/redfish/v1/Chassis/${node}/Controls/Accelerator1PowerLimit \
         -d '{"ControlMode":"Disabled"}'
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
+curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
         https://${BMC}/redfish/v1/Chassis/${node}/Controls/Accelerator2PowerLimit \
         -d '{"ControlMode":"Disabled"}'
-ncn# curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
+curl -k -u $login:$pass -H "Content-Type: application/json" -X PATCH \
         https://${BMC}/redfish/v1/Chassis/${node}/Controls/Accelerator3PowerLimit \
         -d '{"ControlMode":"Disabled"}'
 ```

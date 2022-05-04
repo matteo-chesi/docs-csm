@@ -6,13 +6,11 @@ Use this procedure to troubleshoot Ceph MDS reporting slow requests after follow
 
 > **NOTICE:** These steps are based off [upstream Ceph documentation](https://docs.ceph.com/en/octopus/cephfs/troubleshooting/).
 
-
 ## Prerequisites
 
 * The [Identify Ceph Latency Issues](Identify_Ceph_Latency_Issues.md) procedure has been completed.
 * This issue has been encountered and this page is being used as a reference for commands.
 * The correct version of the documentation for the cluster running is being used.
-
 
 ## Procedure
 
@@ -58,7 +56,6 @@ Use this procedure to troubleshoot Ceph MDS reporting slow requests after follow
    ```
 
    > **NOTE:** The example above is about how to run the command. Recreating the exact scenario to provide a full example is not easily done. This will be updated when the information is available.
-
 
 ## General Steps from Upstream
 

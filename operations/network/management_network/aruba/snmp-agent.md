@@ -70,4 +70,4 @@ Host                     Port  Type      Version SecName                        
 2. The output of all `show` commands is correct
 3. Administrators can connect to the switch from the workstation
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

@@ -4,12 +4,10 @@ Check for any etcd cluster alarms and clear them as needed. An etcd cluster alar
 
 For example, a cluster's database "NOSPACE" alarm is set when database storage space is no longer available. A subsequent defrag may free up database storage space, but writes to the database will continue to fail while the "NOSPACE" alarm is set.
 
-
 ### Prerequisites
 
 -   This procedure requires root privileges.
 -   The etcd clusters are in a healthy state.
-
 
 ### Procedure
 

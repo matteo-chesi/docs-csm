@@ -18,8 +18,9 @@ This procedure requires admin privileges.
 
     Ceph provides block storage and requires a clock skew of less than 0.05 seconds to report back healthy.
 
+    (`ncn#`)
     ```bash
-    ncn# ceph -s
+    ceph -s
     ```
 
     Example output:
@@ -55,20 +56,23 @@ This procedure requires admin privileges.
 
         If looking back to earlier logs, use the `xzgrep` command for the `ceph.log` or the `ceph-mon*.log`. There are cases where the MGR and OSD logs are not in the `ceph-mon` logs. This indicates that the skew was very drastic and sudden, causing the `ceph-mon` process to panic and not log the issue.
 
+        (`ncn-s#`)
         ```bash
-        ncn-s# grep skew /var/log/ceph/*.log
+        grep skew /var/log/ceph/*.log
         ```
 
     1. View the system time.
 
+        (`ncn-s#`)
         ```bash
-        ncn-s# ansible ceph_all -m shell -a date
+        ansible ceph_all -m shell -a date
         ```
 
 1. Sync the clocks to fix the issue.
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# systemctl restart chronyd.service
+    systemctl restart chronyd.service
     ```
 
     Wait a bit after running the command and the Ceph alert will clear. Restart the Ceph mon service on that node if the alert does not clear.
@@ -77,8 +81,9 @@ This procedure requires admin privileges.
 
     It may take up to 15 minutes for this warning to resolve.
 
+    (`ncn#`)
     ```bash
-    ncn# ceph -s
+    ceph -s
     ```
 
     Example output:

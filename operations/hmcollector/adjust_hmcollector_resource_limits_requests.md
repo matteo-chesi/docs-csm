@@ -4,14 +4,14 @@
 * [Customize cray-hms-hmcollector resource limits and requests in customizations.yaml](#customize-resource-limits)
 * [Redeploy cray-hms-hmcollector with new resource limits and requests](#redeploy-cray-hms-hmcollector)
 
-<a name="resource-limit-tuning"></a>
 ## Resource Limit Tuning Guidance
 
 ### Inspect current resource usage in the cray-hms-hmcollector pod
 
 View resource usage of the containers in the cray-hms-hmcollector pod:
+(`ncn-m001#`)
 ```bash
-ncn-m001# kubectl -n services top pod -l app.kubernetes.io/name=cray-hms-hmcollector --containers
+kubectl -n services top pod -l app.kubernetes.io/name=cray-hms-hmcollector --containers
 POD                                     NAME                   CPU(cores)   MEMORY(bytes)
 cray-hms-hmcollector-7c5b797c5c-zxt67   istio-proxy            187m         275Mi
 cray-hms-hmcollector-7c5b797c5c-zxt67   cray-hms-hmcollector   4398m        296Mi
@@ -30,7 +30,7 @@ The default resource limits for the istio-proxy container are:
 Describe the collector-hms-hmcollector pod to determine if it has been OOMKilled in the recent past:
 
 ```
-ncn-m001# kubectl -n services describe pod -l app.kubernetes.io/name=cray-hms-hmcollector
+kubectl -n services describe pod -l app.kubernetes.io/name=cray-hms-hmcollector
 ```
 
 Look for the `cray-hms-hmcollector` container and check its `Last State` (if present) to see if the container has been previously terminated due to it running out of memory:
@@ -104,26 +104,28 @@ Otherwise, if the `cray-hms-hmcollector` and `istio-proxy` containers are not hi
 
 For reference, on a system with 4 fully populated liquid cooled cabinets the cray-hms-hmcollector was consuming `~5` or `~5000m` of CPU and `~300Mi` of memory.
 
-<a name="customize-resource-limits"></a>
 ## Customize cray-hms-hmcollector resource limits and requests in customizations.yaml
 
 1. If the [`site-init` repository is available as a remote repository](../../install/prepare_site_init.md#push-to-a-remote-repository)
    then clone it on the host orchestrating the upgrade:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# git clone "$SITE_INIT_REPO_URL" site-init
+   git clone "$SITE_INIT_REPO_URL" site-init
    ```
 
    Otherwise, create a new `site-init` working tree:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# git init site-init
+   git init site-init
    ```
 
 2. Download `customizations.yaml`:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > site-init/customizations.yaml
+   kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > site-init/customizations.yaml
    ```
 
 3. Review, add, and commit `customizations.yaml` to the local `site-init`
@@ -136,27 +138,30 @@ For reference, on a system with 4 fully populated liquid cooled cabinets the cra
    > changed at some point. If that is the case then be cautious, _there may be
    > dragons ahead_.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# cd site-init
-   ncn-m001# git diff
-   ncn-m001# git add customizations.yaml
-   ncn-m001# git commit -m 'Add customizations.yaml from site-init secret'
+   cd site-init
+   git diff
+   git add customizations.yaml
+   git commit -m 'Add customizations.yaml from site-init secret'
    ```
 
 4. Update `customizations.yaml` with the existing `cray-hms-hmcollector` resource limits and requests settings:
 
    Persist resource requests and limits from the cray-hms-hmcollector deployment:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl -n services get deployments cray-hms-hmcollector \
+   kubectl -n services get deployments cray-hms-hmcollector \
       -o jsonpath='{.spec.template.spec.containers[].resources}' | yq r -P - | \
       yq w -f - -i ./customizations.yaml spec.kubernetes.services.cray-hms-hmcollector.resources
    ```
 
    Persist annotations manually added to `cray-hms-hmcollector` deployment:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl -n services get deployments cray-hms-hmcollector \
+   kubectl -n services get deployments cray-hms-hmcollector \
       -o jsonpath='{.spec.template.metadata.annotations}' | \
       yq d -P - '"traffic.sidecar.istio.io/excludeOutboundPorts"' | \
       yq w -f - -i ./customizations.yaml spec.kubernetes.services.cray-hms-hmcollector.podAnnotations
@@ -164,8 +169,9 @@ For reference, on a system with 4 fully populated liquid cooled cabinets the cra
 
    View the updated overrides added to `customizations.yaml`. If the value overrides look different to the sample output below then the resource limits and requests have been manually modified in the past.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# yq r ./customizations.yaml spec.kubernetes.services.cray-hms-hmcollector
+   yq r ./customizations.yaml spec.kubernetes.services.cray-hms-hmcollector
    ```
 
    Example output:
@@ -211,45 +217,47 @@ For reference, on a system with 4 fully populated liquid cooled cabinets the cra
    and any customer-specific settings are correct.
 
    ```
-   ncn-m001# git diff
+   git diff
    ```
 
 7. Add and commit `customizations.yaml` if there are any changes:
 
    ```
-   ncn-m001# git add customizations.yaml
-   ncn-m001# git commit -m "Update customizations.yaml consistent with CSM $CSM_RELEASE_VERSION"
+   git add customizations.yaml
+   git commit -m "Update customizations.yaml consistent with CSM $CSM_RELEASE_VERSION"
    ```
 
 8. Update `site-init` sealed secret in `loftsman` namespace:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl delete secret -n loftsman site-init
-   ncn-m001# kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
+   kubectl delete secret -n loftsman site-init
+   kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
    ```
 
 9. Push to the remote repository as appropriate:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# git push
+   git push
    ```
 
 10. __If this document was referenced during an upgrade procure, then skip__ Otherwise, continue on to [Redeploy cray-hms-hmcollector with new resource limits and requests](#redeploy-cray-hms-hmcollector) for the the new resource limits and requests to take effect.
 
-
-<a name="redeploy-cray-hms-hmcollector"></a>
 ## Redeploy cray-hms-hmcollector with new resource limits and requests
 1. Determine the version of HM Collector:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# HMCOLLECTOR_VERSION=$(kubectl -n loftsman get cm loftsman-sysmgmt -o jsonpath='{.data.manifest\.yaml}' | yq r - 'spec.charts.(name==cray-hms-hmcollector).version')
-    ncn-m001# echo $HMCOLLECTOR_VERSION
+    HMCOLLECTOR_VERSION=$(kubectl -n loftsman get cm loftsman-sysmgmt -o jsonpath='{.data.manifest\.yaml}' | yq r - 'spec.charts.(name==cray-hms-hmcollector).version')
+    echo $HMCOLLECTOR_VERSION
     ```
 
 2. Create `hmcollector-manifest.yaml`:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cat > hmcollector-manifest.yaml << EOF
+    cat > hmcollector-manifest.yaml << EOF
     apiVersion: manifests/v1beta1
     metadata:
         name: hmcollector
@@ -263,20 +271,23 @@ For reference, on a system with 4 fully populated liquid cooled cabinets the cra
 
 3. Acquire `customizations.yaml`:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > customizations.yaml
+   kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > customizations.yaml
    ```
 
 4. Merge `customizations.yaml` with `hmcollector-manifest.yaml`:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# manifestgen -c customizations.yaml -i ./hmcollector-manifest.yaml > ./hmcollector-manifest.out.yaml
+    manifestgen -c customizations.yaml -i ./hmcollector-manifest.yaml > ./hmcollector-manifest.out.yaml
     ```
 
 5. Redeploy the HM Collector helm chart:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# loftsman ship \
+    loftsman ship \
         --charts-repo https://packages.local/repository/charts \
         --manifest-path hmcollector-manifest.out.yaml
     ```

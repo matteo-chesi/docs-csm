@@ -12,8 +12,9 @@ error state. Once any remaining testing or validation work is complete, these po
 
     1. View the PVCs in all namespaces.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl get pvc –A
+        kubectl get pvc –A
         ```
 
         Truncated example output (some trailing lines omitted):
@@ -29,15 +30,17 @@ error state. Once any remaining testing or validation work is complete, these po
 
     1. Get a list of PVCs for a particular pod.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl get pod POD_NAME -o \
+        kubectl get pod POD_NAME -o \
                 jsonpath='{.spec.volumes[*].persistentVolumeClaim.claimName}{"\n"}'
         ```
 
 1. Verify that the time is synced across all NCNs.
 
+    (`ncn#`)
     ```bash
-    ncn# pdsh -w ncn-s00[1-3],ncn-m00[1-3],ncn-w00[1-3] date
+    pdsh -w ncn-s00[1-3],ncn-m00[1-3],ncn-w00[1-3] date
     ```
 
     Example output:
@@ -58,8 +61,9 @@ error state. Once any remaining testing or validation work is complete, these po
 
     The example below is displaying all of the pods running on `ncn-w001`.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get pods -A -o wide | grep NODE_NAME
+    kubectl get pods -A -o wide | grep NODE_NAME
     ```
 
     Example output (truncated):
@@ -82,8 +86,9 @@ error state. Once any remaining testing or validation work is complete, these po
 
     To view the pods in an unhealthy state:
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get pods -A -o wide | grep -v -e Completed -e Running
+    kubectl get pods -A -o wide | grep -v -e Completed -e Running
     ```
 
     Example output (truncated):
@@ -115,8 +120,9 @@ error state. Once any remaining testing or validation work is complete, these po
 
 1. View the status of the node before taking it down.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get nodes -o wide
+    kubectl get nodes -o wide
     ```
 
     Example output:
@@ -137,17 +143,19 @@ error state. Once any remaining testing or validation work is complete, these po
 
     > `read -s` is used to prevent the password from being written to the screen or the shell history.
 
+    (`ncn#`)
     ```bash
-    ncn# USERNAME=root
-    ncn# read -s IPMI_PASSWORD
-    ncn# export IPMI_PASSWORD
-    ncn# ipmitool -H BMC_IP_ADDRESS -v -I lanplus -U $USERNAME -E chassis power off
+    USERNAME=root
+    read -s IPMI_PASSWORD
+    export IPMI_PASSWORD
+    ipmitool -H BMC_IP_ADDRESS -v -I lanplus -U $USERNAME -E chassis power off
     ```
 
 1. View the node status after the node is taken down.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get nodes
+    kubectl get nodes
     ```
 
 1. View the pods on the system to see if their states have changed.
@@ -159,33 +167,37 @@ error state. Once any remaining testing or validation work is complete, these po
         - Check for any pods that are still running on the node that was brought down; if there are still some, make sure those are expected.
         - View the status for all pods before looking for any new error states.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl get pods -A -o wide
+        kubectl get pods -A -o wide
         ```
 
     1. Take note of any pods that are in a `Pending` state.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl get pods -A -o wide | grep Pending
+        kubectl get pods -A -o wide | grep Pending
         ```
 
     1. Capture the details for any pod that is in an unexpected state.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl describe pod POD_NAME
+        kubectl describe pod POD_NAME
         ```
-
-### Collect information after the node is powered on
 
 1. Power the node back on.
 
+### Collect Information After the Node is Powered On
+
     > `read -s` is used to prevent the password from being written to the screen or the shell history.
 
+    (`ncn#`)
     ```bash
-    ncn# USERNAME=root
-    ncn# read -s IPMI_PASSWORD
-    ncn# export IPMI_PASSWORD
-    ncn# ipmitool -H BMC_IP_ADDRESS -v -I lanplus -U $USERNAME -E chassis power on
+    USERNAME=root
+    read -s IPMI_PASSWORD
+    export IPMI_PASSWORD
+    ipmitool -H BMC_IP_ADDRESS -v -I lanplus -U $USERNAME -E chassis power on
     ```
 
 1. Record the status of the pods again.
@@ -195,20 +207,23 @@ error state. Once any remaining testing or validation work is complete, these po
 
     1. View all the pods on the system.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl get pods --all-namespaces -o wide
+        kubectl get pods --all-namespaces -o wide
         ```
 
     1. Take note of any pods that are in a `Pending` or `Error` state.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl get pods -A -o wide | grep -e 'Pending|Error'
+        kubectl get pods -A -o wide | grep -e 'Pending|Error'
         ```
 
     1. Capture the details for any pod that is in an unexpected state.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl describe pod POD_NAME
+        kubectl describe pod POD_NAME
         ```
 
 The node that encountered issues should now be returned to a healthy state.

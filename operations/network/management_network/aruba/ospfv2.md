@@ -69,5 +69,5 @@ switch# show ip route ospf
 2. Administrators can enable OSPF on the loopback, SVI or routed interfaces
 3. The output of the `show` commands looks correct
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)
 

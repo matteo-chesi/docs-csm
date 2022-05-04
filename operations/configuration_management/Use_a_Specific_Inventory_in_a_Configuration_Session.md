@@ -6,8 +6,9 @@ Therefore, an `additional_inventory` mapping can be added to the CFS configurati
 
 For example:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cat configurations-example-additional-inventory.json
+cat configurations-example-additional-inventory.json
 ```
 
 Example configuration:

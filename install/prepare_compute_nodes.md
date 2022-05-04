@@ -2,16 +2,14 @@
 
 ### Topics:
    1. [Configure HPE Apollo 6500 XL645d Gen10 Plus Compute Nodes](#configure-hpe-apollo-6500-x645d-gen10-plus-compute-nodes)
-      1. [Gather information](#gather_information)
-      2. [Configure the iLO to use VLAN 4](#configure_ilo)
-      3. [Configure the switch port for the iLO to use VLAN 4](#configure_switch_port)
-      4. [Clear bad MAC and IP address out of KEA](#cleanup_kea)
-      5. [Clear bad ID out of HSM](#cleanup_hsm)
+      1. [Gather information](#gather-information)
+      2. [Configure the iLO to use VLAN 4](#configure-ilo)
+      3. [Configure the switch port for the iLO to use VLAN 4](#configure-switch-port)
+      4. [Clear bad MAC and IP address out of KEA](#cleanup-kea)
+      5. [Clear bad ID out of HSM](#cleanup-hsm)
    2. [Update the BIOS Time on Gigabyte Compute Nodes](#update-the-bios-time-on-gigabyte-compute-nodes)
 
 ## Details
-
-<a name="configure-hpe-apollo-6500-x645d-gen10-plus-compute-nodes"></a>
 
 ### Configure HPE Apollo 6500 XL645d Gen10 Plus Compute Nodes
 
@@ -32,16 +30,15 @@ will have component names (xnames) as follows: `x3000c0s30b1`, `x3000c0s30b2`, `
 on. The node indicator is always a 0. For example, `x3000c0s30b1n0` or
 `x3000c0s30b4n0`.
 
-   <a name="gather_information"></a>
-
-1. Gather information.
+   1. Gather information.
 
    The following is an example using `x3000c0s30b1n0` as the target compute node
    component name (xname):
 
+   (`ncn#`)
    ```bash
-   ncn# XNAME=x3000c0s30b1n0
-   ncn# cray hsm inventory ethernetInterfaces list --component-id \
+   XNAME=x3000c0s30b1n0
+   cray hsm inventory ethernetInterfaces list --component-id \
          ${XNAME} --format json | jq '.[]|select((.IPAddresses|length)>0)'
    {
    "ID": "6805cabbc182",
@@ -76,18 +73,17 @@ on. The node indicator is always a 0. For example, `x3000c0s30b1n0` or
 
    Make a note of the ID, MACAddress, and IPAddress of the entry that has the
    10.254 address listed.
+   (`ncn#`)
    ```bash
-   ncn# ID="9440c938f7b4"
-   ncn# MAC="94:40:c9:38:f7:b4"
-   ncn# IPADDR="10.254.1.38"
+   ID="9440c938f7b4"
+   MAC="94:40:c9:38:f7:b4"
+   IPADDR="10.254.1.38"
    ```
    These will be used later to clean up KEA and Hardware State Manager (HSM).
    There may not be a 10.254 address associated with the node, that is OK, it
    will enable skipping of several steps later on.
 
-   <a name="configure_ilo"></a>
-
-2. Configure the iLO to use VLAN 4.
+   2. Configure the iLO to use VLAN 4.
    1. Connect to BMC WebUI and log in with standard root credentials.
       1. From the administrators own machine create an SSH tunnel (-L creates
          the tunnel, and -N prevents a shell and stubs the connection):
@@ -101,12 +97,14 @@ on. The node indicator is always a 0. For example, `x3000c0s30b1n0` or
    2. Click on **iLO Shared Network Port** on left menu.
    2. Make a note of the **MAC Address** under the **Information** section,
         that will be needed later.
+        (`ncn#`)
         ```bash
-        ncn# ILOMAC="<MAC Address>"
+        ILOMAC="<MAC Address>"
         ```
         For example
+        (`ncn#`)
         ```bash
-        ncn# ILOMAC="94:40:c9:38:08:c7"
+        ILOMAC="94:40:c9:38:08:c7"
         ```
    3. Click on **General** on the top menu.
    4. Under **NIC Settings** move slider to **Enable VLAN**.
@@ -117,9 +115,7 @@ on. The node indicator is always a 0. For example, `x3000c0s30b1n0` or
    9.  After accepting the BMC restart, connection to the BMC will be lost until
    the switch port reconfiguration is performed.
 
-   <a name="configure_switch_port"></a>
-
-2. Configure the switch port for the iLO to use VLAN 4.
+   2. Configure the switch port for the iLO to use VLAN 4.
    1. Find the port and the switch the iLO is plugged into using the SHCD.
    2. ssh to the switch and log in with standard admin credentials. Refer to
    `/etc/hosts` for exact hostname.
@@ -171,15 +167,14 @@ on. The node indicator is always a 0. For example, `x3000c0s30b1n0` or
       After a few minutes the switch will be configured and access to the
       WebUI will be regained.
 
-   <a name="cleanup_kea"></a>
-
-3. Clear bad MAC and IP address out of KEA.
+   3. Clear bad MAC and IP address out of KEA.
 
    **NOTE:** Skip this step if there was no bad MAC and IPADDR found in step 1.
 
    Retrieve a bearer token if you have not done so already.
+   (`ncn#`)
    ```bash
-   ncn# export TOKEN=$(curl -s -S -d grant_type=client_credentials \
+   export TOKEN=$(curl -s -S -d grant_type=client_credentials \
       -d client_id=admin-client \
       -d client_secret=`kubectl get secrets admin-client-auth -o jsonpath='{.data.client-secret}' | base64 -d` \
       https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token | jq -r '.access_token')
@@ -188,8 +183,9 @@ on. The node indicator is always a 0. For example, `x3000c0s30b1n0` or
    Remove the entry from KEA that is associated with the MAC and IPADDRESS
    gathered in section 1.1.
 
+   (`ncn#`)
    ```bash
-   ncn# curl -s -k -H "Authorization: Bearer ${TOKEN}" -X POST -H \
+   curl -s -k -H "Authorization: Bearer ${TOKEN}" -X POST -H \
    "Content-Type: application/json" -d '{"command": "lease4-del", \
    "service": [ "dhcp4" ], "arguments": {"hw-address": "'${MAC}'", \
    "ip-address": "'${IPADDR}'"}}' https://api-gw-service-nmn.local/apis/dhcp-kea
@@ -199,15 +195,14 @@ on. The node indicator is always a 0. For example, `x3000c0s30b1n0` or
    [ { "result": 0, "text": "IPv4 lease deleted." } ]
    ```
 
-   <a name="cleanup_hsm"></a>
-
-4. Clear bad ID out of HSM.
+   4. Clear bad ID out of HSM.
 
    **NOTE:** Skip this step if there was no bad ID found in step 1.
 
    Tell HSM to delete the bad ID out of the Ethernet Interfaces table.
+   (`ncn#`)
    ```bash
-   ncn# cray hsm inventory ethernetInterfaces delete $ID
+   cray hsm inventory ethernetInterfaces delete $ID
    ```
    Expected results:
    ```json
@@ -220,18 +215,14 @@ Everything is now configured and the CSM software will automatically discover
 the node after several minutes. After it has been discovered, the node is ready
 to be booted.
 
-<a name="update-the-bios-time-on-gigabyte-compute-nodes"></a>
 ### 1. Update the BIOS Time on Gigabyte Compute Nodes
 The BIOS time for Gigabyte compute nodes must be synced with the rest of the system.
 See [Update the Gigabyte Node BIOS Time](../operations/node_management/Update_the_Gigabyte_Node_BIOS_Time.md).
-
-
-<a name="next-topic"></a>
 
 # Next Topic
 
    After completing the preparation for compute nodes, the CSM product stream
    has been fully installed and configured. Check the next topic.
 
-   See [Next Topic](index.md#next_topic) for more information on other product
+   See [Next Topic](README.md#next_topic) for more information on other product
    streams to be installed and configured after CSM.

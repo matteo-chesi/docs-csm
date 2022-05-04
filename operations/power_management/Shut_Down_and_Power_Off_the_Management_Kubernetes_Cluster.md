@@ -35,8 +35,9 @@ An authentication token is required to access the API gateway and to use the `sa
 
 3. Check the status of NCN no wipe settings. Make sure `metal.no-wipe=1`. If a management NCN is set to `metal.no-wipe==wipe`, review [Check and Set the metal.no-wipe Setting on NCNs](../node_management/Check_and_Set_the_metalno-wipe_Setting_on_NCNs.md) before proceeding.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# /opt/cray/platform-utils/ncnGetXnames.sh
+   /opt/cray/platform-utils/ncnGetXnames.sh
    ```
 
    Example output:
@@ -69,8 +70,9 @@ An authentication token is required to access the API gateway and to use the `sa
 
 1. Shut down platform services.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# sat bootsys shutdown --stage platform-services
+   sat bootsys shutdown --stage platform-services
    ```
 
    Example output:
@@ -108,8 +110,9 @@ An authentication token is required to access the API gateway and to use the `sa
 
    In the preceding example, the commands to stop containers timed out on all the worker nodes and reported `WARNING` and `ERROR` messages. A summary of the issue displays and prompts the user to continue or stop. Respond `no` stop the shutdown. Then review the containers running on the nodes.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# for ncn in ncn-w00{1,2,3}; do echo "$ncn"; ssh $ncn "crictl ps"; echo; done
+   for ncn in ncn-w00{1,2,3}; do echo "$ncn"; ssh $ncn "crictl ps"; echo; done
    ```
 
    Example output:
@@ -130,8 +133,9 @@ An authentication token is required to access the API gateway and to use the `sa
 
    Run the `sat` command again and enter `yes` at the prompt about the `etcd` snapshot not being created:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# sat bootsys shutdown --stage platform-services
+   sat bootsys shutdown --stage platform-services
    ```
 
    Example output:
@@ -170,8 +174,9 @@ An authentication token is required to access the API gateway and to use the `sa
 
 1. Shut down and power off all management NCNs except `ncn-m001`.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# sat bootsys shutdown --stage ncn-power
+   sat bootsys shutdown --stage ncn-power
    ```
 
    Example output:
@@ -207,8 +212,9 @@ An authentication token is required to access the API gateway and to use the `sa
 
    Alternately attach to the screen session \(screen sessions real time, but not saved\):
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# screen -ls
+   screen -ls
    ```
 
    Example output:
@@ -226,7 +232,7 @@ An authentication token is required to access the API gateway and to use the `sa
    ```
 
    ```
-   ncn-m001# screen -x 26745.SAT-console-ncn-m003-mgmt
+   screen -x 26745.SAT-console-ncn-m003-mgmt
    ```
 
 1. Use `ipmitool` to check the power off status of management nodes.
@@ -234,11 +240,12 @@ An authentication token is required to access the API gateway and to use the `sa
     > NOTE: `read -s` is used to read the password in order to prevent it from being
     > echoed to the screen or preserved in the shell history.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# export USERNAME=root
-    ncn-m001# read -s IPMI_PASSWORD
-    ncn-m001# export IPMI_PASSWORD
-    ncn-m001# for ncn in ncn-m00{2,3} ncn-w00{1,2,3} ncn-s00{1,2,3}; do
+    export USERNAME=root
+    read -s IPMI_PASSWORD
+    export IPMI_PASSWORD
+    for ncn in ncn-m00{2,3} ncn-w00{1,2,3} ncn-s00{1,2,3}; do
                   echo -n "$ncn: "
                   ipmitool -U $USERNAME -H ${ncn}-mgmt -E -I lanplus chassis power status
               done
@@ -255,8 +262,9 @@ An authentication token is required to access the API gateway and to use the `sa
 
 1. From the serial console, shut down Linux.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# shutdown -h now
+    shutdown -h now
     ```
 
 1. Wait until the console indicates that the node has shut down.

@@ -15,6 +15,6 @@ service_name = "cray-uas-mgr"
 version = "1.16.1"
 ```
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next-Topic: End-User UAIs](End_User_UAIs.md)

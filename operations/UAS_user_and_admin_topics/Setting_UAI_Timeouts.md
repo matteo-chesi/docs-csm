@@ -24,6 +24,6 @@ combined with a fairly aggressive (30 minutes, for example) `soft` timeout will 
 
 If `hard` timeouts are used, a `warning` should usually be added to the timeout specification in the UAI Class. This will give users a chance to finish up any in-progress work and log out prior to termination of the UAI as a result of the `hard` timeout.
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: Broker UAI Resiliency and Load Balancing](Setting_Up_Multi-Replica_Brokers.md)

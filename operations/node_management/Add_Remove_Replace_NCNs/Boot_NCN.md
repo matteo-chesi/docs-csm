@@ -127,8 +127,9 @@ Setting the `no-wipe` flag safeguards against the disks being wiped when the nod
 
     > This command can be run from any node.
 
+    (`ncn#`)
     ```bash
-    ncn# curl -i -s -k -H "Content-Type: application/json" \
+    curl -i -s -k -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${TOKEN}" \
             "https://api-gw-service-nmn.local/apis/bss/boot/v1/bootparameters" \
             -X PUT -d @./${XNAME}.json
@@ -229,13 +230,9 @@ Follow the [How to Lock Management Single Node](../../hardware_state_manager/Loc
 The management nodes may be unlocked at this point. Locking the management nodes and their BMCs will prevent actions from FAS to update their firmware, or from CAPMC to power off or do a power reset.
 Doing any of these by accident will take down a management node. If the management node is a Kubernetes master or worker node, this can have serious negative effects on system operation.
 
-<a name="configure-the-cli"></a>
-
 ### Configure the Cray Command Line Interface (Cray CLI)
 
 See [Configure the Cray Command Line Interface (`cray` CLI)](../../configure_cray_cli.md) for details on how to do this.
-
-<a name="boot-ncn-storage-nodes-only"></a>
 
 ### Add Storage Node to the Ceph Cluster
 
@@ -255,10 +252,10 @@ Follow [Add Ceph Node](../../utility_storage/Add_Ceph_Node.md) to join the added
 
     ```bash
     remote# ssh root@$CAN_IP
-    ncn-m002# rsync /tmp/ifcfg-lan0-m001 ncn-m001:/etc/sysconfig/network/ifcfg-lan0
-    ncn-m002# ssh ncn-m001
-    ncn-m001# wicked ifreload lan0
-    ncn-m001# wicked ifstatus lan0
+    rsync /tmp/ifcfg-lan0-m001 ncn-m001:/etc/sysconfig/network/ifcfg-lan0
+    ssh ncn-m001
+    wicked ifreload lan0
+    wicked ifstatus lan0
     ```
 
     Example output:
@@ -274,8 +271,9 @@ Follow [Add Ceph Node](../../utility_storage/Add_Ceph_Node.md) to join the added
 
 1. Run `ip a` to show the `lan0` IP address. Verify that the correct information is displayed for the site link.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ip a show lan0
+    ip a show lan0
     ```
 
 ### Next Step

@@ -6,8 +6,6 @@ Only follow the steps in the section for the node type that was added:
 - [Worker Node](#validate-worker-node)
 - [Storage Node](#validate-storage-node)
 
-<a name="validate-master-node"></a>
-
 ## Validate: Master Node
 
 Validate that the master node added successfully.
@@ -36,8 +34,9 @@ Validate that the master node added successfully.
 
     Run the following command on the added node.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# lsblk `blkid -L ETCDLVM`
+    lsblk `blkid -L ETCDLVM`
     ```
 
     Example output:
@@ -52,12 +51,11 @@ Validate that the master node added successfully.
 
     The newly built master node should be in the returned list.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# etcdctl --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/ca.crt \
+    etcdctl --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/ca.crt \
                    --key=/etc/kubernetes/pki/etcd/ca.key --endpoints=localhost:2379 member list
     ```
-
-<a name="validate-worker-node"></a>
 
 ## Validate: Worker Node
 
@@ -87,8 +85,9 @@ Validate that the worker node added successfully.
 
     Run the following command on the added node.
 
+    (`ncn-w#`)
     ```bash
-    ncn-w# df -h /var/lib/containerd
+    df -h /var/lib/containerd
     ```
 
     Example output:
@@ -104,8 +103,9 @@ Validate that the worker node added successfully.
 
     Run the following command on the added node.
 
+    (`ncn-w#`)
     ```bash
-    ncn-w# lsblk `blkid -L CONRUN` `blkid -L CONLIB` `blkid -L K8SLET`
+    lsblk `blkid -L CONRUN` `blkid -L CONLIB` `blkid -L K8SLET`
     ```
 
     Example output:
@@ -121,11 +121,10 @@ Validate that the worker node added successfully.
 
     Run this command on any master or worker node. This command assumes that you have set the variables from [the prerequisites section](../Add_Remove_Replace_NCNs.md#add-ncn-prerequisites).
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get po -A -o wide | grep $NODE
+    kubectl get po -A -o wide | grep $NODE
     ```
-
-<a name="validate-storage-node"></a>
 
 ## Validate: Storage Node
 
@@ -134,8 +133,9 @@ Validate that the storage node added successfully. The following examples are ba
 1. Verify the Ceph status looks correct.
     1. Get the current Ceph status:
 
+        (`ncn-m#`)
         ```bash
-        ncn-m# ceph -s
+        ceph -s
         ```
 
         Example output:
@@ -172,8 +172,9 @@ Validate that the storage node added successfully. The following examples are ba
 
 1. Verify that the added host contains OSDs and that the OSDs are up.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# ceph osd tree
+    ceph osd tree
     ```
 
     Example output:
@@ -211,8 +212,9 @@ Validate that the storage node added successfully. The following examples are ba
 
     There will be output \(without an error\) if `radosgw` and `haproxy` are correct.
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# curl -k https://rgw-vip.nmn
+    curl -k https://rgw-vip.nmn
     ```
 
     Example output:

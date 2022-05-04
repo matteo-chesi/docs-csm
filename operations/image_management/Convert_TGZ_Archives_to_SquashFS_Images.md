@@ -18,16 +18,18 @@ There is a pre-built image that is not currently in SquashFS format.
 
     Replace the TXZ\_COMPRESSED\_IMAGE value with the name of the image root being used that was returned in the previous step.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# mkdir -p ~/tmp/image-root
-    ncn-m001# cd ~/tmp/
-    ncn-m001# tar xvf TXZ_COMPRESSED_IMAGE -C image-root
+    mkdir -p ~/tmp/image-root
+    cd ~/tmp/
+    tar xvf TXZ_COMPRESSED_IMAGE -C image-root
     ```
 
 3.  Recompress the image root with SquashFS.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# export IMS_ROOTFS_FILENAME=IMAGE_NAME.squashfs
-    ncn-m001# mksquashfs image-root $IMS_ROOTFS_FILENAME
+    export IMS_ROOTFS_FILENAME=IMAGE_NAME.squashfs
+    mksquashfs image-root $IMS_ROOTFS_FILENAME
     ```
 

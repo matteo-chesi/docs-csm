@@ -27,4 +27,4 @@ The switch should now enable the VSX ports. Once VSX sync is completed, all port
 > **NOTE:** If replacing the secondary member and a software upgrade was not done prior to enabling the ports, there will be a reboot on the secondary unit after it has detected
 > the primary VSX member and received new software from it before normal ports would come up.
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

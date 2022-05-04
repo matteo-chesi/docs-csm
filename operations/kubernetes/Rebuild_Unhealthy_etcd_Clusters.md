@@ -7,7 +7,7 @@ This process also applies when etcd is not visible when running the `kubectl get
 A special use case is also included for the Content Projection Service \(CPS\) as the process for rebuilding the cluster is slightly different.
 
 ---
-**NOTE**
+**`NOTE`**
 
 Etcd Clusters can be rebuilt using the automation script or the manual procedure below. The automation script follows the same steps as the manual procedure. If the automation script fails at any step, continue rebuilding the cluster using the manual procedure.
 
@@ -210,7 +210,6 @@ The following examples use the `cray-bos` etcd cluster, but these steps must be 
         ncn-w001# kubectl delete etcdbackup -n services \
         cray-bos-etcd-cluster-periodic-backup
         ```
-
 
 Rerun the etcd cluster health check \(see [Check the Health and Balance of etcd Clusters](Check_the_Health_and_Balance_of_etcd_Clusters.md)\) after recovering one or more clusters. Ensure that the clusters are healthy and have the correct number of pods.
 

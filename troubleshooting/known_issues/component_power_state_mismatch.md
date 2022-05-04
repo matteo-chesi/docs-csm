@@ -19,20 +19,23 @@ In most cases, once the underlying cause has been corrected, this should correct
 heartbeating, and goes to the `Ready` state. If not, the power state for the affected nodes can be re-synced by kicking
 off HSM re-discovery of those nodes' BMCs.
 
+(`ncn#`)
 ```bash
-ncn# cray hsm inventory discover create --xnames <list_of_BMC_xnames>
+cray hsm inventory discover create --xnames <list_of_BMC_xnames>
 ```
 
 For example:
 
+(`ncn#`)
 ```bash
-ncn# cray hsm inventory discover create --xnames x3000c0s0b0,x3000c0s1b0
+cray hsm inventory discover create --xnames x3000c0s0b0,x3000c0s1b0
 ```
 
 The power state will be re-synced after all of the BMCs listed have a `LastDiscoveryStatus` of `DiscoverOK`.
 
+(`ncn#`)
 ```bash
-ncn# cray hsm inventory redfishEndpoints describe x3000c0s0b0
+cray hsm inventory redfishEndpoints describe x3000c0s0b0
 ```
 
 Example output:

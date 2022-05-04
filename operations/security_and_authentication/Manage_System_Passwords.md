@@ -4,8 +4,6 @@ Many system services require login credentials to gain access to them. The infor
 
 Contact HPE Cray service in order to obtain the default usernames and passwords for any of these components or services.
 
-
-
 ### Keycloak
 
 Default Keycloak admin user login credentials:
@@ -21,8 +19,6 @@ Default Keycloak admin user login credentials:
 To update the default password for the admin account, refer to [Change the Keycloak Admin Password](Change_the_Keycloak_Admin_Password.md).
 
 To create new accounts, refer to [Create Internal User Accounts in the Keycloak Shasta Realm](Create_Internal_User_Accounts_in_the_Keycloak_Shasta_Realm.md).
-
-
 
 ### Gitea
 
@@ -41,8 +37,6 @@ For more information on Gitea, including how to change the password, see [Versio
 The default username is admin.
 
 > **NOTE:** Contact HPE Cray service in order to obtain the default password for Grafana and Kiali.
-
-
 
 ### Management Network Switches
 
@@ -78,7 +72,6 @@ The tables below include the default login credentials for each rack type. These
 | sw-cdu | CDU/Leaf | Dell S4048T-ON |  admin |
 | sw-cdu | CDU/Leaf | Aruba 8360 |  admin |
 
-
 **ClusterStor:**
 
 | Name     | Role                  | Switch         | IP Address    | Login |
@@ -86,8 +79,6 @@ The tables below include the default login credentials for each rack type. These
 | Arista   |                       | DCS-7060CX-32S | 172.16.249.10 | admin |
 | Sonexion | Entry point to Arista | CS-L300        | 172.30.49.178 | admin |
 | E1000    |                       | CS-E1000       |               | admin |
-
-
 
 ### Redfish Credentials
 
@@ -233,8 +224,6 @@ Update the password for an account with the `curl` command:
 https://x0c0s0b0/redfish/v1/AccountService/Accounts/ACCOUNT_ID
 ```
 
-
-
 ### System Controllers
 
 For SSH access, the system controllers have the following default credentials:
@@ -272,8 +261,6 @@ It may be used non-interactively as well. This is useful for separating out seve
 
 In both cases, a `running-config` must be saved out to non-volatile storage in a startup configuration file. If it is not, the password will revert to default on the next boot. This is the exact same behavior as standard managed Ethernet switches.
 
-
-
 ### SNMP Credentials
 
 To adjust the SNMP credentials, perform the following tasks:
@@ -285,8 +272,6 @@ To adjust the SNMP credentials, perform the following tasks:
 2. Update the credentials actively being used for existing leaf switches.
 
    * See [Change SNMP Credentials on Leaf BMC Switches](Change_SNMP_Credentials_on_Leaf_BMC_Switches.md)
-
-
 
 ### HPE Cray EX Liquid-Cooled Cabinet Hardware
 
@@ -302,13 +287,11 @@ Change the credential for HPE Cray EX liquid-cooled cabinet chassis controllers 
 
 * See [Updating the Liquid-Cooled EX Cabinet CEC with Default Credentials after a CEC Password Change](Updating_the_Liquid-Cooled_EX_Cabinet_Default_Credentials_after_a_CEC_Password_Change.md)
 
-
 ### Gigabyte
 
 The default username is admin.
 
 > **NOTE:** Contact HPE Cray service in order to obtain the default password for Gigabyte.
-
 
 ### Passwords Managed in Other Product Streams
 

@@ -10,8 +10,9 @@ The fabric manager software is installed and configured.
 
 1.  From a Kubernetes management node, determine the name of the fabric manager pod \(FMN\).
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl get pods -l app.kubernetes.io/name=slingshot-fabric-manager -n services
+    kubectl get pods -l app.kubernetes.io/name=slingshot-fabric-manager -n services
     ```
 
     Example output:
@@ -23,8 +24,9 @@ The fabric manager software is installed and configured.
 
 1.  Open a shell to access the fabric manager pod \(in this example, `slingshot-fabric-manager-5dc448779c-d8n6q`\).
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl exec -it slingshot-fabric-manager-5dc448779c-d8n6q -n services -- /bin/bash
+    kubectl exec -it slingshot-fabric-manager-5dc448779c-d8n6q -n services -- /bin/bash
     ```
 
     The command prompt in the shell will now be `slingshot-fabric-manager:#`.
@@ -45,7 +47,8 @@ The fabric manager software is installed and configured.
 
 1. Save fabric status to a file from a management node.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl exec -it -n services slingshot-fabric-manager-5dc448779c-d8n6q \
+    kubectl exec -it -n services slingshot-fabric-manager-5dc448779c-d8n6q \
                    -c slingshot-fabric-manager -- fmn_status --details > fabric.status
     ```

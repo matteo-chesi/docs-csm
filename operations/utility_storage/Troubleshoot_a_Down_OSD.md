@@ -54,8 +54,9 @@ This procedure requires admin privileges.
 
         This step **must be done on the node with the reported down OSD.**
 
+         (`ncn-s#`)
          ```bash
-         ncn-s# ceph orch daemon restart osd.<number>
+         ceph orch daemon restart osd.<number>
          ```
 
     **Troubleshooting:** If the service is not restarted with `ceph orch`, restart it using [Manage Ceph Services](Manage_Ceph_Services.md).

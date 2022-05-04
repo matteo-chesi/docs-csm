@@ -18,8 +18,9 @@ Use the following admin login credentials:
 - Username: `admin`
 - The password can be obtained with the following command:
 
+(`ncn#`)
 ```bash
-ncn# kubectl get secret -n services keycloak-master-admin-auth \
+kubectl get secret -n services keycloak-master-admin-auth \
         --template={{.data.password}} | base64 --decode
 ```
 

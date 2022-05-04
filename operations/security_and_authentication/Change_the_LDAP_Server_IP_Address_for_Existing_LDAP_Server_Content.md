@@ -12,7 +12,6 @@ The contents of the new LDAP server are the same as the previous LDAP server. Fo
 
 Follow the steps in only one of the sections below depending on if it is preferred to use the Keycloak REST API or Keycloak administration console UI.
 
-
 ### Use the Keycloak Administration Console UI
 
 1.  Log in to the administration console.
@@ -34,7 +33,6 @@ Follow the steps in only one of the sections below depending on if it is preferr
     This may take a while depending on the number of users and groups in the LDAP server.
 
     When the synchronize process completes, the pop-up will show that the update was successful. There should be minimal or no changes because the contents of the servers are the same.
-
 
 ### Use the Keycloak REST API
 

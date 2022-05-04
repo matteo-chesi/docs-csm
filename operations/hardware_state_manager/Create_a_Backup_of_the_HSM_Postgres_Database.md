@@ -8,8 +8,9 @@ Perform a manual backup of the contents of the Hardware State Manager (HSM) Post
 
   Use `patronictl list` on the HSM Postgres cluster to determine the current state of the cluster, and a healthy cluster will look similar to the following:
 
+  (`ncn#`)
   ```bash
-  ncn# kubectl exec cray-smd-postgres-0 -n services -c postgres -it -- patronictl list
+  kubectl exec cray-smd-postgres-0 -n services -c postgres -it -- patronictl list
   ```
 
   Example output:
@@ -28,8 +29,9 @@ Perform a manual backup of the contents of the Hardware State Manager (HSM) Post
 
   Verify all 3 HSM replicas are up and running:
 
+  (`ncn#`)
   ```bash
-  ncn# kubectl -n services get pods -l cluster-name=cray-smd-postgres
+  kubectl -n services get pods -l cluster-name=cray-smd-postgres
   ```
 
   Example output:
@@ -45,24 +47,27 @@ Perform a manual backup of the contents of the Hardware State Manager (HSM) Post
 
 1. Create a directory to store the HSM backup files.
 
+    (`ncn#`)
     ```bash
-    ncn# BACKUP_LOCATION="/root"
-    ncn# export BACKUP_NAME="cray-smd-postgres-backup_`date '+%Y-%m-%d_%H-%M-%S'`"
-    ncn# export BACKUP_FOLDER="${BACKUP_LOCATION}/${BACKUP_NAME}"
-    ncn# mkdir -p "$BACKUP_FOLDER"
+    BACKUP_LOCATION="/root"
+    export BACKUP_NAME="cray-smd-postgres-backup_`date '+%Y-%m-%d_%H-%M-%S'`"
+    export BACKUP_FOLDER="${BACKUP_LOCATION}/${BACKUP_NAME}"
+    mkdir -p "$BACKUP_FOLDER"
     ```
 
     The HSM backup will be located in the following directory:
 
+    (`ncn#`)
     ```bash
-    ncn# echo $BACKUP_FOLDER
+    echo $BACKUP_FOLDER
     /root/cray-smd-postgres-backup_2021-07-07_16-39-44
     ```
 
 2. Run the `backup_smd_postgres.sh` script to take a backup of the HSM Postgres.
 
+    (`ncn#`)
     ```bash
-    ncn# /usr/share/doc/csm/operations/hardware_state_manager/scripts/backup_smd_postgres.sh
+    /usr/share/doc/csm/operations/hardware_state_manager/scripts/backup_smd_postgres.sh
     ```
 
     Example output:
@@ -94,15 +99,17 @@ Perform a manual backup of the contents of the Hardware State Manager (HSM) Post
 
     The `BACKUP_FOLDER` environment variable is the name of the folder to backup.
 
+    (`ncn#`)
     ```bash
-    ncn# echo $BACKUP_FOLDER
+    echo $BACKUP_FOLDER
     /root/cray-smd-postgres-backup_2021-07-07_16-39-44
     ```
 
     Optionally, create a tarball of the Postgres backup files:
 
+    (`ncn#`)
     ```bash
-    ncn# cd $BACKUP_FOLDER && cd ..
-    ncn# tar -czvf $BACKUP_NAME.tar.gz $BACKUP_NAME
+    cd $BACKUP_FOLDER && cd ..
+    tar -czvf $BACKUP_NAME.tar.gz $BACKUP_NAME
     ```
 

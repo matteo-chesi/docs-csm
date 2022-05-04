@@ -18,10 +18,11 @@ Encryption of compute node logs is not enabled, so the passwords may be passed i
 
 1. Find the `cray-console-operator` pod.
 
+    (`ncn#`)
     ```bash
-    ncn# OP_POD=$(kubectl get pods -n services \
+    OP_POD=$(kubectl get pods -n services \
             -o wide|grep cray-console-operator|awk '{print $1}')
-    ncn# echo $OP_POD
+    echo $OP_POD
     ```
 
     Example output:
@@ -31,8 +32,9 @@ Encryption of compute node logs is not enabled, so the passwords may be passed i
 
 1. Log on to the pod.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl exec -it -n services $OP_POD -- sh
+    kubectl exec -it -n services $OP_POD -- sh
     ```
 
 1. The console log file for each node is labeled with the component name (xname) of that node.

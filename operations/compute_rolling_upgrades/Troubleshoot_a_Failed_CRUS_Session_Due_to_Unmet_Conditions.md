@@ -7,7 +7,6 @@ The following are examples of unmet conditions:
 -   Undefined groups in the Hardware State Manager \(HSM\).
 -   No predefined Boot Orchestration Service \(BOS\) session template exists that describes the desired states of the nodes being upgraded.
 
-
 ### Prerequisites
 
 -   A Compute Rolling Upgrade Service \(CRUS\) session was run and failed to complete.
@@ -17,8 +16,9 @@ The following are examples of unmet conditions:
 
 1.  View the details for the CRUS session that failed.
 
+    (`ncn#`)
     ```bash
-    ncn# cray crus session describe CRUS_UPGRADE_ID
+    cray crus session describe CRUS_UPGRADE_ID
     ```
 
     Example output:
@@ -44,8 +44,9 @@ The following are examples of unmet conditions:
 
     Following the example in the previous step, the failed node group needs to be created.
 
+    (`ncn#`)
     ```bash
-    ncn# cray hsm groups create --label failed-node-group
+    cray hsm groups create --label failed-node-group
     ```
 
     Example output:

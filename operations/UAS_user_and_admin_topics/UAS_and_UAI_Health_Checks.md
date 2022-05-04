@@ -18,8 +18,9 @@ Installation procedures leading up to production mode on Shasta use the CLI with
 There is a procedure for extracting the OAUTH token for this service account and assigning it to the `CRAY_CREDENTIALS` environment variable to permit simple CLI operations.
 The UAS / UAI validation procedure runs as a post-installation procedure and requires an actual user with Linux credentials, not this service account. Prior to running any of the steps below you must unset the `CRAY_CREDENTIALS` environment variable.
 
+(`ncn-m002#`)
 ```bash
-ncn-m002# unset CRAY_CREDENTIALS
+unset CRAY_CREDENTIALS
 ```
 
 ## Initialize the CLI Configuration
@@ -29,8 +30,9 @@ This example uses the `vers` username. In practice, `vers` and the response to t
 
 To check whether the CLI needs initialization, run the following command.
 
+(`ncn-m002#`)
 ```bash
-ncn-m002# cray config describe
+cray config describe
 ```
 
 If the output appears as follows, the CLI requires initialization.
@@ -46,8 +48,9 @@ If vers is the correct user, proceed to the validation procedure on that node.
 
 If the CLI must be initialized again, use the following command and include the correct username, password, and the password response.
 
+(`ncn-m002#`)
 ```bash
-ncn-m002# cray init
+cray init
 Cray Hostname: api-gw-service-nmn.local
 Username: vers
 Password:
@@ -60,8 +63,9 @@ Initialization complete.
 
 If the CLI is initialized but authorized for a user different, run the following command and substitute the correct username and password.
 
+(`ncn-m002#`)
 ```bash
-ncn-m002# cray auth login
+cray auth login
 Username: vers
 Password:
 Success!
@@ -87,8 +91,9 @@ While resolving these issues is beyond the scope of this section, adding `-vvvvv
 This procedure and the following procedures run on separate nodes on the system and validate the basic UAS installation.
 Ensure this runs on the LiveCD node and that the CLI is authorized for the user.
 
+(`ncn-m002#`)
 ```bash
-ncn-m002# cray uas mgr-info list
+cray uas mgr-info list
 ```
 
 Example output:
@@ -99,7 +104,7 @@ version = "1.11.5"
 ```
 
 ```bash
-ncn-m001-pit# cray uas list
+ncn-m001-cray uas list
 ```
 
 Example output:
@@ -113,8 +118,9 @@ That is acceptable from a validation standpoint.
 
 To verify that the pre-made UAI images are registered with UAS, run the following command.
 
+(`ncn-m002#`)
 ```bash
-ncn-m002# cray uas images list
+cray uas images list
 ```
 
 Example output:
@@ -348,6 +354,6 @@ ncn-w003# kubectl describe -n user <pod-name>
 If volumes are missing, they will be in the `Events:section` of the output. Other problems may show up there as well.
 The names of the missing volumes or other issues should indicate what needs to be fixed to enable the UAI.
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: Troubleshoot UAS Issues](Troubleshoot_UAS_Issues.md)

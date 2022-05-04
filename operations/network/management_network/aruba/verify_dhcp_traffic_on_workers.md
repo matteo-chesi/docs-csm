@@ -32,4 +32,4 @@ If the Source IP address of the DHCP Reply/Offer is the MetalLB IP, the DHCP pac
 
 If this issue occurs, the only solution is to restart KEA and making sure that it gets moved to a different worker node.
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

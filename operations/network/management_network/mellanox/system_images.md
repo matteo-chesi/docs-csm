@@ -33,6 +33,5 @@ Expected Results
 * Step 3: You can boot into the uploaded image
 * Step 4: You can see you are running the uploaded image
 
-
-[Back to Index](../index.md)
+[Back to Index](../README.md)
 

@@ -58,4 +58,4 @@ Enabled             : No
 1. Administrators can edit the configuration via the Bluetooth connection
 1. The output of the show commands looks correct
 
-[[Back to Index](../index.md)
+[[Back to Index](../README.md)

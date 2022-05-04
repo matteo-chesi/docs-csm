@@ -110,5 +110,4 @@ listening on MirrorRxNet, link-type EN10MB (Ethernet), capture size 262144 bytes
 2. The output of the `show` commands is correct
 3. Administrators can see the traffic for the source interface on the sniffer
 
-
-[Back to Index](../index.md)
+[Back to Index](../README.md)

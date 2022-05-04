@@ -17,8 +17,9 @@ Upgrade a set of compute nodes with the Compute Rolling Upgrade Service \(CRUS\)
 
         Label names are defined by the user and the names used in this procedure are only examples. The label name used in this example is slurm-nodes.
 
+        (`ncn#`)
         ```bash
-        ncn# cray hsm groups create --label slurm-nodes \
+        cray hsm groups create --label slurm-nodes \
         --description 'Starting Node Group for my Compute Node upgrade'
         ```
 
@@ -26,8 +27,9 @@ Upgrade a set of compute nodes with the Compute Rolling Upgrade Service \(CRUS\)
 
         Add compute nodes to the group by using the component name (xname) for each node being added.
 
+        (`ncn#`)
         ```bash
-        ncn# cray hsm groups members create slurm-nodes --id XNAME
+        cray hsm groups members create slurm-nodes --id XNAME
         ```
 
         Example output:
@@ -52,8 +54,9 @@ Upgrade a set of compute nodes with the Compute Rolling Upgrade Service \(CRUS\)
 
     The label name used in this example is failed-nodes.
 
+    (`ncn#`)
     ```bash
-    ncn# cray hsm groups create --label failed-nodes \
+    cray hsm groups create --label failed-nodes \
     --description 'Failed Node Group for my Compute Node upgrade'
     ```
 
@@ -63,8 +66,9 @@ Upgrade a set of compute nodes with the Compute Rolling Upgrade Service \(CRUS\)
 
     The following example is upgrading 50 nodes at a step. The `--upgrade-template-id` value should be the name of the Boot Orchestration Service \(BOS\) session template being used.
 
+    (`ncn#`)
     ```bash
-    ncn# cray crus session create \
+    cray crus session create \
     --starting-label slurm-nodes \
     --upgrading-label upgrading-nodes \
     --failed-label failed-nodes \

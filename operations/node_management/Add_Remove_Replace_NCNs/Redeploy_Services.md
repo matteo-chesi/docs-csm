@@ -12,8 +12,9 @@ Otherwise, if a storage node has been added or removed, proceed with the followi
 
 The `docs-csm` RPM has been installed on the NCN. Verify that the following file exists:
 
+(`ncn-m#`)
 ```bash
-ncn-m# ls /usr/share/docs/csm/scripts/operations/node_management/Add_Remove_Replace_NCNs/update_customizations.sh
+ls /usr/share/docs/csm/scripts/operations/node_management/Add_Remove_Replace_NCNs/update_customizations.sh
 ```
 
 ## Update the `nmn_ncn_storage` List
@@ -26,14 +27,16 @@ Before redeploying the desired charts, update the `customizations.yaml` file in 
 
 1. If the `site-init` repository is available as a remote repository [as described here](../../../install/prepare_site_init.md#push-to-a-remote-repository), then clone it to `ncn-m001`. Otherwise, ensure that the `site-init` repository is available on `ncn-m001`.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# git clone "$SITE_INIT_REPO_URL" site-init
+   git clone "$SITE_INIT_REPO_URL" site-init
    ```
 
 1. Acquire `customizations.yaml` from the currently running system.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > site-init/customizations.yaml
+   kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > site-init/customizations.yaml
    ```
 
 1. Review, add, and commit `customizations.yaml` to the local `site-init` repository as appropriate.
@@ -44,11 +47,12 @@ Before redeploying the desired charts, update the `customizations.yaml` file in 
    > was stored in the `site-init`, then it suggests settings were changed at some
    > point.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cd site-init
-   ncn-m# git diff
-   ncn-m# git add customizations.yaml
-   ncn-m# git commit -m 'Add customizations.yaml from site-init secret'
+   cd site-init
+   git diff
+   git add customizations.yaml
+   git commit -m 'Add customizations.yaml from site-init secret'
    ```
 
 ### Modify the Customizations
@@ -57,8 +61,9 @@ Modify the customizations to include the added or removed storage node.
 
 1. Retrieve an API token.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# export TOKEN=$(curl -s -S -d grant_type=client_credentials \
+   export TOKEN=$(curl -s -S -d grant_type=client_credentials \
        -d client_id=admin-client -d client_secret=`kubectl get secrets admin-client-auth \
        -o jsonpath='{.data.client-secret}' | base64 -d` \
        https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token \
@@ -67,16 +72,18 @@ Modify the customizations to include the added or removed storage node.
 
 1. Update the customizations `spec.network.netstaticips.nmn_ncn_storage` for the added or removed storage IP address.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cd /usr/share/docs/csm/scripts/operations/node_management/Add_Remove_Replace_NCNs
-   ncn-m# ./update_customizations.sh
+   cd /usr/share/docs/csm/scripts/operations/node_management/Add_Remove_Replace_NCNs
+   ./update_customizations.sh
    ```
 
 1. Check that the updated `customizations.yaml` contains the change to add or remove a storage IP address.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# yq r /tmp/customizations.original.yaml -P > /tmp/customizations.original.yaml.pretty
-   ncn-m# diff /tmp/customizations.original.yaml.pretty /tmp/customizations.yaml
+   yq r /tmp/customizations.original.yaml -P > /tmp/customizations.original.yaml.pretty
+   diff /tmp/customizations.original.yaml.pretty /tmp/customizations.yaml
    ```
 
    Example output:
@@ -87,25 +94,28 @@ Modify the customizations to include the added or removed storage node.
 
 1. Check in changes made to `customizations.yaml`.
 
+   (`ncn-m#`)
    ```bash
-   ncn-m# cd site-init
-   ncn-m# cp /tmp/customizations.yaml customizations.yaml
-   ncn-m# git diff
-   ncn-m# git add customizations.yaml
-   ncn-m# git commit -m 'Update customizations.yaml nmn_ncn_storage storage IPs'
+   cd site-init
+   cp /tmp/customizations.yaml customizations.yaml
+   git diff
+   git add customizations.yaml
+   git commit -m 'Update customizations.yaml nmn_ncn_storage storage IPs'
    ```
 
 1. Push to the remote repository as appropriate.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# git push
+    git push
     ```
 
 1. Update `site-init` sealed secret in `loftsman` namespace.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl delete secret -n loftsman site-init
-    ncn-m# kubectl create secret -n loftsman generic site-init --from-file=/tmp/customizations.yaml
+    kubectl delete secret -n loftsman site-init
+    kubectl create secret -n loftsman generic site-init --from-file=/tmp/customizations.yaml
     ```
 
 ### Redeploy S3
@@ -114,16 +124,18 @@ Redeploy S3 to pick up any changes for storage node endpoints.
 
 1. Determine the version of S3.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# S3_VERSION=$(kubectl -n loftsman get cm loftsman-platform -o jsonpath='{.data.manifest\.yaml}' |
+    S3_VERSION=$(kubectl -n loftsman get cm loftsman-platform -o jsonpath='{.data.manifest\.yaml}' |
                         yq r - 'spec.charts.(name==cray-s3).version')
-    ncn-m# echo $S3_VERSION
+    echo $S3_VERSION
     ```
 
 1. Create `s3-manifest.yaml`.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# cat > s3-manifest.yaml << EOF
+    cat > s3-manifest.yaml << EOF
     apiVersion: manifests/v1beta1
     metadata:
         name: s3
@@ -137,22 +149,25 @@ Redeploy S3 to pick up any changes for storage node endpoints.
 
 1. Merge `customizations.yaml` with `s3-manifest.yaml`.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# manifestgen -c /tmp/customizations.yaml -i s3-manifest.yaml > s3-manifest.out.yaml
+    manifestgen -c /tmp/customizations.yaml -i s3-manifest.yaml > s3-manifest.out.yaml
     ```
 
 1. Redeploy the S3 helm chart.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# loftsman ship \
+    loftsman ship \
         --charts-repo https://packages.local/repository/charts \
         --manifest-path s3-manifest.out.yaml
     ```
 
 1. Check that the new endpoint has been updated.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl get endpoints -l app.kubernetes.io/instance=cray-s3 -n ceph-rgw -o jsonpath='{.items[*].subsets[].addresses}' | jq -r '.[] | .ip'
+    kubectl get endpoints -l app.kubernetes.io/instance=cray-s3 -n ceph-rgw -o jsonpath='{.items[*].subsets[].addresses}' | jq -r '.[] | .ip'
     ```
 
     Example output:
@@ -170,16 +185,18 @@ Redeploy `sysmgmt-health` to pick up any changes for storage node endpoints.
 
 1. Determine the version of `sysmgmt-health`.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# SYSMGMT_VERSION=$(kubectl -n loftsman get cm loftsman-platform -o jsonpath='{.data.manifest\.yaml}' |
+    SYSMGMT_VERSION=$(kubectl -n loftsman get cm loftsman-platform -o jsonpath='{.data.manifest\.yaml}' |
                              yq r - 'spec.charts.(name==cray-sysmgmt-health).version')
-    ncn-m# echo $SYSMGMT_VERSION
+    echo $SYSMGMT_VERSION
     ```
 
 1. Determine the current resources.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl -n loftsman get cm loftsman-platform -o jsonpath='{.data.manifest\.yaml}' | 
+    kubectl -n loftsman get cm loftsman-platform -o jsonpath='{.data.manifest\.yaml}' | 
               yq r - 'spec.charts.(name==cray-sysmgmt-health).values.prometheus-operator.prometheus.prometheusSpec.resources'
     ```
 
@@ -196,8 +213,9 @@ Redeploy `sysmgmt-health` to pick up any changes for storage node endpoints.
 
 1. Determine the current retention settings.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl -n loftsman get cm loftsman-platform -o jsonpath='{.data.manifest\.yaml}' | yq r - 'spec.charts.(name==cray-sysmgmt-health).values.prometheus-operator.prometheus.prometheusSpec.retention'
+    kubectl -n loftsman get cm loftsman-platform -o jsonpath='{.data.manifest\.yaml}' | yq r - 'spec.charts.(name==cray-sysmgmt-health).values.prometheus-operator.prometheus.prometheusSpec.retention'
     ```
 
     Example output:
@@ -208,8 +226,9 @@ Redeploy `sysmgmt-health` to pick up any changes for storage node endpoints.
 
 1. Create `sysmgmt-health-manifest.yaml` and update the `resources` and `retention` sections as needed based upon the data from the previous steps.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# cat > sysmgmt-health-manifest.yaml << EOF
+    cat > sysmgmt-health-manifest.yaml << EOF
     apiVersion: manifests/v1beta1
     metadata:
         name: sysmgmt-health
@@ -235,23 +254,26 @@ Redeploy `sysmgmt-health` to pick up any changes for storage node endpoints.
 
 1. Merge `customizations.yaml` with `sysmgmt-health-manifest.yaml`.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# manifestgen -c /tmp/customizations.yaml -i sysmgmt-health-manifest.yaml > sysmgmt-health-manifest.out.yaml
+    manifestgen -c /tmp/customizations.yaml -i sysmgmt-health-manifest.yaml > sysmgmt-health-manifest.out.yaml
     ```
 
 1. Redeploy the `sysmgmt-health` helm chart.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# loftsman ship \
+    loftsman ship \
         --charts-repo https://packages.local/repository/charts \
         --manifest-path sysmgmt-health-manifest.out.yaml
     ```
 
 1. Check that the new endpoint has been updated.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# kubectl get endpoints -l app=cray-sysmgmt-health-ceph-exporter -n sysmgmt-health -o jsonpath='{.items[*].subsets[].addresses}' | jq -r '.[] | .ip'
-    ncn-m# kubectl get endpoints -l app=cray-sysmgmt-health-ceph-node-exporter -n sysmgmt-health -o jsonpath='{.items[*].subsets[].addresses}' | jq -r '.[] | .ip'
+    kubectl get endpoints -l app=cray-sysmgmt-health-ceph-exporter -n sysmgmt-health -o jsonpath='{.items[*].subsets[].addresses}' | jq -r '.[] | .ip'
+    kubectl get endpoints -l app=cray-sysmgmt-health-ceph-node-exporter -n sysmgmt-health -o jsonpath='{.items[*].subsets[].addresses}' | jq -r '.[] | .ip'
     ```
 
     Example output:
@@ -267,8 +289,9 @@ Redeploy `sysmgmt-health` to pick up any changes for storage node endpoints.
 
 Remove temporary files.
 
+(`ncn-m#`)
 ```bash
-ncn-m# rm /tmp/customizations.yaml /tmp/customizations.original.yaml /tmp/customizations.original.yaml.pretty
+rm /tmp/customizations.yaml /tmp/customizations.original.yaml /tmp/customizations.original.yaml.pretty
 ```
 
 ## Next Step

@@ -10,8 +10,9 @@ Ceph is reporting the cluster \[WRN\] overall HEALTH\_WARN 1 daemons have recent
 
 1. Get the Ceph crash listing and the corresponding IDs.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph crash ls
+    ceph crash ls
     ```
 
     Example output:
@@ -25,8 +26,9 @@ Ceph is reporting the cluster \[WRN\] overall HEALTH\_WARN 1 daemons have recent
 
     Replace the CRASH\_ID value with the ID returned in the previous step.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph crash info CRASH_ID
+    ceph crash info CRASH_ID
     ```
 
     Example output:
@@ -73,6 +75,7 @@ Ceph is reporting the cluster \[WRN\] overall HEALTH\_WARN 1 daemons have recent
 
     This command can be used to archive all crash data, or just the data for a specific Ceph entity.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph crash archive ALL/CRASH_ID
+    ceph crash archive ALL/CRASH_ID
     ```

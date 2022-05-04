@@ -21,7 +21,7 @@ This procedure describes how to list the currently registered UAI images.
 Obtain the list of UAI images that are currently registered with UAS.
 
 ```bash
-ncn-m001-pit# cray uas admin config images list
+ncn-m001-cray uas admin config images list
 ```
 
 Example output:
@@ -50,6 +50,6 @@ The output shown above shows three image registrations. Each has an `imagename` 
 There is also a `default` flag. If this flag is `true`, the image will be used, in the absence of [a default UAI Class](UAI_Classes.md), whenever a UAI is created without specifying an image or UAI Class as part of the creation.
 Finally, there is an `image_id`, which identifies this image registration for later inspection, update, or deletion and for linking the image to a UAI Class.
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: Register a UAI Image](Register_a_UAI_Image.md)

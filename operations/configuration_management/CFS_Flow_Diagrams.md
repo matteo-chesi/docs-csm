@@ -1,9 +1,7 @@
 # CFS Flow
 
-* [Single Session Flow](#single_session_flow)
-* [Automated Session Flow](#automated_session_flow)
-
-<a name="single_session_flow"></a>
+* [Single Session Flow](#single-session-flow)
+* [Automated Session Flow](#automated-session-flow)
 
 ## Single Session Flow
 
@@ -19,8 +17,6 @@ This section covers the components and actions taken when a user or service crea
 6. The `CFS-Operator` monitors the Kubernetes job (not the pod) for completion.
 7. When the Kubernetes job is complete, the `CFS-Operator` updates the session record in the `CFS-API`.
 
-<a name="automated_session_flow"></a>
-
 ## Automated Session Flow
 
 This section covers the components and actions taken when a user or service sets a desired configuration for a component, causing automatic configuration to occur.
@@ -35,8 +31,8 @@ This section covers the components and actions taken when a user or service sets
 4. The `CFS-Batcher` monitors the `CFS-API`, periodically querying for enabled components with a `pending` configuration status. (The status is determined by the API at
    query time based on the desired and current state of the component). Any components found are placed into batches.
 5. The `CFS-Batcher` calls the `CFS-API` to create sessions for each batch, using the `ansible-limit` parameter to limit each session to the components in a batch.
-6. The `CFS-API` creates a session record and session creation event. See [Single Session Flow](#single_session_flow) for details.
-7. The `CFS-Operator` monitors for session creation events. See [Single Session Flow](#single_session_flow) for details.
-8. The `CFS-Operator` creates a Kubernetes job. See [Single Session Flow](#single_session_flow) for details.
+6. The `CFS-API` creates a session record and session creation event. See [Single Session Flow](#single-session-flow) for details.
+7. The `CFS-Operator` monitors for session creation events. See [Single Session Flow](#single-session-flow) for details.
+8. The `CFS-Operator` creates a Kubernetes job. See [Single Session Flow](#single-session-flow) for details.
 9. The Ansible Execution Environment contains a custom Ansible plugin that calls CFS to update the status of all components affected after each play.
 10. If the component does not have a `configured` status due to failure or other reasons, return to step 4.

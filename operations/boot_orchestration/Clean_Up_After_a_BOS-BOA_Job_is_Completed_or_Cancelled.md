@@ -9,12 +9,10 @@ When a session is launched, the items below are created:
 -   **etcd entries:** BOS makes an entry for the session in its etcd key/value store. If the BOA job has run for long enough, it will also have written a status entry into etcd for this session.
 -   **Configuration Framework Service \(CFS\) session:** If configuration is enabled, and the session is doing a boot, reboot, or configure operation, then BOA will have instructed CFS to configure the nodes once they boot. There is not an easy way to link a BOA session to the CFS sessions that are spawned.
 
-
 ### Prerequisites
 
 -   A Boot Orchestration Service \(BOS\) session has been completed or cancelled.
 -   The Cray command line interface \(CLI\) tool is initialized and configured on the system.
-
 
 ### Procedure
 
@@ -22,8 +20,9 @@ When a session is launched, the items below are created:
 
     Describe the BOS session to find the name of the BOA job under the attribute `boa_job_name`.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray bos session describe --format json BOS_SESSION_ID
+    cray bos session describe --format json BOS_SESSION_ID
     ```
 
     Example output:
@@ -47,8 +46,9 @@ When a session is launched, the items below are created:
 
     The ConfigMap is listed as `boot-session` under the Volumes section. Retrieve the `Name` value from the returned output.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services describe job BOA_JOB_NAME
+    kubectl -n services describe job BOA_JOB_NAME
     ```
 
     Example output:
@@ -64,14 +64,16 @@ When a session is launched, the items below are created:
 
 3.  Delete the ConfigMap.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services delete cm CONFIGMAP_NAME
+    kubectl -n services delete cm CONFIGMAP_NAME
     ```
 
 4.  Delete the etcd entry for the BOS session.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray bos session delete BOS_SESSION_ID
+    cray bos session delete BOS_SESSION_ID
     ```
 
 5.  Stop CFS from configuring nodes.
@@ -89,14 +91,16 @@ When a session is launched, the items below are created:
     -   Configuration has completed and the sessions need to be cleaned up the to reduce clutter:
         1.  Find the old sessions that needs to be deleted.
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray cfs sessions list
+            cray cfs sessions list
             ```
 
         2.  Delete the sessions.
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray cfs sessions delete CFS_SESSION_NAME
+            cray cfs sessions delete CFS_SESSION_NAME
             ```
 
     -   Configuration has completed and the desired state needs to be cleaned up so that configuration does not happen on restart:
@@ -104,14 +108,16 @@ When a session is launched, the items below are created:
 
             To find the impacted component names (xnames) for the components with the desired configuration matching what was applied:
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray cfs components list
+            cray cfs components list
             ```
 
             Prevent the configuration from running:
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray cfs components update XNAME --desired-state-commit
+            cray cfs components update XNAME --desired-state-commit
             ```
 
             This needs to be done for each component. It is enough to prevent configuration from running, and it does not revert to the previous desired state. The previous desired state has already been overwritten at this point, so if the user is trying to completely revert, they will either need to know and apply the previous desired state manually, or return BOS with the previous template using the configure operation \(which may also trigger a configure operation\).
@@ -121,14 +127,16 @@ When a session is launched, the items below are created:
 
             To find the impacted component names (xnames) for the components with the desired configuration matching what was applied:
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray cfs components list
+            cray cfs components list
             ```
 
             Prevent the configuration from running:
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray cfs components update XNAME --desired-state-commit
+            cray cfs components update XNAME --desired-state-commit
             ```
 
             This needs to be done for each component. It is enough to prevent configuration from running, and it does not revert to the previous desired state. The previous desired state has already been overwritten at this point, so if the user is trying to completely revert, they will either need to know and apply the previous desired state manually, or return BOS with the previous template using the configure operation \(which may also trigger a configure operation\).
@@ -139,8 +147,9 @@ When a session is launched, the items below are created:
 
             To get the cfs-batcher pod ID:
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# kubectl -n services get pods|grep cray-cfs-batcher
+            kubectl -n services get pods|grep cray-cfs-batcher
             ```
 
             Example output:
@@ -151,15 +160,17 @@ When a session is launched, the items below are created:
 
             To restart the pod, scale the replicas to 0 to stop it, and back up to 1 to restart it:
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# kubectl -n services scale CFS-BATCHER_POD_ID --replicas=0
-            ncn-m001# kubectl -n services scale CFS-BATCHER_POD_ID --replicas=1
+            kubectl -n services scale CFS-BATCHER_POD_ID --replicas=0
+            kubectl -n services scale CFS-BATCHER_POD_ID --replicas=1
             ```
 
         3.  Find the existing session that needs to be deleted.
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray cfs sessions list
+            cray cfs sessions list
             ```
 
         4.  Delete the sessions.
@@ -168,15 +179,17 @@ When a session is launched, the items below are created:
 
             Unfortunately, it is hard to link a specific BOA session to a CFS session. At this time, they are identified by comparing the CFS timestamps with those of the BOA job, and associating them based on proximity. Additionally, examine the components in the CFS job to see that they match the components in the BOA job.
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray cfs sessions delete CFS_SESSION_NAME
+            cray cfs sessions delete CFS_SESSION_NAME
             ```
 
 6.  Delete the BOA job.
 
     The BOA job is not deleted right away because it is needed to find the ConfigMap name.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services delete job BOA_JOB_NAME
+    kubectl -n services delete job BOA_JOB_NAME
     ```
 

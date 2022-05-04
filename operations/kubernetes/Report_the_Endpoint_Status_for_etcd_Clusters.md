@@ -4,12 +4,10 @@ Report etcd cluster end point status. The report includes a cluster's endpoint, 
 
 This procedure provides the ability to view the etcd cluster endpoint status.
 
-
 ### Prerequisites
 
 - This procedure requires root privileges.
 - The etcd clusters are in a healthy state.
-
 
 ### Procedure
 

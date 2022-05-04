@@ -8,8 +8,9 @@ Skip this section if a master or worker node was rebuilt.
 
 1. Verify there are 3 mons, 3 mds, 3 mgr processes, and rgws.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# ceph -s
+    ceph -s
     ```
 
     Example output:
@@ -39,8 +40,9 @@ Skip this section if a master or worker node was rebuilt.
 
 1. Verify the OSDs are back in the cluster.
 
+    (`ncn-m#`)
     ```bash
-    ncn-m# ceph osd tree
+    ceph osd tree
     ```
 
     Example output:
@@ -69,8 +71,9 @@ Skip this section if a master or worker node was rebuilt.
 
     There will be an output \(without an error\) returned if radosgw and haproxy are correct.
 
+    (`ncn#`)
     ```bash
-    ncn# curl -k https://rgw-vip.nmn
+    curl -k https://rgw-vip.nmn
     ```
 
     Example output:

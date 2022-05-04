@@ -10,24 +10,27 @@ Console log information is no longer being collected for Gigabyte nodes or ConMa
 
 1.  Use `ipmitool` to deactivate the current console connection.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# export USERNAME=root
-    ncn-m001# export IPMI_PASSWORD=changeme
-    ncn-m001# ipmitool -H xname -U $USERNAME -E sol deactivate
+    export USERNAME=root
+    export IPMI_PASSWORD=changeme
+    ipmitool -H xname -U $USERNAME -E sol deactivate
     ```
 
 2.  Retrieve the `cray-conman` pod ID.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# CONPOD=$(kubectl get pods -n services \
+    CONPOD=$(kubectl get pods -n services \
     -o wide|grep cray-conman|awk '{print $1}')
-    ncn-m001# echo $CONPOD
+    echo $CONPOD
     ```
 
 3.  Log on to the pod.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl exec -it -n services $CONPOD /bin/bash
+    kubectl exec -it -n services $CONPOD /bin/bash
     ```
 
 4.  Initiate a console session to reconnect.

@@ -2,7 +2,7 @@
 
 The Firmware Action Service (FAS) provides an interface for managing firmware versions of Redfish-enabled hardware in the system. FAS interacts with the Hardware State Managers (HSM), device data, and image data in order to update firmware.
 
-Reset Gigabyte node BMC to factory defaults if having problems with ipmitool, using Redfish, or when flashing procedures fail. See [Set Gigabyte Node BMC to Factory Defaults](../../install/set_gigabyte_node_bmc_to_factory_defaults.md).
+Reset Gigabyte node BMC to factory defaults if having problems with ipmitool, using Redfish, or when flashing procedures fail. See [Set Gigabyte Node BMC to Factory Defaults](../node_management/Set_Gigabyte_Node_BMC_to_Factory_Defaults.md).
 
 FAS images contain the following information that is needed for a hardware device to update firmware versions:
 
@@ -22,15 +22,11 @@ FAS images contain the following information that is needed for a hardware devic
    * [Firmware Operations](#firmware-operations)
    * [Firmware Images](#firmware-images)
 
-<a name="prerequisites"></a>
-
 ## Prerequisites
 
 1. CSM software has been installed, firmware has been loaded into FAS as part of the HPC Firmware Pack (HFP) install, HSM is running, and nodes have been discovered.
 2. All management nodes have been locked.
 3. Identify the type and manufacturers of hardware in the system. If Gigabyte nodes are not in use on the system, do not update them!
-
-<a name="warning"></a>
 
 ## Warning
 
@@ -39,8 +35,6 @@ Non-compute nodes (NCNs) and their BMCs should be locked with the HSM locking AP
 Follow the process outlined in [FAS CLI](FAS_CLI.md) to update the system. Use the recipes listed in [FAS Recipes](FAS_Recipes.md) to update each supported type.
 
 > **NOTE:** Each system is different and may not have all hardware options.
-
-<a name="current-capabilities"></a>
 
 ## Current Capabilities
 
@@ -55,8 +49,6 @@ The following table describes the hardware items that can have their firmware up
 | Cray             | routerBMC  | `BMC`, `Recovery`                                            |
 | Gigabyte         | nodeBMC    | `BMC`, `BIOS`                                                |
 | HPE              | nodeBMC    | `iLO 5` (BMC aka `1` ), `System ROM` ,`Redundant System ROM` (BIOS aka `2`) |
-
-<a name="order-of-operations"></a>
 
 ## Order Of Operations
 
@@ -93,8 +85,6 @@ For each item in the `Hardware Precedence Order`:
 
 5. Interpret the outcome of the live update; proceed to next type of hardware.
 
-<a name="hardware-precedence-order"></a>
-
 ## Hardware Precedence Order
 
 After identifying which hardware is in the system, start with the top most item on this list to update. If any of the following hardware is not in the system, skip it.
@@ -118,9 +108,6 @@ After identifying which hardware is in the system, start with the top most item 
    1. [BMC (iLO5)](FAS_Recipes.md#hpe-device-type-nodebmc-target--aka-bmc)
    2. [BIOS (System ROM)](FAS_Recipes.md#hpe-device-type-nodebmc-target--aka-bios)
 
-
-<a name="fas-admin-procedures"></a>
-
 ## FAS Admin Procedures
 
 There are several use cases for using the FAS to update firmware on the system. These use cases are intended to be run by system administrators with a good understanding of firmware. Under no circumstances should non-administrator users attempt to use FAS or perform a firmware update.
@@ -130,8 +117,6 @@ There are several use cases for using the FAS to update firmware on the system. 
 * Take a snapshot of the system: Record the firmware versions present on each target for the identified component names (xnames). If the firmware version corresponds to an image available in the images repository, link the `imageID` to the record.
 * Restore the snapshot of the system: Take the previously recorded snapshot and use the related `imageIDs` to put the component name (xname)/targets back to the firmware version they were at, at the time of the snapshot.
 * Provide firmware for updating: FAS can only update a component name (xname)/target if it has an image record that is applicable. Most administrators will not encounter this use case.
-
-<a name="firmware-actions"></a>
 
 ## Firmware Actions
 
@@ -145,8 +130,6 @@ The static portion of the life cycle is where the action is created and configur
 * Indirect: Request to restore a snapshot via the `/snapshots` API.
 
 The dynamic portion of the life cycle is where the action is executed to completion. It begins when the actions is transitioned from the `new` to `configured` state. The action will then be ultimately transitioned to an end state of `aborted` or `completed`.
-
-<a name="firmware-operations"></a>
 
 ## Firmware Operations
 
@@ -163,8 +146,6 @@ FAS operations will have one of the following states:
 * `noOperation` - Firmware is at the correct version according to the images loaded into FAS.
 * `noSolution` - FAS does not have a suitable image for an update.
 * `aborted` - The operation was aborted before it could determine if it was successful. If aborted after the update command was sent to the node, then the node may still have updated.
-
-<a name="firmware-images"></a>
 
 ## Firmware Images
 

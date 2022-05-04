@@ -19,8 +19,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
 1. View the backup schedules.
 
+    (`ncn#`)
     ```bash
-    ncn# velero get schedule
+    velero get schedule
     ```
 
     Example output:
@@ -32,8 +33,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
 2. View the completed backups.
 
+    (`ncn#`)
     ```bash
-    ncn# velero get backup
+    velero get backup
     ```
 
     Example output:
@@ -51,8 +53,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     Replace the *BACKUP\_NAME* value with the name of a backup returned in the previous step.
 
+    (`ncn#`)
     ```bash
-    ncn# velero describe backup BACKUP_NAME --details
+    velero describe backup BACKUP_NAME --details
     ```
 
     Example output:
@@ -148,8 +151,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     Object names will vary.
 
+    (`ncn#`)
     ```bash
-    ncn# velero describe backup BACKUP_NAME --details
+    velero describe backup BACKUP_NAME --details
     ```
 
     Example output:
@@ -243,8 +247,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     1.  Scale the Vault operator down.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl -n vault scale deployment cray-vault-operator --replicas=0
+        kubectl -n vault scale deployment cray-vault-operator --replicas=0
         ```
 
         Example output:
@@ -255,8 +260,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     2.  Verify the changes were successfully made.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl -n vault get deployment
+        kubectl -n vault get deployment
         ```
 
         Example output:
@@ -270,18 +276,20 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     Vault will be inaccessible \(if not already\) after running the following commands.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl -n vault delete vault -l vault_cr=cray-vault
-    ncn# kubectl -n vault delete pvc -l vault_cr=cray-vault
-    ncn# kubectl -n vault delete secret -l vault_cr=cray-vault
+    kubectl -n vault delete vault -l vault_cr=cray-vault
+    kubectl -n vault delete pvc -l vault_cr=cray-vault
+    kubectl -n vault delete secret -l vault_cr=cray-vault
     ```
 
 7.  Submit the restore action.
 
     Monitor the progress of the restore job until it is in a completed phase. The progress can be viewed by using the logs command shown in the output.
 
+    (`ncn#`)
     ```bash
-    ncn# velero restore create --from-backup BACKUP_NAME
+    velero restore create --from-backup BACKUP_NAME
     ```
 
     Example output:
@@ -295,8 +303,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     1.  Scale the Vault operator.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl -n vault scale deployment cray-vault-operator --replicas=1
+        kubectl -n vault scale deployment cray-vault-operator --replicas=1
         ```
 
         Example output:
@@ -307,8 +316,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     2.  Verify the changes were successfully made.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl -n vault get deployment
+        kubectl -n vault get deployment
         ```
 
         Example output:
@@ -324,8 +334,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     1.  Verify the pods are in a CrashLoopBackOff state.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl -n vault get pod -o wide -l vault_cr=cray-vault
+        kubectl -n vault get pod -o wide -l vault_cr=cray-vault
         ```
 
         Example output:
@@ -340,8 +351,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     2.  Delete the pods to restart them.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl delete pod -n vault -l vault_cr=cray-vault
+        kubectl delete pod -n vault -l vault_cr=cray-vault
         ```
 
         Example output:
@@ -355,8 +367,9 @@ View the existing Vault backups on the system and use a completed backup to perf
 
     3.  Verify the pods are in a Running state.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl get pod -n vault -l vault_cr=cray-vault
+        kubectl get pod -n vault -l vault_cr=cray-vault
         ```
 
         Example output:

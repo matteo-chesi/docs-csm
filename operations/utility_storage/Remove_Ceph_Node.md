@@ -22,8 +22,9 @@ This procedure describes how to remove a Ceph node from the Ceph cluster. Once t
 
 1. Monitor the progress of the OSDs that have been added.
 
+    (`ncn#`)
     ```bash
-    ncn# watch ceph -s
+    watch ceph -s
     ```
 
 1. View the status of each OSD and see where they reside.
@@ -63,8 +64,9 @@ This procedure describes how to remove a Ceph node from the Ceph cluster. Once t
 
 1. Set the `NODE` variable.
 
+   (`ncn#`)
    ```bash
-   ncn# export NODE=<node being removed>
+   export NODE=<node being removed>
    ```
 
 1. Reweigh the OSD\(s\) ***on the node being removed*** to rebalance the cluster.
@@ -124,8 +126,9 @@ This procedure describes how to remove a Ceph node from the Ceph cluster. Once t
      1                0  osd.1                  up   1.00000  1.00000  <--- orphan
     ```
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# ceph osd down osd.1; ceph osd destroy osd.1 --force; ceph osd purge osd.1 --force
+    ceph osd down osd.1; ceph osd destroy osd.1 --force; ceph osd purge osd.1 --force
     ```
 
 1. Regenerate Rados-GW Load Balancer Configuration.
@@ -153,15 +156,17 @@ This procedure describes how to remove a Ceph node from the Ceph cluster. Once t
 
     1. Copy the HAproxy configuration from `ncn-s001` to all the storage nodes. Adjust the command based on the number of storage nodes.
 
+        (`ncn-s001#`)
         ```bash
-        ncn-s001# pdcp -w ncn-s00[2-(end node number)] /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg
+        pdcp -w ncn-s00[2-(end node number)] /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg
         ```
 
     1. Restart HAproxy on all the storage nodes, and stop HAproxy and KeepAlived ***on the node that is being removed***.
 
+        (`ncn#`)
         ```bash
-        ncn# pdsh -w ncn-s00[1-(end node number)] -f 2 'systemctl restart haproxy.service'
-        ncn# pdsh -w $NODE 'systemctl stop haproxy.service; systemctl stop keepalived.service'
+        pdsh -w ncn-s00[1-(end node number)] -f 2 'systemctl restart haproxy.service'
+        pdsh -w $NODE 'systemctl stop haproxy.service; systemctl stop keepalived.service'
         ```
 
     1. Redeploy the Rados Gateway containers to adjust the placement group.
@@ -201,8 +206,9 @@ This procedure describes how to remove a Ceph node from the Ceph cluster. Once t
 
    On the ***node being removed***
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# cephadm rm-cluster --fsid $(cephadm ls|jq -r .[1].fsid) --force
+    cephadm rm-cluster --fsid $(cephadm ls|jq -r .[1].fsid) --force
     ```
 
 1. Remove the node from the CRUSH map.

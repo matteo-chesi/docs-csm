@@ -15,8 +15,9 @@ This procedure requires administrative privileges.
     In this example, the Aruba or Mellanox spine or aggregate switch is accessed from `ncn-m001`. In this case, sw-spine-001.hmn is being accessed:
     You should check BOTH spine switches during this process.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ssh admin@sw-spine-001.hmn
+    ssh admin@sw-spine-001.hmn
     ```
 
 2.  Check the number of routes that the BGP Router is accepting in the peering session.

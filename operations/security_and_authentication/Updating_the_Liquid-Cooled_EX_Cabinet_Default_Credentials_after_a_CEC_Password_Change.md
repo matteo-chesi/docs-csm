@@ -25,14 +25,16 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
 
 1. If the `site-init` repository is available as a remote repository [as described here](../../install/prepare_site_init.md#push-to-a-remote-repository), then clone it to `ncn-m001`. Otherwise, ensure that the `site-init` repository is available on `ncn-m001`.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# git clone "$SITE_INIT_REPO_URL" site-init
+   git clone "$SITE_INIT_REPO_URL" site-init
    ```
 
 2. Acquire `customizations.yaml` from the currently running system:
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > site-init/customizations.yaml
+   kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > site-init/customizations.yaml
    ```
 
 3. Review, add, and commit `customizations.yaml` to the local `site-init` repository as appropriate.
@@ -43,25 +45,28 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
    > was stored in the `site-init`, then it suggests settings were changed at some
    > point.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# cd site-init
-   ncn-m001# git diff
-   ncn-m001# git add customizations.yaml
-   ncn-m001# git commit -m 'Add customizations.yaml from site-init secret'
+   cd site-init
+   git diff
+   git add customizations.yaml
+   git commit -m 'Add customizations.yaml from site-init secret'
    ```
 
 4. Acquire sealed secret keys:
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# mkdir -p certs
-   ncn-m001# kubectl -n kube-system get secret sealed-secrets-key -o jsonpath='{.data.tls\.crt}' | base64 -d > certs/sealed_secrets.crt
-   ncn-m001# kubectl -n kube-system get secret sealed-secrets-key -o jsonpath='{.data.tls\.key}' | base64 -d > certs/sealed_secrets.key
+   mkdir -p certs
+   kubectl -n kube-system get secret sealed-secrets-key -o jsonpath='{.data.tls\.crt}' | base64 -d > certs/sealed_secrets.crt
+   kubectl -n kube-system get secret sealed-secrets-key -o jsonpath='{.data.tls\.key}' | base64 -d > certs/sealed_secrets.key
    ```
 
 #### 1.2 Modify MEDS sealed secret to use new global default credential.
 
 1. Inspect the original default credentials for MEDS:
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# ./utils/secrets-decrypt.sh cray_meds_credentials ./certs/sealed_secrets.key ./customizations.yaml | jq .data.vault_redfish_defaults -r | base64 -d | jq
+   ./utils/secrets-decrypt.sh cray_meds_credentials ./certs/sealed_secrets.key ./customizations.yaml | jq .data.vault_redfish_defaults -r | base64 -d | jq
    ```
 
    ```json
@@ -73,13 +78,15 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
 
 2. Specify the desired default credentials for MEDS to use with new hardware:
     > Replace `foobar` with the root password configured on the CEC(s).
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# echo '{ "Username": "root", "Password": "foobar" }' | base64 > creds.json.b64
+    echo '{ "Username": "root", "Password": "foobar" }' | base64 > creds.json.b64
     ```
 
 3. Update and regenerate the `cray_meds_credentials` sealed secret:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cat << EOF | yq w - 'data.vault_redfish_defaults' "$(<creds.json.b64)" | yq r -j - | ./utils/secrets-encrypt.sh | yq w -f - -i ./customizations.yaml 'spec.kubernetes.sealed_secrets.cray_meds_credentials'
+    cat << EOF | yq w - 'data.vault_redfish_defaults' "$(<creds.json.b64)" | yq r -j - | ./utils/secrets-encrypt.sh | yq w -f - -i ./customizations.yaml 'spec.kubernetes.sealed_secrets.cray_meds_credentials'
     {
         "kind": "Secret",
         "apiVersion": "v1",
@@ -94,8 +101,9 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
     ```
 
 4. Decrypt updated sealed secret for review. The sealed secret should match the credentials set on the CEC.
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ./utils/secrets-decrypt.sh cray_meds_credentials ./certs/sealed_secrets.key ./customizations.yaml | jq .data.vault_redfish_defaults -r | base64 -d | jq
+    ./utils/secrets-decrypt.sh cray_meds_credentials ./certs/sealed_secrets.key ./customizations.yaml | jq .data.vault_redfish_defaults -r | base64 -d | jq
     ```
 
     ```json
@@ -106,33 +114,38 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
     ```
 
 5. Update the site-init secret containing `customizations.yaml` for the system:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl delete secret -n loftsman site-init
-    ncn-m001# kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
+    kubectl delete secret -n loftsman site-init
+    kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
     ```
 
 6. Check in changes made to `customizations.yaml`
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# git diff
-    ncn-m001# git add customizations.yaml
-    ncn-m001# git commit -m 'Update customizations.yaml with global default credential for MEDS'
+    git diff
+    git add customizations.yaml
+    git commit -m 'Update customizations.yaml with global default credential for MEDS'
     ```
 
 7. Push to the remote repository as appropriate:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# git push
+    git push
     ```
 
 #### 1.3 Redeploy MEDS to pick up the new sealed secret and push credentials into vault.
 1. Determine the version of MEDS:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# MEDS_VERSION=$(kubectl -n loftsman get cm loftsman-core-services -o jsonpath='{.data.manifest\.yaml}' | yq r - 'spec.charts.(name==cray-hms-meds).version')
-    ncn-m001# echo $MEDS_VERSION
+    MEDS_VERSION=$(kubectl -n loftsman get cm loftsman-core-services -o jsonpath='{.data.manifest\.yaml}' | yq r - 'spec.charts.(name==cray-hms-meds).version')
+    echo $MEDS_VERSION
     ```
 
 2. Create `meds-manifest.yaml`:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cat > meds-manifest.yaml << EOF
+    cat > meds-manifest.yaml << EOF
     apiVersion: manifests/v1beta1
     metadata:
         name: meds
@@ -145,26 +158,30 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
     ```
 
 3. Merge `customizations.yaml` with `meds-manifest.yaml`:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# manifestgen -c customizations.yaml -i ./meds-manifest.yaml > ./meds-manifest.out.yaml
+    manifestgen -c customizations.yaml -i ./meds-manifest.yaml > ./meds-manifest.out.yaml
     ```
 
 4. Redeploy the MEDS helm chart:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# loftsman ship \
+    loftsman ship \
         --charts-repo https://packages.local/repository/charts \
         --manifest-path meds-manifest.out.yaml
     ```
 
 5. Wait for the MEDS Vault loader job to run to completion:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl wait -n services job cray-meds-vault-loader --for=condition=complete --timeout=5m
+    kubectl wait -n services job cray-meds-vault-loader --for=condition=complete --timeout=5m
     ```
 
 6. Verify the default credentials have changed in Vault:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# VAULT_PASSWD=$(kubectl -n vault get secrets cray-vault-unseal-keys -o json | jq -r '.data["vault-root"]' |  base64 -d)
-    ncn-m001# kubectl -n vault exec -it cray-vault-0 -c vault -- env VAULT_TOKEN=$VAULT_PASSWD VAULT_ADDR=http://127.0.0.1:8200 vault kv get secret/meds-cred/global/ipmi
+    VAULT_PASSWD=$(kubectl -n vault get secrets cray-vault-unseal-keys -o json | jq -r '.data["vault-root"]' |  base64 -d)
+    kubectl -n vault exec -it cray-vault-0 -c vault -- env VAULT_TOKEN=$VAULT_PASSWD VAULT_ADDR=http://127.0.0.1:8200 vault kv get secret/meds-cred/global/ipmi
     ```
 
     ```
@@ -177,9 +194,10 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
 
 ### 2. Update credentials for existing EX hardware in the system
 1. Set `CRED_PASSWORD` to the new updated password:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# read -s CRED_PASSWORD
-    ncn-m001# echo $CRED_PASSWORD
+    read -s CRED_PASSWORD
+    echo $CRED_PASSWORD
     ```
     Expected output:
     ```
@@ -187,8 +205,9 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
     ```
 
 2. Update the credentials used by CSM services for all previously discovered EX cabinet BMCs to the new global default:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# \
+    \
     REDFISH_ENDPOINTS=$(cray hsm inventory redfishEndpoints list --type '!RouterBMC' --format json | jq .RedfishEndpoints[].ID -r | sort -V )
     cray hsm state components list --format json  > /tmp/components.json
 
@@ -208,25 +227,28 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
 
     > Alternatively, use the following command on each BMC. Replace `BMC_XNAME` with the BMC component name (xname) to update the credentials:
     > ```bash
-    > ncn-m001# cray hsm inventory redfishEndpoints update BMC_XNAME --user root --password ${CRED_PASSWORD}
+    > cray hsm inventory redfishEndpoints update BMC_XNAME --user root --password ${CRED_PASSWORD}
     > ```
 
 3. Restart the `hms-discovery` Kubernetes cron job.
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl -n services patch cronjobs hms-discovery -p '{"spec" : {"suspend" : false }}'
+   kubectl -n services patch cronjobs hms-discovery -p '{"spec" : {"suspend" : false }}'
    ```
    After 2-3 minutes, the `hms-discovery` cron job will start to power on all of the currently powered off compute slots.
 
 4. Wait for compute slots to be pwoered on and for HSM to re-discover the updated Redfish endpoints.
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# sleep 300
+    sleep 300
     ```
 
 5. Wait for all updated Redfish endpoints to become `DiscoverOK`.
 
     The following Bash script will find all Redfish endpoints for the liquid-cooled BMCs that are not in `DiscoverOK`, and display their `lastDiscoveryStatus`.
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# \
+    \
     cray hsm inventory redfishEndpoints list --laststatus '!DiscoverOK' --type '!RouterBMC' --format json > /tmp/redfishEndpoints.json
     cray hsm state components list --format json  > /tmp/components.json
 
@@ -258,26 +280,29 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
         1. Verify that the BMC component name (xname) is resolvable and pingable:
 
            ```
-           ncn-m001# ping x1001c1s0b0
+           ping x1001c1s0b0
            ```
 
         2. If a NodeBMC is not pingable, then verify that the slot powering the BMC is powered on. If this is a ChassisBMC, skip this step. For example, the NodeBMC x1001c1s0b0 is in slot x1001c1s0.
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray capmc get_xname_status create --xnames x1001c1s0
+            cray capmc get_xname_status create --xnames x1001c1s0
             e = 0
             err_msg = ""
             on = [ "x1001c1s0b0",]
             ```
 
             If the slot is off, power it on:
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray capmc xname_on create --xnames x1001c1s0
+            cray capmc xname_on create --xnames x1001c1s0
             ```
 
         3. If the BMC is reachable and in `HTTPsGetFailed`, then verify that the BMC is accessible with the new default global credential. Replace `BMC_XNAME` with the hostname of the Redfish Endpoint.
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# curl -k -u root:$CRED_PASSWORD https://BMC_XNAME/redfish/v1/Managers | jq
+            curl -k -u root:$CRED_PASSWORD https://BMC_XNAME/redfish/v1/Managers | jq
             ```
 
             If the error message below is returned, then the BMC must have a StatefulReset action performed on it. The StatefulReset action clears previously user defined credentials that are taking precedence over the CEC supplied credential. It also clears NTP, Syslog, and SSH Key configurations on the BMC.
@@ -304,8 +329,9 @@ Before redeploying MEDS, update the `customizations.yaml` file in the `site-init
             ```
 
             Perform a StatefulReset on the liquid-cooled BMC replace `BMC_XNAME` with the hostname of the BMC. The `OLD_DEFAULT_PASSWORD` must match the credential that was previously set on the BMC. This is mostly likely the previous global default credential for liquid-cooled BMCs.
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# curl -k -u root:OLD_DEFAULT_PASSWORD -X POST -H 'Content-Type: application/json' -d \
+            curl -k -u root:OLD_DEFAULT_PASSWORD -X POST -H 'Content-Type: application/json' -d \
             '{"ResetType": "StatefulReset"}' \
             https://BMC_XNAME/redfish/v1/Managers/BMC/Actions/Manager.Reset
             ```
@@ -317,34 +343,38 @@ This section only needs to be performed if any liquid-cooled Node or Chassis BMC
 
 1. For each liquid-cooled BMC to which the StatefulReset action was applied, delete the BMC from HSM. Replace `BMC_XNAME` with the BMC component name (xname) to delete.
     > ```bash
-    > ncn-m001# cray hsm inventory redfishEndpoints delete BMC_XNAME
+    > cray hsm inventory redfishEndpoints delete BMC_XNAME
     > ```
 
 2. Restart MEDS to re-setup the NTP and Syslog configuration the RedfishEndpoints:
 
     View Running MEDS pods:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services get pods -l app.kubernetes.io/instance=cray-hms-meds
+    kubectl -n services get pods -l app.kubernetes.io/instance=cray-hms-meds
     NAME                         READY   STATUS    RESTARTS   AGE
     cray-meds-6d8b5875bc-4jngc   2/2     Running   0          17d
     ```
 
     Restart MEDS:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services rollout restart deployment cray-meds
-    ncn-m001# kubectl -n services rollout status deployment cray-meds
+    kubectl -n services rollout restart deployment cray-meds
+    kubectl -n services rollout status deployment cray-meds
     ```
 
 3. Wait for MEDS to re-discover the deleted RedfishEndpoints:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# sleep 300
+    sleep 300
     ```
 
 4. Verify all expected hardware has been discovered:
 
     The following bash script will find all Redfish endpoints for the liquid-cooled BMCs that are not in `DiscoverOK`, and display their last Discovery Status.
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# \
+    \
     cray hsm inventory redfishEndpoints list --laststatus '!DiscoverOK' --type '!RouterBMC' --format json > /tmp/redfishEndpoints.json
     cray hsm state components list --format json  > /tmp/components.json
 
@@ -362,33 +392,37 @@ This section only needs to be performed if any liquid-cooled Node or Chassis BMC
 5. Restore SSH Keys configured by cray-conman on liquid-cooled Node BMCs.
     Get the SSH Console private key from Vault:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# VAULT_PASSWD=$(kubectl -n vault get secrets cray-vault-unseal-keys \
+    VAULT_PASSWD=$(kubectl -n vault get secrets cray-vault-unseal-keys \
     -o json | jq -r '.data["vault-root"]' |  base64 -d)
 
-    ncn-m001# kubectl -n vault exec -t cray-vault-0 -c vault \
+    kubectl -n vault exec -t cray-vault-0 -c vault \
     -- env VAULT_TOKEN=$VAULT_PASSWD VAULT_ADDR=http://127.0.0.1:8200 \
     VAULT_FORMAT=json vault read transit/export/signing-key/mountain-bmc-console \
     | jq -r .data.keys[]  > ssh-console.key
     ```
 
 6. Generate the SSH public key:
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# chmod 0600 ssh-console.key
-    ncn-m001# export SCSD_SSH_CONSOLE_KEY=$(ssh-keygen -yf ssh-console.key)
-    ncn-m001# echo $SCSD_SSH_CONSOLE_KEY
+    chmod 0600 ssh-console.key
+    export SCSD_SSH_CONSOLE_KEY=$(ssh-keygen -yf ssh-console.key)
+    echo $SCSD_SSH_CONSOLE_KEY
     ```
 
 7. Delete the SSH Console private key from disk:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# rm ssh-console.key
+    rm ssh-console.key
     ```
 
 8. Generate a payload for the SCSD service. The admin must be authenticated to the Cray CLI before proceeding.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cat > scsd_cfg.json <<DATA
+    cat > scsd_cfg.json <<DATA
     {
         "Force":false,
         "Targets":
@@ -402,8 +436,9 @@ This section only needs to be performed if any liquid-cooled Node or Chassis BMC
 
     Alternatively create a `scsd_cfg.json` file with only the SSH Console key:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cat > scsd_cfg.json <<DATA
+    cat > scsd_cfg.json <<DATA
     {
         "Force":false,
         "Targets":[
@@ -426,8 +461,9 @@ This section only needs to be performed if any liquid-cooled Node or Chassis BMC
 
     2. Apply SSH Console key to the NodeBMCs:
 
+       (`ncn-m001#`)
        ```bash
-       ncn-m001# cray scsd bmc loadcfg create scsd_cfg.json
+       cray scsd bmc loadcfg create scsd_cfg.json
        ```
 
     3. Check the output to verify all hardware has been set with the correct keys. Passwordless SSH to the consoles should now function as expected.

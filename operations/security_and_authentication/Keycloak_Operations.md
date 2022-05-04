@@ -9,8 +9,9 @@ A service may need to access Keycloak to perform various tasks. These typical us
 
     The pod in the following example gets a Keycloak Master admin token and makes a request to create a client with a user ID attribute mapper.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl apply -f - <<EOF
+    kubectl apply -f - <<EOF
     apiVersion: v1
     kind: Pod
     metadata:
@@ -68,8 +69,9 @@ A service may need to access Keycloak to perform various tasks. These typical us
     EOF
     ```
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl logs -n services kc-admin-example
+    kubectl logs -n services kc-admin-example
     ```
 
     Example output:

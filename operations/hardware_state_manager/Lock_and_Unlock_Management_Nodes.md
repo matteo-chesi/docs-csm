@@ -31,8 +31,6 @@ failure.
   * [Manual Steps](#lock-manual)
 * [How To Unlock Management Nodes](#how-to-unlock-management-nodes)
 
-<a name="when-to-lock-management-nodes"></a>
-
 ## When To Lock Management Nodes
 
 To best protect system health, NCNs and their BMCs should be locked as early as possible in the install/upgrade cycle. The later in the process, the more risk there is of accidentally taking down a critical node.
@@ -40,8 +38,9 @@ NCN locking must be done after Kubernetes is running and the HSM service is oper
 
 Check whether HSM is running with the following command:
 
+(`ncn#`)
 ```bash
-ncn# kubectl -n services get pods | grep smd
+kubectl -n services get pods | grep smd
 ```
 
 Example output:
@@ -60,31 +59,24 @@ cray-smd-wait-for-postgres-4-7c78j  0/3     Completed  0          9d
 The `cray-smd` pods need to be in the `Running` state, except for `cray-smd-init` and
 `cray-smd-wait-for-postgres` which should be in `Completed` state.
 
-<a name="when-to-unlock-management-nodes"></a>
-
 ## When To Unlock Management Nodes
 
 Any time a management NCN has to be power cycled, reset, or have its firmware updated,
 it and its BMC will first need to be unlocked. After the operation is complete, the targeted nodes and BMCs
 should once again be locked.
 
-<a name="how-to-lock-management-nodes"></a>
-
 ## How To Lock Management Nodes
-
-<a name="lock-script"></a>
 
 ### Script
 
 Run the `lock_management_nodes.py` script to lock all management nodes and BMCs that are not already locked:
 
+(`ncn#`)
 ```bash
-ncn# /opt/cray/csm/scripts/admin_access/lock_management_nodes.py
+/opt/cray/csm/scripts/admin_access/lock_management_nodes.py
 ```
 
 The return value of the script is 0 if locking was successful. A non-zero return code means that manual intervention may be needed to lock the nodes. Continue below for manual steps.
-
-<a name="lock-manual"></a>
 
 #### Manual Steps
 
@@ -101,8 +93,9 @@ Use the `cray hsm locks lock` command to perform locking.
 
 1. Lock the management nodes and BMCs.
 
+   (`ncn#`)
    ```bash
-   ncn# cray hsm locks lock create --role Management --processing-model rigid
+   cray hsm locks lock create --role Management --processing-model rigid
    ```
 
    Example output:
@@ -126,8 +119,9 @@ Use the `cray hsm locks lock` command to perform locking.
 
 1. Lock the management nodes and BMCs.
 
+   (`ncn#`)
    ```bash
-   ncn# cray hsm locks lock create --role Management --component-ids x3000c0s6b0n0,x3000c0s6b0 --processing-model rigid
+   cray hsm locks lock create --role Management --component-ids x3000c0s6b0n0,x3000c0s6b0 --processing-model rigid
    ```
 
    Example output:
@@ -144,8 +138,6 @@ Use the `cray hsm locks lock` command to perform locking.
    ComponentIDs = [ "x3000c0s6b0n0", "x3000c0s6b0",]
    ```
 
-<a name="how-to-unlock-management-nodes"></a>
-
 ## How To Unlock Management Nodes
 
 Use the `cray hsm locks unlock` command to perform unlocking.
@@ -158,8 +150,9 @@ Use the `cray hsm locks unlock` command to perform unlocking.
 
 1. Unlock the management nodes and BMCs.
 
+   (`ncn#`)
    ```bash
-   ncn# cray hsm locks unlock create --role Management --processing-model rigid
+   cray hsm locks unlock create --role Management --processing-model rigid
    ```
 
    Example output:
@@ -181,8 +174,9 @@ Use the `cray hsm locks unlock` command to perform unlocking.
 
 1. Unlock the management nodes.
 
+   (`ncn#`)
    ```bash
-   ncn# cray hsm locks unlock create --role Management --component-ids x3000c0s6b0n0,x3000c0s6b0 --processing-model rigid
+   cray hsm locks unlock create --role Management --component-ids x3000c0s6b0n0,x3000c0s6b0 --processing-model rigid
    ```
 
    Example output:

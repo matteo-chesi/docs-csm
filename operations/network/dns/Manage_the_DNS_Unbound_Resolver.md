@@ -82,7 +82,6 @@ Example output:
 
         **ACTION:** Review and troubleshoot the Manager Logs as shown below.
 
-
 ### View Manager \(DNS Helper\) Logs
 
 Manager logs will show the status of the latest "true up" of DNS with respect to DHCP actual leases and SLS/SMD status. The following command shows the last four lines of the last Manager run, and can be adjusted as needed.
@@ -117,7 +116,6 @@ Any log with `ERROR` or `Exception` is an indication that DNS is not healthy. Th
     -   Bad data from DHCP and/or SLS/SMD.
 
         **ACTION:** If connections to DHCP \(Kea\) are involved, refer to [Troubleshoot DHCP Issues](../dhcp/Troubleshoot_DHCP_Issues.md).
-
 
 ### Restart Unbound
 
@@ -156,8 +154,9 @@ Use the following procedure to change the site DNS server that Unbound forwards 
 
 1. Edit the `cray-dns-unbound` ConfigMap.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl -n services edit configmap cray-dns-unbound
+   kubectl -n services edit configmap cray-dns-unbound
    ```
    Update the `forward-zone` value in `unbound.conf`.
 
@@ -178,8 +177,9 @@ Use the following procedure to change the site DNS server that Unbound forwards 
 
 1. Restart `cray-dns-unbound` for this change to take effect.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl -n services rollout restart deployment cray-dns-unbound
+   kubectl -n services rollout restart deployment cray-dns-unbound
    deployment.apps/cray-dns-unbound restarted
    ```
 
@@ -189,8 +189,9 @@ Use the following procedure to change the site DNS server that Unbound forwards 
 
    1. Extract `customizations.yaml` from the `site-init` secret in the `loftsman` namespace.
 
+      (`ncn-m001#`)
       ```bash
-      ncn-m001# kubectl -n loftsman get secret site-init -o json | jq -r '.data."customizations.yaml"' | base64 -d > customizations.yaml
+      kubectl -n loftsman get secret site-init -o json | jq -r '.data."customizations.yaml"' | base64 -d > customizations.yaml
       ```
 
    1. Update `system_to_site_lookups` with the value of the new DNS server.
@@ -219,7 +220,8 @@ Use the following procedure to change the site DNS server that Unbound forwards 
 
    1. Update the `site-init` secret in the `loftsman` namespace.
 
+      (`ncn-m001#`)
       ```bash
-      ncn-m001# kubectl delete secret -n loftsman site-init
-      ncn-m001# kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
+      kubectl delete secret -n loftsman site-init
+      kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
       ```

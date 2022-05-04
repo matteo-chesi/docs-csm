@@ -10,8 +10,9 @@ UAN boot images and a BOS session template have been created. See [Create UAN Bo
 
 1.  Create a BOS session to boot the UAN nodes.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray bos session create --template-uuid uan-sessiontemplate-PRODUCT_VERSION \
+    cray bos session create --template-uuid uan-sessiontemplate-PRODUCT_VERSION \
     --operation reboot --format json | tee session.json
     ```
 
@@ -65,8 +66,9 @@ UAN boot images and a BOS session template have been created. See [Create UAN Bo
 
     1.  SSH into a newly booted UAN.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ssh uan01-nmn
+        ssh uan01-nmn
         ```
 
     2.  Verify that the DVS RPM versions match what exists in the 1.4.0-p2/rpms directory.
@@ -91,30 +93,34 @@ UAN boot images and a BOS session template have been created. See [Create UAN Bo
 
 3.  Retrieve the BOS session ID from the output of the previous command.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# export BOS_SESSION=$(jq -r '.links[] | select(.rel=="session") | .href' session.json | cut -d '/' -f4)
+    export BOS_SESSION=$(jq -r '.links[] | select(.rel=="session") | .href' session.json | cut -d '/' -f4)
 
-    ncn-m001# echo $BOS_SESSION
+    echo $BOS_SESSION
     89680d0a-3a6b-4569-a1a1-e275b71fce7d
     ```
 
 4.  Retrieve the Boot Orchestration Agent \(BOA\) Kubernetes job name for the BOS session.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# BOA_JOB_NAME=$(cray bos session describe $BOS_SESSION --format json | jq -r .boa_job_name)
+    BOA_JOB_NAME=$(cray bos session describe $BOS_SESSION --format json | jq -r .boa_job_name)
     ```
 
 5.  Retrieve the Kubernetes pod name for the BOA assigned to run this session.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# BOA_POD=$(kubectl get pods -n services -l job-name=$BOA_JOB_NAME \
+    BOA_POD=$(kubectl get pods -n services -l job-name=$BOA_JOB_NAME \
     --no-headers -o custom-columns=":metadata.name")
     ```
 
 6.  View the logs for the BOA to track session progress.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl logs -f -n services $BOA_POD -c boa
+    kubectl logs -f -n services $BOA_POD -c boa
     ```
 
 7.  List the CFS sessions started by the BOA. Skip this step if CFS was not enabled in the boot session template used to boot the UANs.
@@ -123,7 +129,8 @@ UAN boot images and a BOS session template have been created. See [Create UAN Bo
 
     In the following command, `pending` and `complete` are also valid statuses to filter on.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray cfs sessions list --tags bos_session=$BOS_SESSION --status running --format json
+    cray cfs sessions list --tags bos_session=$BOS_SESSION --status running --format json
     ```
 

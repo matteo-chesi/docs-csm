@@ -2,7 +2,6 @@
 
 Remove a group in the Keycloak Shasta realm. Unused Keycloak groups can be removed.
 
-
 ### Prerequisites
 
 -   This procedure assumes the user has already accessed Keycloak's user management interface. See [Access the Keycloak User Management UI](Access_the_Keycloak_User_Management_UI.md) for more information.
@@ -20,7 +19,6 @@ Remove a group in the Keycloak Shasta realm. Unused Keycloak groups can be remov
 2.  Search for the group and select the group in the groups table.
 
 3.  Click the **Delete** button at the top of the table.
-
 
 Once the groups are removed from Keycloak, follow the instructions in [Re-Sync Keycloak Users to Compute Nodes](Resync_Keycloak_Users_to_Compute_Nodes.md) to update the groups on the compute nodes.
 

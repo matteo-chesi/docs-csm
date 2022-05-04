@@ -12,8 +12,9 @@ The node's console or log will display lines beginning with, ''`Could not start 
 
 Use the following command from a non-compute node \(NCN\) to see which boot artifacts BSS assumes as those used for booting the node.
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray bss bootparameters list
+cray bss bootparameters list
 ```
 
 Each boot artifact has a download URL, as shown in the following example output:
@@ -53,14 +54,16 @@ kernel = "s3://boot-images/97b548b9-2ea9-45c9-95ba-dfc77e5522eb/kernel"
 
 Use the artifact's S3 key to download it:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray artifacts get S3_BUCKET S3_OBJECT_KEY DOWNLOAD_FILE_PATH
+cray artifacts get S3_BUCKET S3_OBJECT_KEY DOWNLOAD_FILE_PATH
 ```
 
 For example, if s3://boot-images/97b548b9-2ea9-45c9-95ba-dfc77e5522eb/initrd is the S3 URI for the file initrd, run the following command:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray artifacts get boot-images \
+cray artifacts get boot-images \
 97b548b9-2ea9-45c9-95ba-dfc77e5522eb/initrd initrd
 ```
 

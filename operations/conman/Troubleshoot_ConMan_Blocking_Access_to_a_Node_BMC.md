@@ -26,11 +26,12 @@ The Cray command line interface \(CLI\) tool is initialized and configured on th
 
     > `read -s` is used to prevent the password from appearing in the command history.
 
+    (`ncn#`)
     ```bash
-    ncn# USERNAME=root
-    ncn# read -s IPMI_PASSWORD
-    ncn# export IPMI_PASSWORD
-    ncn# ipmitool -I lanplus -H BMC_IP -U $USERNAME -E sol deactivate
+    USERNAME=root
+    read -s IPMI_PASSWORD
+    export IPMI_PASSWORD
+    ipmitool -I lanplus -H BMC_IP -U $USERNAME -E sol deactivate
     ```
 
 1. Restart the console services.

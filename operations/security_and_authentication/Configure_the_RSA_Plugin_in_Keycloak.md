@@ -88,7 +88,6 @@ Access to the Keycloak UI is needed.
 
     3.  Click **Save**.
 
-
 Here are a couple of things to try after this is set up to verify that it is working:
 
 -   Point a browser at the following URL:

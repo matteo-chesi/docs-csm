@@ -20,4 +20,4 @@ Received 1007200 bytes in 2.2 seconds
 
 The ipxe.efi binary is downloaded three times in a row in this example.
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

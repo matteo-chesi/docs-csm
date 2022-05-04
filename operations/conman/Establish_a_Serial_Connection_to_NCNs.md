@@ -21,10 +21,11 @@ The user performing this procedure needs to have access permission to the `cray-
 
 1. Find the `cray-console-operator` pod.
 
+    (`ncn#`)
     ```bash
-    ncn# OP_POD=$(kubectl get pods -n services \
+    OP_POD=$(kubectl get pods -n services \
             -o wide|grep cray-console-operator|awk '{print $1}')
-    ncn# echo $OP_POD
+    echo $OP_POD
     ```
 
     Example output:
@@ -36,16 +37,18 @@ The user performing this procedure needs to have access permission to the `cray-
 
     NCN component names (xnames) can be gathered from the `/opt/cray/platform-utils/ncnGetXnames.sh` script.
 
+    (`ncn#`)
     ```bash
-    ncn# XNAME=<xname>
+    XNAME=<xname>
     ```
 
 1. Find the `cray-console-node` pod that is connecting with the console.
 
+    (`ncn#`)
     ```bash
-    ncn# NODE_POD=$(kubectl -n services exec $OP_POD -c cray-console-operator -- sh -c \
+    NODE_POD=$(kubectl -n services exec $OP_POD -c cray-console-operator -- sh -c \
         "/app/get-node $XNAME" | jq .podname | sed 's/"//g')
-    ncn# echo $NODE_POD
+    echo $NODE_POD
     ```
 
     Example output:
@@ -55,9 +58,10 @@ The user performing this procedure needs to have access permission to the `cray-
 
 1. Find the worker node on which this pod is running.
 
+    (`ncn#`)
     ```bash
-    ncn# WNODE=$(kubectl get pods -o custom-columns=:.spec.nodeName -n services --no-headers $NODE_POD)
-    ncn# echo $WNODE
+    WNODE=$(kubectl get pods -o custom-columns=:.spec.nodeName -n services --no-headers $NODE_POD)
+    echo $WNODE
     ```
 
     Example output:
@@ -71,16 +75,18 @@ The user performing this procedure needs to have access permission to the `cray-
 
     1. Prevent new pods from being scheduled on the NCN worker node currently running ConMan.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl cordon $WNODE
+        kubectl cordon $WNODE
         ```
 
     1. Delete the pod.
 
         When the pod comes back up, it will be on a different NCN worker node.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl -n services delete $NODE_POD
+        kubectl -n services delete $NODE_POD
         ```
 
     1. Wait for pod to terminate and come back up again.
@@ -92,10 +98,11 @@ The user performing this procedure needs to have access permission to the `cray-
         While the pod was being terminated and restarted, there is a small chance that the console connection was
         moved to a different `cray-console-node` pod.
 
+        (`ncn#`)
         ```bash
-        ncn# NODE_POD=$(kubectl -n services exec $OP_POD -c cray-console-operator -- sh -c \
+        NODE_POD=$(kubectl -n services exec $OP_POD -c cray-console-operator -- sh -c \
             "/app/get-node $XNAME" | jq .podname | sed 's/"//g')
-        ncn# echo $NODE_POD
+        echo $NODE_POD
         ```
 
         Example output:
@@ -105,8 +112,9 @@ The user performing this procedure needs to have access permission to the `cray-
 
 1. Establish a serial console session (from `ncn-m001`) with the desired NCN.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services exec -it $NOD_EPOD -- conman -j $XNAME
+    kubectl -n services exec -it $NOD_EPOD -- conman -j $XNAME
     ```
 
     The console session log files for each NCN is located in the `cray-console-operator` and `cray-console-node` pods in a shared volume at the `/var/log/conman/` directory in a file named `console.<xname>`.

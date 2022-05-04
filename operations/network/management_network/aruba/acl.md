@@ -52,5 +52,4 @@ Show commands to validate functionality: :
 switch# show access-list [hitcounts] [ip|ipv6|mac ACL] [control-plane vrf VRF]
 ```
 
-
-[Back to Index](index.md)
+[Back to Index](README.md)

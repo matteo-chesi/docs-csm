@@ -12,14 +12,16 @@ This procedure requires administrative privileges.
 
 1. Monitor the progress of the OSDs that have been added.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph -s
+    ceph -s
     ```
 
 1. View the status of each OSD and see where they reside.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph osd tree
+    ceph osd tree
     ```
 
 1. Reweigh the OSD\(s\) being removed to rebalance the cluster.
@@ -30,72 +32,83 @@ This procedure requires administrative privileges.
 
         The OSD\_ID value should be replaced with the ID of the OSD being removed. For example, if the ID is osd.1, the OSD\_ID value would be 1 in the command below.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph osd reweight osd.OSD_ID 0
+        ceph osd reweight osd.OSD_ID 0
         ```
 
     1. Change the weight in the CRUSH map to 0.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph osd crush reweight osd.OSD_ID 0
+        ceph osd crush reweight osd.OSD_ID 0
         ```
 
     1. Prevent the removed OSD from getting marked up.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph osd set noup
+        ceph osd set noup
         ```
 
 1. Remove the OSD after the reweighing work is complete.
 
     1. Take down the OSD being removed.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph osd down osd.OSD_ID
+        ceph osd down osd.OSD_ID
         ```
 
     1. Destroy the OSD.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph osd destroy osd.OSD_ID
+        ceph osd destroy osd.OSD_ID
         ```
 
     1. Remove the OSD authentication key.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph auth rm osd.OSD_ID
+        ceph auth rm osd.OSD_ID
         ```
 
     1. Remove the OSD.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph osd rm osd.OSD_ID
+        ceph osd rm osd.OSD_ID
         ```
 
     1. Remove the OSD from the CRUSH map.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# ceph osd crush rm osd.OSD_ID
+        ceph osd crush rm osd.OSD_ID
         ```
 
     1. Remove references to the OSDs on the storage node\(s\) they were located on.
 
         The following commands must be run on the storage node\(s\) that held the OSDs being removed.
 
+        (`ncn-s001#`)
         ```bash
-        ncn-s001# umount /var/lib/ceph/osd/ceph-OSD_ID
+        umount /var/lib/ceph/osd/ceph-OSD_ID
         ncn-s001# rm -rf /var/lib/ceph/osd/ceph-OSD_ID
         ```
 
 1. Clear the flags that were set earlier in the procedure.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph osd unset noup
+    ceph osd unset noup
     ```
 
 1. Monitor the cluster until the rebalancing is complete.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph -s
+    ceph -s
     ```
 

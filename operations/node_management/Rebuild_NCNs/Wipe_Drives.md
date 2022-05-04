@@ -61,15 +61,17 @@ Only follow the steps in the section for the node type that is being rebuilt:
 
 1. Stop running OSDs on the node being wiped.
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# systemctl stop ceph-osd.target
+    systemctl stop ceph-osd.target
     ```
 
 2. Make sure the OSDs (if any) are not running after running the first command.
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# ls -1 /dev/sd* /dev/disk/by-label/*
-    ncn-s# vgremove -f --select 'vg_name=~ceph*'
+    ls -1 /dev/sd* /dev/disk/by-label/*
+    vgremove -f --select 'vg_name=~ceph*'
     ```
 
 3. Unmount and remove the metalvg0 volume group.

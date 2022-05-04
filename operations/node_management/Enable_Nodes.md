@@ -12,14 +12,16 @@ Enabling nodes that are available provides an accurate system configuration and 
 
 1.  Enable one or more nodes with HSM.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm state components bulkEnabled update --enabled true --component-ids XNAME_LIST
+    cray hsm state components bulkEnabled update --enabled true --component-ids XNAME_LIST
     ```
 
 2.  Verify the desired nodes are enabled.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm state components query create --component-ids XNAME_LIST
+    cray hsm state components query create --component-ids XNAME_LIST
     ```
 
     Example output:

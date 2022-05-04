@@ -7,49 +7,55 @@ event that `spire-postgres` databases cannot be restored from a backup.
 
 1. Uninstall the Spire helm chart.
 
+   (`ncn#`)
    ```bash
-   ncn# helm uninstall -n spire spire
+   helm uninstall -n spire spire
    ```
 
 2. Wait for the pods in the Spire namespace to terminate. Once that is done, remove
    the spire-data-server `PVCs`.
 
+   (`ncn#`)
    ```bash
-   ncn# kubectl get pvc -n spire | grep spire-data-spire-server | awk '{print $1}' | xargs kubectl delete -n spire pvc
+   kubectl get pvc -n spire | grep spire-data-spire-server | awk '{print $1}' | xargs kubectl delete -n spire pvc
    ```
 
 3. Disable `spire-agent` on all of the Kubernetes NCNs (all worker nodes and
    master nodes) and delete the join data.
 
+   (`ncn#`)
    ```bash
-   ncn# for ncn in $(kubectl get nodes -o name | cut -d'/' -f2); do ssh "${ncn}" systemctl stop spire-agent; ssh "${ncn}" rm /root/spire/data/svid.key /root/spire/agent_svid.der /root/spire/bundle.der; done
+   for ncn in $(kubectl get nodes -o name | cut -d'/' -f2); do ssh "${ncn}" systemctl stop spire-agent; ssh "${ncn}" rm /root/spire/data/svid.key /root/spire/agent_svid.der /root/spire/bundle.der; done
    ```
 
 ## Re-install the Spire Helm Chart
 
 1. Get the current cached customizations.
 
+   (`ncn#`)
    ```bash
-   ncn# kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > customizations.yaml
+   kubectl get secrets -n loftsman site-init -o jsonpath='{.data.customizations\.yaml}' | base64 -d > customizations.yaml
    ```
 
 1. Get the current cached `sysmgmt` manifest.
 
+   (`ncn#`)
    ```bash
-   ncn# kubectl get cm -n loftsman loftsman-sysmgmt -o jsonpath='{.data.manifest\.yaml}' > spire.yaml
+   kubectl get cm -n loftsman loftsman-sysmgmt -o jsonpath='{.data.manifest\.yaml}' > spire.yaml
    ```
 
 1. Run the following command to remove non-Spire charts from the `spire.yaml`
    file. This will also change the `metadata.name` so that it does not overwrite the
    `sysmgmt.yaml` file that is stored in the `loftsman` namespace.
 
+   (`ncn#`)
    ```bash
-   ncn# for i in $(yq r spire.yaml 'spec.charts[*].name' | grep -Ev '^spire$'); do yq d -i spire.yaml  'spec.charts(name=='"$i"')'; done
-   ncn# yq w -i spire.yaml metadata.name spire
-   ncn# yq d -i spire.yaml spec.sources
-   ncn# yq w -i spire.yaml spec.sources.charts[0].location 'https://packages.local/repository/charts'
-   ncn# yq w -i spire.yaml spec.sources.charts[0].name csm-algol60
-   ncn# yq w -i spire.yaml spec.sources.charts[0].type repo
+   for i in $(yq r spire.yaml 'spec.charts[*].name' | grep -Ev '^spire$'); do yq d -i spire.yaml  'spec.charts(name=='"$i"')'; done
+   yq w -i spire.yaml metadata.name spire
+   yq d -i spire.yaml spec.sources
+   yq w -i spire.yaml spec.sources.charts[0].location 'https://packages.local/repository/charts'
+   yq w -i spire.yaml spec.sources.charts[0].name csm-algol60
+   yq w -i spire.yaml spec.sources.charts[0].type repo
    ```
 
    Example `spire.yaml` after the command is run:
@@ -77,8 +83,9 @@ event that `spire-postgres` databases cannot be restored from a backup.
 1. Generate the manifest that will be used to redeploy the chart with the
    modified resources.
 
+   (`ncn#`)
    ```bash
-   ncn# manifestgen -c customizations.yaml -i spire.yaml -o manifest.yaml
+   manifestgen -c customizations.yaml -i spire.yaml -o manifest.yaml
    ```
 
 1. Validate that the `manifest.yaml` file only contains chart information for
@@ -87,8 +94,9 @@ event that `spire-postgres` databases cannot be restored from a backup.
 
 1. Redeploy the Spire chart.
 
+   (`ncn#`)
    ```bash
-   ncn# loftsman ship --manifest-path ${PWD}/manifest.yaml
+   loftsman ship --manifest-path ${PWD}/manifest.yaml
    ```
 
 1. Verify that all Spire pods have started.
@@ -96,8 +104,9 @@ event that `spire-postgres` databases cannot be restored from a backup.
    This step may take a few minutes due to a number of pods requiring other pods
    to be up.
 
+   (`ncn#`)
    ```bash
-   ncn# kubectl get pods -n spire
+   kubectl get pods -n spire
    ```
 
 1. Restart all compute nodes and User Access Nodes (UANs).

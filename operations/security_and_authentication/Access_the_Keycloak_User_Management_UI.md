@@ -41,6 +41,5 @@ This procedure can be used to access the interface to manage Keycloak users. Use
 
 5.  Click the **Users** link under the **Manage** menu on the left side of the screen.
 
-
 New users can be added with this interface \(see [Create Internal User Accounts in the Keycloak Shasta Realm](Create_Internal_User_Accounts_in_the_Keycloak_Shasta_Realm.md)\).
 

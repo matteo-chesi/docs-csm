@@ -4,8 +4,9 @@
 
 1. Set the `CSM_RELEASE` variable to the **target** CSM version of this upgrade.
 
+   (`ncn-m002#`)
    ```bash
-    ncn-m002# CSM_RELEASE=csm-1.2.0
+    CSM_RELEASE=csm-1.2.0
    ```
 
 1. Follow either the [Direct download](#direct-download) or [Manual copy](#manual-copy) procedure.
@@ -21,18 +22,20 @@
 
    In other words, the full URL to the CSM release `tar` file must be `${ENDPOINT}${CSM_RELEASE}.tar.gz`
 
-   **NOTE** This step is optional for Cray/HPE internal installs, if `ncn-m002` can reach the internet.
+  > **`NOTE`** This step is optional for Cray/HPE internal installs, if `ncn-m002` can reach the internet.
 
+   (`ncn-m002#`)
    ```bash
-   ncn-m002# ENDPOINT=https://put.the/url/here/
+   ENDPOINT=https://put.the/url/here/
    ```
 
 1. Run the script.
 
-   **NOTE** For Cray/HPE internal installs, if `ncn-m002` can reach the internet, then the `--endpoint` argument may be omitted.
+  > **`NOTE`** For Cray/HPE internal installs, if `ncn-m002` can reach the internet, then the `--endpoint` argument may be omitted.
 
+   (`ncn-m002#`)
    ```bash
-   ncn-m002# /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --endpoint "${ENDPOINT}"
+   /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --endpoint "${ENDPOINT}"
    ```
 
 1. Skip the `Manual copy` subsection.
@@ -43,18 +46,20 @@
 
 1. Copy the CSM release `tar` file to `ncn-m002`.
 
-   See [Update Product Stream](../../update_product_stream/index.md).
+   See [Update Product Stream](../../update_product_stream/README.md).
 
 1. Set the `CSM_TAR_PATH` variable to the full path to the CSM `tar` file on `ncn-m002`.
 
+   (`ncn-m002#`)
    ```bash
-   ncn-m002# CSM_TAR_PATH=/path/to/${CSM_RELEASE}.tar.gz
+   CSM_TAR_PATH=/path/to/${CSM_RELEASE}.tar.gz
    ```
 
 1. Run the script.
 
+   (`ncn-m002#`)
    ```bash
-   ncn-m002# /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --tarball-file "${CSM_TAR_PATH}"
+   /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --tarball-file "${CSM_TAR_PATH}"
    ```
 
 ## Perform upgrade
@@ -68,17 +73,19 @@ This is due to a redeployment of the Ceph `csi` provisioners into namespaces, in
 
    > `read -s` is used to prevent the password from being written to the screen or the shell history.
 
+   (`ncn-m002#`)
    ```bash
-   ncn-m002# read -s SW_ADMIN_PASSWORD
-   ncn-m002# export SW_ADMIN_PASSWORD
+   read -s SW_ADMIN_PASSWORD
+   export SW_ADMIN_PASSWORD
    ```
 
 1. Perform the upgrade.
 
    Run `csm-upgrade.sh` to deploy upgraded CSM applications and services.
 
+   (`ncn-m002#`)
    ```bash
-   ncn-m002# /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/csm-upgrade.sh
+   /usr/share/doc/csm/upgrade/1.2/scripts/upgrade/csm-upgrade.sh
    ```
 
 ## Stage completed

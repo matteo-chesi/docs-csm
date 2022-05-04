@@ -10,8 +10,9 @@ A non-compute node \(NCN\) has crashed or an admin has triggered a node crash.
 
 1.  Force a dump on an NCN.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# echo c > /proc/sysrq-trigger
+    echo c > /proc/sysrq-trigger
     ```
 
 2.  Wait for the node to reboot.
@@ -24,8 +25,9 @@ A non-compute node \(NCN\) has crashed or an admin has triggered a node crash.
 
     The `--start_time` command option can be customized. For example, "-1 day", "-2 hours", or a date/time string can be used. For more information on the SDU command options, use the `sdu --help` command.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# sdu --scenario triage --start_time DATE_OR_TIME_STRING --end_time DATE_OR_TIME_STRING \
+    sdu --scenario triage --start_time DATE_OR_TIME_STRING --end_time DATE_OR_TIME_STRING \
     --plugin ncn.gather.nodes --plugin ncn.gather.kernel.dumps
     ```
 

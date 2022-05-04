@@ -62,7 +62,6 @@ Follow the steps in only one of the following sections depending on if it is pre
 
    6.  Click the **Save** button.
 
-
 #### Use the Keycloak REST API
 
 1.  Create the get\_master\_token function to get a token as a Keycloak master administrator.

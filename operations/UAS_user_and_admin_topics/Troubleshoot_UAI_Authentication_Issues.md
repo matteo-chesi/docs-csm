@@ -53,7 +53,6 @@ To resolve this issue, make sure the `cray` command is configured to use one of 
 # cray config describe | grep hostname
     "hostname": "https://172.30.51.127:30443" <---- 172.30.51.127:30443 will not work
 
-
 # Change to "https://api-gw-service-nmn.local"
 cray init --hostname "https://api-gw-service-nmn.local"
 Overwrite configuration file at: /root/.config/cray/configurations/default ? [y/N]: y
@@ -110,6 +109,6 @@ uai_age = "11m"
 uai_name = ""
 ```
 
-[Top: User Access Service (UAS)](index.md)
+[Top: User Access Service (UAS)](README.md)
 
 [Next Topic: Troubleshoot Broker UAI SSSD Cannot Use /etc/sssd/sssd.conf](Troubleshoot_Broker_SSSD_Cant_Use_sssd_conf.md)

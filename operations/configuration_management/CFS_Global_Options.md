@@ -4,8 +4,9 @@ The Configuration Framework Service \(CFS\) provides a global service options en
 
 View the options with the following command:
 
+(`ncn#`)
 ```bash
-ncn# cray cfs options list --format json
+cray cfs options list --format json
 ```
 
 Example output:

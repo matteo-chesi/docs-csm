@@ -12,8 +12,9 @@ If a Cray EX liquid-cooled cabinet or cooling group experiences an EPO event, th
 
 2.  From ncn-m001, check the status of the chassis.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_xname_status create --xnames x9000c[1,3]
+    cray capmc get_xname_status create --xnames x9000c[1,3]
     ```
 
     Example output:
@@ -28,8 +29,9 @@ If a Cray EX liquid-cooled cabinet or cooling group experiences an EPO event, th
 
     A cabinet has eight chassis.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl logs -n services -l app.kubernetes.io/name=cray-capm \
+    kubectl logs -n services -l app.kubernetes.io/name=cray-capm \
     -c cray-capmc --tail -1 | grep EPO -A 10
     ```
 
@@ -46,8 +48,9 @@ If a Cray EX liquid-cooled cabinet or cooling group experiences an EPO event, th
 
 4.  Disable the hms-discovery Kubernetes cron job.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl -n services patch cronjobs hms-discovery -p '{"spec" : {"suspend" : true }}'
+    kubectl -n services patch cronjobs hms-discovery -p '{"spec" : {"suspend" : true }}'
     ```
 
     **CAUTION:** Do not power the system on until it is safe to do so. Determine why the EPO event occurred before clearing the EPO state.
@@ -56,8 +59,9 @@ If a Cray EX liquid-cooled cabinet or cooling group experiences an EPO event, th
 
     All chassis in cabinets 1000-1003 are forced off in this example. Power off all chassis in a cooling group simultaneously, or the EPO condition may persist.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc xname_off create --xnames x[1000-1003]c[0-7] --force true
+    cray capmc xname_off create --xnames x[1000-1003]c[0-7] --force true
     ```
 
     Example output:
@@ -69,8 +73,9 @@ If a Cray EX liquid-cooled cabinet or cooling group experiences an EPO event, th
 
     The HPE Cray EX EX TDS cabinet contains only two chassis: 1 \(bottom\) and 3 \(top\).
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc xname_off create --xnames x9000c[1,3] --force true
+    cray capmc xname_off create --xnames x9000c[1,3] --force true
     ```
 
     Example output:
@@ -82,14 +87,16 @@ If a Cray EX liquid-cooled cabinet or cooling group experiences an EPO event, th
 
 6.  Restart the hms-discovery cron job.
 
+    (`ncn-m001#`)
     ```screen
-    ncn-m001# kubectl -n services patch cronjobs hms-discovery -p '{"spec" : {"suspend" : false }}'
+    kubectl -n services patch cronjobs hms-discovery -p '{"spec" : {"suspend" : false }}'
     ```
 
     About 5 minutes after hms-discovery restarts, the service will power on the chassis enclosures, switches, and compute blades. If components are not being powered back on, then power them on manually.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc xname_on create \
+    cray capmc xname_on create \
     --xnames x[1000-1003]c[0-7]r[0-7],x[1000-1003]c[0-7]s[0-7] --prereq true --continue true
     ```
 

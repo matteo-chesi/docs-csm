@@ -27,28 +27,32 @@ When the PDU breakers are switched to OFF, the Chassis Management Modules \(CMMs
 
 1.  Check the power status before shutdown, this example shows cabinets 1000-1003.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_xname_status create --xnames x[1000-1003]c[0-7] --format json
+    cray capmc get_xname_status create --xnames x[1000-1003]c[0-7] --format json
     ```
 
 1.  Use `sat bootsys shutdown` to shut down services and power off liquid-cooled cabinets.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# sat bootsys shutdown --stage cabinet-power
+    sat bootsys shutdown --stage cabinet-power
     ```
 
     This command suspends the `hms-discovery` cron job and recursively powers off the liquid-cooled cabinet chassis.
 
     The `sat bootsys shutdown` command may fail to power off some cabinets and indicate that requests to CAPMC have timed out. In this case, the `sat` command may be run with an increased `--api-timeout` option.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# sat --api-timeout 180 bootsys shutdown --stage cabinet-power
+    sat --api-timeout 180 bootsys shutdown --stage cabinet-power
     ```
 
 1.  Verify that the `hms-discovery` cron job has been suspended \(`SUSPEND` column = `True`\).
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl get cronjobs -n services hms-discovery
+    kubectl get cronjobs -n services hms-discovery
     ```
 
     Example output:
@@ -60,8 +64,9 @@ When the PDU breakers are switched to OFF, the Chassis Management Modules \(CMMs
 
 1.  Check the power off status, this example shows cabinets 1000-1003.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_xname_status create --xnames x[1000-1003]c[0-7] --format json
+    cray capmc get_xname_status create --xnames x[1000-1003]c[0-7] --format json
     ```
 
     Rectifiers \(PSUs\) should indicate that DC power is OFF \(AC OK is on\).
@@ -86,16 +91,18 @@ When the PDU breakers are switched to OFF, the Chassis Management Modules \(CMMs
 
 1. Check the power status before shutdown, this example shows nodes in cabinets 3001-3003.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_xname_status create --xnames x300[1-3]c0s[1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35]b[1-4]n0 --format json
+    cray capmc get_xname_status create --xnames x300[1-3]c0s[1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35]b[1-4]n0 --format json
     ```
 
     The `get_xname_status` command requires that the list of components be explicitly listed. In this example, the system includes only 2U servers and there are no state manager entries for even-numbered U-positions \(slots\), which would return an error.
 
     The command does not filter nonexistent component names \(xnames\) and displays an error when invalid component names are specified. Use `--filter` `show_all` option to filter all the output:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_xname_status create --filter show_all
+    cray capmc get_xname_status create --filter show_all
     ```
 
     Example output:
@@ -128,21 +135,22 @@ When the PDU breakers are switched to OFF, the Chassis Management Modules \(CMMs
     }
     ```
 
-
 1.  Use CAPMC to power off **non-management** nodes HPE Cray standard racks.
 
     CAUTION: **Do not power off the management cabinet**. Verify the components names \(xnames\) specified in the following command line do not accidentally power off management cabinets.
 
     This example shuts down racks 3001-3003.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc xname_off create --xnames x300[1-3]c0s[1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35]b[1-4]n0
+    cray capmc xname_off create --xnames x300[1-3]c0s[1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35]b[1-4]n0
     ```
 
 1.  Check the status of the CAPMC power off command.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_xname_status create --xnames x300[1-3]c0s[1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35]b[1-4]n0 --format json
+    cray capmc get_xname_status create --xnames x300[1-3]c0s[1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35]b[1-4]n0 --format json
     ```
 
 1.  Set each cabinet PDU circuit breaker to off.

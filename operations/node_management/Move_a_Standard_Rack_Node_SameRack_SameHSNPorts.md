@@ -10,8 +10,9 @@ If a node has an incorrect component name (xname) based on its physical location
 
 -   An authentication token has been retrieved.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# function get_token () {
+    function get_token () {
         curl -s -S -d grant_type=client_credentials \
             -d client_id=admin-client \
             -d client_secret=`kubectl get secrets admin-client-auth -o jsonpath='{.data.client-secret}' | base64 -d` \
@@ -45,37 +46,42 @@ This procedure works with both application and compute nodes. This example moves
 
 4.  Setup environment variables for the original node and node BMC component names (xnames):
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# OLD_NODE_XNAME=x3000c0s17b1n0
-    ncn-m001# echo $OLD_NODE_XNAME
+    OLD_NODE_XNAME=x3000c0s17b1n0
+    echo $OLD_NODE_XNAME
     x3000c0s17b1n0
     ```
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# OLD_BMC_XNAME=$(echo $OLD_NODE_XNAME | egrep -o 'x[0-9]+c[0-9]+s[0-9]+b[0-9]+')
-    ncn-m001# echo $OLD_BMC_XNAME
+    OLD_BMC_XNAME=$(echo $OLD_NODE_XNAME | egrep -o 'x[0-9]+c[0-9]+s[0-9]+b[0-9]+')
+    echo $OLD_BMC_XNAME
     x3000c0s17b1
     ```
 
 5.  Setup environment variables for the new node and node BMC component names (xnames):
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# NEW_NODE_XNAME=x3000c0s27b1n0
-    ncn-m001# echo $NEW_NODE_XNAME
+    NEW_NODE_XNAME=x3000c0s27b1n0
+    echo $NEW_NODE_XNAME
     x3000c0s27b1n0
     ```
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# NEW_BMC_XNAME=$(echo $NEW_NODE_XNAME | egrep -o 'x[0-9]+c[0-9]+s[0-9]+b[0-9]+')
-    ncn-m001# echo $NEW_BMC_XNAME
+    NEW_BMC_XNAME=$(echo $NEW_NODE_XNAME | egrep -o 'x[0-9]+c[0-9]+s[0-9]+b[0-9]+')
+    echo $NEW_BMC_XNAME
     x3000c0s27b1
     ```
 
 6.  Update SLS with the node's new component name (xname).
 	1.  Get Node from SLS:
 
+       (`ncn-m001#`)
        ```bash
-       ncn-m001# cray sls hardware describe "$OLD_NODE_XNAME" --format json > sls_node.original.json
+       cray sls hardware describe "$OLD_NODE_XNAME" --format json > sls_node.original.json
        ```
 
        Sample contents of `sls_node.original.json`
@@ -101,8 +107,9 @@ This procedure works with both application and compute nodes. This example moves
 
     2.  Update the SLS Node object with the new component names (xnames):
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# jq --arg NODE_XNAME "$NEW_NODE_XNAME" --arg BMC_XNAME "$NEW_BMC_XNAME" \
+        jq --arg NODE_XNAME "$NEW_NODE_XNAME" --arg BMC_XNAME "$NEW_BMC_XNAME" \
             '.Parent = $BMC_XNAME | .Xname = $NODE_XNAME' sls_node.original.json \
             > sls_node.json
         ```
@@ -131,8 +138,9 @@ This procedure works with both application and compute nodes. This example moves
 
     3.  Create new Node object in SLS:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# curl -i -X POST -H "Authorization: Bearer $(get_token)" \
+        curl -i -X POST -H "Authorization: Bearer $(get_token)" \
             https://api-gw-service-nmn.local/apis/sls/v1/hardware -d @sls_node.json
         ```
         > **NOTE:** If a 503 is returned, verify that get_token function has been defined.
@@ -152,8 +160,9 @@ This procedure works with both application and compute nodes. This example moves
 
     4.  Delete old Node object from SLS:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray sls hardware delete $OLD_NODE_XNAME
+        cray sls hardware delete $OLD_NODE_XNAME
         ```
 
         Expected output:
@@ -167,8 +176,9 @@ This procedure works with both application and compute nodes. This example moves
 
     1.  Get MgmtSwitchConnector object from SLS:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray sls search hardware list --node-nics "$OLD_BMC_XNAME" --format json > sls_MgmtSwitchConnector.original.json
+        cray sls search hardware list --node-nics "$OLD_BMC_XNAME" --format json > sls_MgmtSwitchConnector.original.json
         ```
 
         Sample contents of `sls_MgmtSwitchConnector.original.json`
@@ -195,8 +205,9 @@ This procedure works with both application and compute nodes. This example moves
 
     2.  Update `MgmtSwitchConnector` object with the new node BMC component name (xname):
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# jq --arg BMC_XNAME "$NEW_BMC_XNAME" \
+        jq --arg BMC_XNAME "$NEW_BMC_XNAME" \
             '.[0] | .ExtraProperties.NodeNics = [ $BMC_XNAME ]' sls_MgmtSwitchConnector.original.json \
             > sls_MgmtSwitchConnector.json
         ```
@@ -224,16 +235,18 @@ This procedure works with both application and compute nodes. This example moves
 
     3.  Determine the component name (xname) of the `MgmtSwitchConnector`:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# MGMT_SWITCH_CONNECTOR_XNAME=$(jq -r .Xname sls_MgmtSwitchConnector.json)
-        ncn-m001# echo $MGMT_SWITCH_CONNECTOR_XNAME
+        MGMT_SWITCH_CONNECTOR_XNAME=$(jq -r .Xname sls_MgmtSwitchConnector.json)
+        echo $MGMT_SWITCH_CONNECTOR_XNAME
         x3000c0w22j36
         ```
 
     4.  Update the `MgmtSwitchConnector` in SLS:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# curl -i -X PUT -H "Authorization: Bearer $(get_token)" \
+        curl -i -X PUT -H "Authorization: Bearer $(get_token)" \
             https://api-gw-service-nmn.local/apis/sls/v1/hardware/$MGMT_SWITCH_CONNECTOR_XNAME -d @sls_MgmtSwitchConnector.json
         ```
 
@@ -256,29 +269,33 @@ This procedure works with both application and compute nodes. This example moves
 
     Remove Node component from HSM:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm state components delete $OLD_NODE_XNAME
+    cray hsm state components delete $OLD_NODE_XNAME
     ```
 
     Remove NodeBMC component from HSM:
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm state components delete $OLD_BMC_XNAME
+    cray hsm state components delete $OLD_BMC_XNAME
     ```
 
     Remove NodeEnclosure component form HSM. The component name (xname) for a NodeEnclosure is similar to the node BMC component name (xname), but the `b` is replaced with a `e`.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# OLD_NODE_ENCLOSURE_XNAME=x3000c0s17e0
-    ncn-m001# cray hsm state components delete $OLD_NODE_ENCLOSURE_XNAME
+    OLD_NODE_ENCLOSURE_XNAME=x3000c0s17e0
+    cray hsm state components delete $OLD_NODE_ENCLOSURE_XNAME
     ```
 
 9.  Delete the `NodeBMC`, `Node` NIC MAC addresses, and the Redfish endpoint for the U17 node from th HSM.
 
     1.  Delete the `Node` MAC addresses from the HSM.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# for ID in $(cray hsm inventory ethernetInterfaces list --component-id $OLD_NODE_XNAME --format json | jq -r .[].ID); do
+        for ID in $(cray hsm inventory ethernetInterfaces list --component-id $OLD_NODE_XNAME --format json | jq -r .[].ID); do
             echo "Deleting MAC address: $ID"
             cray hsm inventory ethernetInterfaces delete $ID;
         done
@@ -286,8 +303,9 @@ This procedure works with both application and compute nodes. This example moves
 
     2.  Delete each `NodeBMC` MAC address from the Hardware State Manager \(HSM\) Ethernet interfaces table.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# for ID in $(cray hsm inventory ethernetInterfaces list --component-id $OLD_BMC_XNAME --format json | jq -r .[].ID); do
+        for ID in $(cray hsm inventory ethernetInterfaces list --component-id $OLD_BMC_XNAME --format json | jq -r .[].ID); do
             echo "Deleting MAC address: $ID"
             cray hsm inventory ethernetInterfaces delete $ID;
         done
@@ -295,22 +313,25 @@ This procedure works with both application and compute nodes. This example moves
 
     3.  Delete the Redfish endpoint for the removed node.
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# cray hsm inventory redfishEndpoints delete $OLD_BMC_XNAME
+        cray hsm inventory redfishEndpoints delete $OLD_BMC_XNAME
         ```
 
 10. Connect the power cables to the node to power on the BMC.
     > If this procedure is being followed to correct a node's component name (xname), then this step can be skipped.
 
 11. Wait for 5 minutes for power on and the node BMCs to be discovered.
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# sleep 300
+    sleep 300
     ```
 
 12. Verify the node BMC has been discovered by the HSM.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm inventory redfishEndpoints describe $NEW_BMC_XNAME --format json
+    cray hsm inventory redfishEndpoints describe $NEW_BMC_XNAME --format json
     {
         "ID": "x3000c0s27b1",
         "Type": "NodeBMC",
@@ -338,14 +359,16 @@ This procedure works with both application and compute nodes. This example moves
 
             If hostname it does resolve, issue a discovery request to HSM:
 
+            (`ncn-m001#`)
             ```bash
-            ncn-m001# cray hsm inventory discover create --xnames $NEW_BMC_XNAME
+            cray hsm inventory discover create --xnames $NEW_BMC_XNAME
             ```
 
 13. Verify that the nodes are enabled in the HSM.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm state components describe $NEW_NODE_XNAME
+    cray hsm state components describe $NEW_NODE_XNAME
     Type = "Node"
     Enabled = true
     State = "Off"
@@ -354,16 +377,18 @@ This procedure works with both application and compute nodes. This example moves
 
 14. If necessary, enable the nodes in the HSM database \(in this example, the nodes are `x3000c0s27b[1-4]n0`\).
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm state components bulkEnabled update --enabled true --component-ids x3000c0s27b1n0,x3000c0s27b2n0,x3000c0s27b3n0,x3000c0s27b4n0
+    cray hsm state components bulkEnabled update --enabled true --component-ids x3000c0s27b1n0,x3000c0s27b2n0,x3000c0s27b3n0,x3000c0s27b4n0
     ```
 
 15. Use boot orchestration to power on and boot the nodes.
 
     Specify the appropriate BOS template for the node type.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray bos session create --template-uuid cle-VERSION \
+    cray bos session create --template-uuid cle-VERSION \
     --operation reboot --limit x3000c0s27b1n0,x3000c0s27b2n0,x3000c0s27b3n0,x3000c0s27b4n0
     ```
 

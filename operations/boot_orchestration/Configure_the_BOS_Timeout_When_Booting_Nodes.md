@@ -4,18 +4,17 @@ Manually update the boa-job-template ConfigMap to tune the timeout and sleep int
 
 If the BOS timeout occurs when booting compute nodes, the system will be unable to boot via BOS.
 
-
 ### Prerequisites
 
 A Boot Orchestration Service \(BOS\) session was run and compute nodes are failing to move to a Ready state.
-
 
 ### Procedure
 
 1.  Edit the boa-job-template ConfigMap to add the new timeout values.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl edit configmap -n services boa-job-template
+    kubectl edit configmap -n services boa-job-template
     ```
 
     Node boots can be set to time out faster by adding the following environment variables to the boa-job-template. These variables do not appear in the ConfigMap by default.
@@ -90,8 +89,9 @@ A Boot Orchestration Service \(BOS\) session was run and compute nodes are faili
 
     Restarting BOA will allow the new timeout values to take effect.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# kubectl scale deployment -n services cray-bos --replicas=0
-    ncn-m001# kubectl scale deployment -n services cray-bos --replicas=1
+    kubectl scale deployment -n services cray-bos --replicas=0
+    kubectl scale deployment -n services cray-bos --replicas=1
     ```
 

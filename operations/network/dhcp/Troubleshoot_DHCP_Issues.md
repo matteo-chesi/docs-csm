@@ -131,7 +131,6 @@ Once a token has been generated, the DHCP lease database can be viewed. The comm
     select(."hostname"=="xNAME")'
     ```
 
-
 ### Check the Hardware State Manager \(HSM\) for Issues
 
 The HSM includes two important components:

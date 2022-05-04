@@ -195,4 +195,4 @@ access-list ip secure_mcast_sources
 4. Administrators can configure the VLANs and ACLs for synchronization
 5. Everything is synchronized from the primary to the secondary
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

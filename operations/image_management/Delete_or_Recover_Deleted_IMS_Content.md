@@ -2,8 +2,9 @@
 
 The Image Management System \(IMS\) manages user supplied SSH public Keys, customizable image recipes, images, and IMS jobs that are used to build or customize images. In previous versions of IMS, deleting an IMS public key, recipe, or image resulted in that item being permanently deleted. Additionally, IMS recipes and images store linked artifacts in the Simple Storage Service \(S3\) datastore. These artifacts are referenced by the IMS recipe and image records. The default option when deleting an IMS recipe and image record was to also delete these linked S3 artifacts.
 
+(`ncn#`)
 ```bash
-ncn# cray ims recipes list
+cray ims recipes list
 ```
 
 Example output:
@@ -25,7 +26,7 @@ type = "s3"
 ```
 
 ```
-ncn# cray ims images list
+cray ims images list
 ```
 
 Example output:
@@ -79,8 +80,9 @@ Deleting an IMS public-key, recipe, or image record performs the following actio
 
     1.  List the existing images in IMS.
 
+        (`ncn#`)
         ```bash
-        ncn# cray ims images list
+        cray ims images list
         ```
 
         Example output:
@@ -103,20 +105,23 @@ Deleting an IMS public-key, recipe, or image record performs the following actio
 
     2.  Delete the image.
 
+        (`ncn#`)
         ```bash
-        ncn# cray ims images delete IMS_IMAGE_ID
+        cray ims images delete IMS_IMAGE_ID
         ```
 
     3.  Verify the image was successfully deleted.
 
+        (`ncn#`)
         ```bash
-        ncn# cray ims images list
+        cray ims images list
         ```
 
     4.  View the recently deleted item in the deleted images list.
 
+        (`ncn#`)
         ```bash
-        ncn# cray ims deleted images list
+        cray ims deleted images list
         ```
 
         Example output:
@@ -146,8 +151,9 @@ Deleting an IMS public-key, recipe, or image record performs the following actio
 
     1.  List the deleted images.
 
+        (`ncn#`)
         ```bash
-        ncn# cray ims deleted images list
+        cray ims deleted images list
         ```
 
         Example output:
@@ -171,10 +177,10 @@ Deleting an IMS public-key, recipe, or image record performs the following actio
 
     2.  Permanently delete the desired image from the deleted images list.
 
+        (`ncn#`)
         ```bash
-        ncn# cray ims deleted images delete IMS_IMAGE_ID
+        cray ims deleted images delete IMS_IMAGE_ID
         ```
-
 
 ## Recover Deleted IMS Artifacts
 
@@ -199,8 +205,9 @@ The steps in this procedure assume that a deleted image is being recovered. The 
 
 1.  List the deleted image.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims deleted images list
+    cray ims deleted images list
     ```
 
     Example output:
@@ -224,20 +231,23 @@ The steps in this procedure assume that a deleted image is being recovered. The 
 
 2.  Use the `undelete` operation to recover the image.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims deleted images update IMS_IMAGE_ID --operation undelete
+    cray ims deleted images update IMS_IMAGE_ID --operation undelete
     ```
 
 3.  List the deleted images to verify the recovered image is no longer in the collection of deleted items.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims deleted images list
+    cray ims deleted images list
     ```
 
 4.  List the IMS images to verify the image was recovered.
 
+    (`ncn#`)
     ```bash
-    ncn# cray ims images list
+    cray ims images list
     ```
 
     Example output:

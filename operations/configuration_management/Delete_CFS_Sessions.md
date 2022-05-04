@@ -10,8 +10,9 @@ This requires that the Cray command line interface is configured. See [Configure
 
 Use the session name to delete the session:
 
+(`ncn#`)
 ```bash
-ncn# cray cfs sessions delete <session_name>
+cray cfs sessions delete <session_name>
 ```
 
 No output is expected.
@@ -20,8 +21,9 @@ No output is expected.
 
 To delete all completed CFS sessions, use the `deleteall` command.
 
+(`ncn#`)
 ```bash
-ncn# cray cfs sessions deleteall
+cray cfs sessions deleteall
 ```
 
 This command can also filter the sessions to delete based on tags, name, status, age, and success or failure.

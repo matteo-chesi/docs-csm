@@ -12,7 +12,6 @@ The Recovery Workflow:
  - [Dump the Data](#dump)
  - [Rebuild the Cluster and Restore the Data](#rebuild-restore)
 
-<a name="recover-database"></a>
 ## Attempt to Recover to a Running Database
 
 A running database is needed to be able to dump the current data.
@@ -55,7 +54,6 @@ Filesystem      Size  Used Avail Use% Mounted on
 
 If the database is down and the disk is full because of replication issues, there are two ways to attempt to get back to a running database: either delete files or resize the Postgres PVCs until the database is able to start running again.
 
-<a name="option1"></a>
 ### Option 1 : Clear logs and/or WAL files
 
 The following example is based on `cray-smd-postgres`.
@@ -112,7 +110,6 @@ The following example is based on `cray-smd-postgres`.
 
 1. If the database is still not running, then try recovering using the other option listed in this document.
 
-<a name="option2"></a>
 ### Option 2 : Resize the Postgres PVCs
 
 The following example is based on `cray-smd-postgres`, where the postgresql `cray-smd-postgres` resource and the `pgdata-cray-smd-postgres` PVCs will be resized from `100Gi` to `120Gi`.
@@ -239,12 +236,10 @@ The following example is based on `cray-smd-postgres`, where the postgresql `cra
    customer-managed `customizations.yaml` file. See the Postgres PVC Resize information in the
    [Post Install Customizations](../CSM_product_management/Post_Install_Customizations.md#postgres_pvc_resize).
 
-<a name="dump"></a>
 ## Dump the data
 
 If the recovery was successful such that the database is now running, then continue with the following steps to dump the data.
 
-<a name="scale"></a>
 1. Scale the client service to 0.
 
     The following example is based on `cray-smd`. The `cray-smd` client service is deployed as a deployment. Other services may differ; e.g. `statefulset`.
@@ -282,7 +277,6 @@ If the recovery was successful such that the database is now running, then conti
     cray-smd-postgres-dumpall.sql
     ```
 
-<a name="rebuild-restore"></a>
 ## Rebuild the cluster and restore the data
 
 If recovery was successful such that a dump could be taken or a dump already exists, then continue with the following steps to rebuild the postgresql cluster and restore the data.

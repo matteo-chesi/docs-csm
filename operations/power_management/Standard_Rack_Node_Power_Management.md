@@ -67,16 +67,18 @@ Hardware State Manager (HSM).
 
 * **Get Node Power Control and Limit Settings**
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_power_cap create –-nids NID_LIST --format json
+    cray capmc get_power_cap create –-nids NID_LIST --format json
     ```
 
     Return the current power limit settings for a node and any accelerators that
     are installed. Valid settings are only returned if power limiting is enabled
     on the target nodes.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_power_cap create --nids 4
+    cray capmc get_power_cap create --nids 4
     {
         "e": 0,
         "err_msg": "",
@@ -96,15 +98,17 @@ Hardware State Manager (HSM).
 
 * **Get Power Limiting Capabilities**
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_power_cap_capabilities create –-nids NID_LIST --format json
+    cray capmc get_power_cap_capabilities create –-nids NID_LIST --format json
     ```
 
     Return the min and max power limit settings for the node list and any
     accelerators that are installed.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc get_power_cap_capabilities create --nids 4 --format json
+    cray capmc get_power_cap_capabilities create --nids 4 --format json
     {
         "e": 0,
         "err_msg": "",
@@ -135,16 +139,18 @@ Hardware State Manager (HSM).
 
 * **Set Node Power Limit**
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001#  cray capmc set_power_cap create --nids NID_LIST --control CONTROL_NAME VALUE --format json
+     cray capmc set_power_cap create --nids NID_LIST --control CONTROL_NAME VALUE --format json
     ```
 
     Set the total power limit of the node by using the name of the node control.
     The power provided to the host CPU and memory is the total node power limit
     minus the power limits of each of the accelerators installed on the node.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc set_power_cap create --nids 4 --control "Chassis Power Control" 600
+    cray capmc set_power_cap create --nids 4 --control "Chassis Power Control" 600
     {
         "e": 0,
         "err_msg": "",
@@ -162,8 +168,9 @@ Hardware State Manager (HSM).
     target nodes must have the same set of controls available, otherwise the
     call will fail.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc set_power_cap create \
+    cray capmc set_power_cap create \
     --nids [1-4] --control "Chassis Power Control" 600
     {
         "e": 0,
@@ -195,8 +202,9 @@ Hardware State Manager (HSM).
 
 * **Remove Node Power Limit (Set to Default)**
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001#  cray capmc set_power_cap create --nids NID_LIST --control CONTROL_NAME 0 --format json
+     cray capmc set_power_cap create --nids NID_LIST --control CONTROL_NAME 0 --format json
     ```
 
     Reset the power limit to the default maximum. Alternatively, using the max
@@ -204,8 +212,9 @@ Hardware State Manager (HSM).
     controls can be set at the same time on multiple nodes, but all target nodes
     must have the same set of controls available, otherwise the call will fail.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray capmc set_power_cap create --nids 4 --control "Node Power Limit" 0
+    cray capmc set_power_cap create --nids 4 --control "Node Power Limit" 0
     {
         "e": 0,
         "err_msg": "",
@@ -225,16 +234,18 @@ Hardware State Manager (HSM).
 
 * **Enable Power Limiting**
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# curl -k -u $login:$pass -H "Content-Type: application/json" \
+    curl -k -u $login:$pass -H "Content-Type: application/json" \
     -X POST https://${BMC}/redfish/v1/Chassis/Self/Power/Actions/LimitTrigger \
     --data '{"PowerLimitTrigger": "Activate"}'
     ```
 
 * **Deactivate Node Power Limit**
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# curl -k -u $login:$pass -H "Content-Type: application/json" \
+    curl -k -u $login:$pass -H "Content-Type: application/json" \
     -X POST https://${BMC}/redfish/v1/Chassis/Self/Power/Actions/LimitTrigger \
     --data '{"PowerLimitTrigger": "Deactivate"}'
     ```

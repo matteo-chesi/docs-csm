@@ -12,7 +12,6 @@ LDAP user federation is currently configured in Keycloak.
 
 Follow the steps in only one of the sections below depending on if it is preferred to use the Keycloak REST API or Keycloak administration console UI.
 
-
 #### Use the Keycloak Administration Console UI
 
 1.  Log in to the administration console.
@@ -22,7 +21,6 @@ Follow the steps in only one of the sections below depending on if it is preferr
 2.  Click on **User Federation** under the Configure header of the navigation panel on the left side of the page.
 
 3.  Click on the **Delete** button on the line for the LDAP provider in the User Federation table.
-
 
 #### Use the Keycloak REST API
 

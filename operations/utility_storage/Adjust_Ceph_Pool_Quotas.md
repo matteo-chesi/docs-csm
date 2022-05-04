@@ -20,8 +20,9 @@ Currently, only `smf` includes a quota.
 
     In the following example, the 3.5 TiB is 33 percent of the 21 TiB total. Ceph keeps three copies of data, so a 3.5 TiB quota is actually provisioning 7.0 TiB of storage, which is 33 percent of 21 TiB.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph df detail
+    ceph df detail
     ```
 
     Example output:
@@ -65,8 +66,9 @@ Currently, only `smf` includes a quota.
 
     Do not exceed the percentage determined in the previous step.
 
+    (`ncn-s001#`)
     ```bash
-    ncn-s001# vim /etc/ansible/ceph-rgw-users/ceph-pool-quotas.yml
+    vim /etc/ansible/ceph-rgw-users/ceph-pool-quotas.yml
     ```
 
     Example ceph-pool-quotas.yml:
@@ -80,16 +82,18 @@ Currently, only `smf` includes a quota.
 
 1. Run the ceph-pool-quotas.yml playbook from `ncn-s001`.
 
+    (`ncn-s001#`)
     ```bash
-    ncn-s001# ansible-playbook /etc/ansible/ceph-rgw-users/ceph-pool-quotas.yml
+    ansible-playbook /etc/ansible/ceph-rgw-users/ceph-pool-quotas.yml
     ```
 
 1. View the quota/pool usage.
 
     Look at the USED and QUOTA BYTES columns to view usage and the new quota setting.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# ceph df detail
+    ceph df detail
     ```
 
     Example output:

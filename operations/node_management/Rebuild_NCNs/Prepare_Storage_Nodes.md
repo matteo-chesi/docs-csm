@@ -16,8 +16,9 @@ If rebuilding `ncn-s001`, it is critical that the `storage-ceph-cloudinit.sh` ha
 
 2. Check the `bss bootparameters` for `ncn-s001`.
 
+   (`ncn#`)
    ```bash
-   ncn# cray bss bootparameters list --name x3000c0s7b0n0 --format=json|jq -r '.[]|.["cloud-init"]|.["user-data"].runcmd'
+   cray bss bootparameters list --name x3000c0s7b0n0 --format=json|jq -r '.[]|.["cloud-init"]|.["user-data"].runcmd'
    ```
 
    Expected Output:
@@ -42,12 +43,13 @@ If rebuilding `ncn-s001`, it is critical that the `storage-ceph-cloudinit.sh` ha
 
    If it is there then it will need to be fixed by running:
 
-   **IMPORTANT:** The below Python script is provided by the `docs-csm` RPM. To install the latest version of it, see [Check for Latest Documentation](../../../update_product_stream/index.md#documentation).
-
    A token will need to be generated and made available as an environment variable. Refer to the [Retrieve an Authentication Token](../../security_and_authentication/Retrieve_an_Authentication_Token.md) procedure for more information.
 
+   **IMPORTANT:** The below python script is provided by the `docs-csm` RPM. To install the latest version of it, see [Check for Latest Documentation](../../../update_product_stream/README.md#check-for-latest-documentation).
+
+   (`ncn#`)
    ```bash
-   ncn# python3 /usr/share/doc/csm/scripts/patch-ceph-runcmd.py
+   python3 /usr/share/doc/csm/scripts/patch-ceph-runcmd.py
    ```
 
 ## Procedure
@@ -58,8 +60,9 @@ Check the status of Ceph.
 
     On the node being rebuilt run:
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# for service in $(cephadm ls |jq -r '.[].systemd_unit'); do systemctl stop $service; systemctl disable $service; done
+    for service in $(cephadm ls |jq -r '.[].systemd_unit'); do systemctl stop $service; systemctl disable $service; done
     ```
 
     Example output:
@@ -80,8 +83,9 @@ Check the status of Ceph.
 
 1. Check the OSD status, weight, and location:
 
+    (`ncn-s#`)
     ```bash
-    ncn-s# ceph osd tree
+    ceph osd tree
     ```
 
     Example output:
@@ -108,8 +112,9 @@ Check the status of Ceph.
 
 1. Check the status of the Ceph cluster:
 
+    (`ncn-s#`)
     ```screen
-    ncn-s# ceph -s
+    ceph -s
     ```
 
     Example output:
@@ -149,8 +154,9 @@ Check the status of Ceph.
 
     The `ceph osd tree` capture indicated that there are down OSDs on `ncn-s003`.
 
+     (`ncn-s#`)
      ```screen
-     ncn-s# ceph osd tree down
+     ceph osd tree down
      ```
 
      Example output:
@@ -175,8 +181,9 @@ Check the status of Ceph.
 
         This must be run from a `ceph-mon` node (ncn-s00[1/2/3])
 
+        (`ncn-s#`)
         ```bash
-        ncn-s# for osd in $(ceph osd ls-tree $NODE); do ceph osd destroy osd.$osd --force; ceph osd purge osd.$osd --force; done
+        for osd in $(ceph osd ls-tree $NODE); do ceph osd destroy osd.$osd --force; ceph osd purge osd.$osd --force; done
         ```
 
         Example Output:

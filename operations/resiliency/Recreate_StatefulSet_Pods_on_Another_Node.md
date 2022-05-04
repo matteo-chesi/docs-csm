@@ -13,7 +13,6 @@ This procedure prevents services from being taken out of service when a node goe
 -   A StatefulSet pod failed to be moved to another healthy non-compute node \(NCN\) acting as a worker node.
 -   If the network is being brought down temporarily during testing, ignore any issues with StatefulSet pods until the testing is complete. These errors should be ignored because the nodes could have the network restored, and then the `Terminating` pod may go `ACTIVE` temporarily \(causing a race and corruption\) if it comes up at the same time as another StatefulSet running the pod. This is much more likely to occur during testing of a network outage.
 
-
 ### Procedure
 
 1.  View the StatefulSet pods on the system.

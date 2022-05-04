@@ -88,4 +88,4 @@ switch# show aaa authentication port-access mac-auth interface <IFACE|all> <port
 2. Administrators are able to authenticate using the specified dot1x authentication method
 3. The output of the `show` commands looks correct
 
-[Back to Index](../index.md)
+[Back to Index](../README.md)

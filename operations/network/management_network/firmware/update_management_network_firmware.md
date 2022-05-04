@@ -35,7 +35,6 @@ For example: 10.06.0120
 
 - 0120	= CPE release (bug fixes)
 
-
 It is considered to be a best practice to keep all Aruba CX platform devices running the same software version.
 
 Aruba CX devices two software image banks, which means sw images can be pre-staged to the device without booting to the new image.
@@ -259,8 +258,6 @@ Active Image : secondary
 Service OS Version : GL.01.08.0002
 BIOS Version       : GL-01-0013
 ```
-
-
 
 ## Mellanox Firmware Update
 

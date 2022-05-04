@@ -8,8 +8,9 @@ CFS provides a default ansible.cfg file in the `cfs-default-ansible-cfg` Kuberne
 
 To view the ansible.cfg file:
 
+(`ncn#`)
 ```bash
-ncn# kubectl get cm -n services cfs-default-ansible-cfg \
+kubectl get cm -n services cfs-default-ansible-cfg \
 -o json | jq -r '.data."ansible.cfg"'
 ....
 ```

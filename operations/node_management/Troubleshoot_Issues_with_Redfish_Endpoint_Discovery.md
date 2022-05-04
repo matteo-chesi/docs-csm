@@ -9,8 +9,9 @@ Update the HSM inventory to resolve issues with discovering Redfish endpoints.
 
 The following is an example of the HSM error:
 
+(`ncn-m001#`)
 ```bash
-ncn-m001# cray hsm inventory redfishEndpoints describe x3000c0s15b0
+cray hsm inventory redfishEndpoints describe x3000c0s15b0
 ```
 
 Example output:
@@ -41,14 +42,16 @@ LastDiscoveryStatus = "HTTPsGetFailed"
 
 1. Restart the HSM inventory process.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm inventory discover create --xnames XNAME
+    cray hsm inventory discover create --xnames XNAME
     ```
 
 1. Verify that the Redfish endpoint has been rediscovered by HSM.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm inventory redfishEndpoints describe XNAME
+    cray hsm inventory redfishEndpoints describe XNAME
     ```
 
     Example output:
@@ -64,7 +67,7 @@ LastDiscoveryStatus = "HTTPsGetFailed"
     Password = ""
     Type = "NodeBMC"
     ID = "x3000c0s15b0"
-    
+
     [DiscoveryInfo]
     LastDiscoveryAttempt = "2019-11-18T21:34:29.990441Z"
     RedfishVersion = "1.1.0"
@@ -77,8 +80,9 @@ LastDiscoveryStatus = "HTTPsGetFailed"
 
     If `Enabled = false` for the `RedfishEndpoint`, then it may indicate a network or firmware issue with the BMC.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm inventory redfishEndpoints update BMC_XNAME \
+    cray hsm inventory redfishEndpoints update BMC_XNAME \
                 --enabled true --rediscover-on-update true
     ```
 
@@ -86,14 +90,16 @@ LastDiscoveryStatus = "HTTPsGetFailed"
 
     Re-enabling the `RedfishEndpoint` will cause a rediscovery to start. Troubleshooting can stop if the discovery status is `DiscoverOK`.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# cray hsm inventory redfishEndpoints describe BMC_XNAME
+    cray hsm inventory redfishEndpoints describe BMC_XNAME
     ```
 
     **Troubleshooting:** If discovery is still failing, then use the `curl` command to manually contact the BMC using Redfish.
 
+    (`ncn-m001#`)
     ```bash
-    ncn-m001# curl -k -u USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/
+    curl -k -u USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/
     ```
 
     If there is no response from `/redfish/v1/`, then the BMC is either not powered or there is a network issue.
@@ -104,8 +110,9 @@ LastDiscoveryStatus = "HTTPsGetFailed"
 
     * An empty response:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# curl -ku USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/Systems/Node0 | jq .
+        curl -ku USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/Systems/Node0 | jq .
         ```
 
         Example output:
@@ -119,8 +126,9 @@ LastDiscoveryStatus = "HTTPsGetFailed"
 
     * A garbled response:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# curl -ku USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/Managers/Self
+        curl -ku USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/Managers/Self
         ```
 
         Example output:
@@ -140,8 +148,9 @@ LastDiscoveryStatus = "HTTPsGetFailed"
 
     * The URLs listed for the Systems do not include `/Systems/` in the URL:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# curl -ku USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/Systems | jq .
+        curl -ku USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/Systems | jq .
         ```
 
         Example output:
@@ -171,8 +180,9 @@ LastDiscoveryStatus = "HTTPsGetFailed"
 
     * The URL for a system is missing the `SystemID`:
 
+        (`ncn-m001#`)
         ```bash
-        ncn-m001# curl -ku USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/Systems | jq .
+        curl -ku USERNAME:PASSWORD https://BMC_XNAME/redfish/v1/Systems | jq .
         ```
 
         Example output:

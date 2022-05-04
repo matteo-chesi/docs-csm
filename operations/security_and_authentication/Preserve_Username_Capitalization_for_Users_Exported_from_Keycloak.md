@@ -25,8 +25,9 @@ The LDAP server that provides password resolution and user account federation su
 
 3. Upload the modified customizations.yaml file to Kubernetes.
 
+   (`ncn-m001#`)
    ```bash
-   ncn-m001# kubectl delete secret -n loftsman site-init
-   ncn-m001# kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
+   kubectl delete secret -n loftsman site-init
+   kubectl create secret -n loftsman generic site-init --from-file=customizations.yaml
    ```
 

@@ -5,7 +5,7 @@ Use an existing backup of a healthy etcd cluster to restore an unhealthy cluster
 The commands in this procedure can be run on any master node \(`ncn-mXXX`\) or worker node \(`ncn-wXXX`\) on the system.
 
 ---
-**NOTE**
+**`NOTE`**
 
 Etcd Clusters can be restored using the automation script or the manual procedure below. The automation script follows the same steps as the manual procedure.
 If the automation script fails to get the date from backups, follow the manual procedure.

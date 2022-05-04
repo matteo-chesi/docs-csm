@@ -10,8 +10,9 @@ Use this procedure to finish validating the success of a rebuilt NCN(s).
 
    **IMPORTANT:** The following command assumes that the variables from [the prerequisites section](Rebuild_NCNs.md#Prerequisites) have been set.
 
+   (`ncn#`)
    ```bash
-   ncn# cray cfs components describe $XNAME --format json
+   cray cfs components describe $XNAME --format json
    ```
 
    Example output:

@@ -7,8 +7,9 @@ Configure an email alert notification for all Prometheus Postgres replication al
 
 1. Save the current alert notification configuration in case a rollback is needed.
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get secret -n sysmgmt-health alertmanager-cray-sysmgmt-health-promet-alertmanager \
+    kubectl get secret -n sysmgmt-health alertmanager-cray-sysmgmt-health-promet-alertmanager \
             -ojsonpath='{.data.alertmanager.yaml}' | base64 --decode > /tmp/alertmanager-default.yaml
     ```
 
@@ -16,8 +17,9 @@ Configure an email alert notification for all Prometheus Postgres replication al
 
     1. Create the secret file.
 
+        (`ncn#`)
         ```console
-        ncn# cat << 'EOF' > /tmp/alertmanager-secret.yaml
+        cat << 'EOF' > /tmp/alertmanager-secret.yaml
         apiVersion: v1
         data:
           alertmanager.yaml: ALERTMANAGER_CONFIG
@@ -39,8 +41,9 @@ Configure an email alert notification for all Prometheus Postgres replication al
         In the following example file, the Gmail SMTP server is used in this example to relay the notification to `receiver-email@yourcompany.com`.
         Update the fields under `email_configs:` accordingly before running the following command.
 
+        (`ncn#`)
         ```console
-        ncn# cat << 'EOF' > /tmp/alertmanager-new.yaml
+        cat << 'EOF' > /tmp/alertmanager-new.yaml
         global:
           resolve_timeout: 5m
         route:
@@ -82,8 +85,9 @@ Configure an email alert notification for all Prometheus Postgres replication al
 
 1. Replace the alert notification configuration based on the files created in the previous step.
 
+    (`ncn#`)
     ```bash
-    ncn# sed "s/ALERTMANAGER_CONFIG/$(cat /tmp/alertmanager-new.yaml \
+    sed "s/ALERTMANAGER_CONFIG/$(cat /tmp/alertmanager-new.yaml \
                 | base64 -w0)/g" /tmp/alertmanager-secret.yaml \
                 | kubectl replace --force -f -
     ```
@@ -92,15 +96,17 @@ Configure an email alert notification for all Prometheus Postgres replication al
 
     1. View the current configuration.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl exec alertmanager-cray-sysmgmt-health-promet-alertmanager-0 \
+        kubectl exec alertmanager-cray-sysmgmt-health-promet-alertmanager-0 \
                 -n sysmgmt-health -c alertmanager -- cat /etc/alertmanager/config/alertmanager.yaml
         ```
 
     1. Check the logs for any errors if the configuration does not look accurate.
 
+        (`ncn#`)
         ```bash
-        ncn# kubectl logs -f -n sysmgmt-health pod/alertmanager-cray-sysmgmt-health-promet-alertmanager-0 alertmanager
+        kubectl logs -f -n sysmgmt-health pod/alertmanager-cray-sysmgmt-health-promet-alertmanager-0 alertmanager
         ```
 
 An email notification will be sent once either of the alerts set in this procedure is `FIRING` in Prometheus.

@@ -11,7 +11,6 @@ This procedure requires administrative privileges and assumes that the device be
 - `kubectl` is installed
 - Access to the site admin network
 
-
 ### Procedure
 
 1.  Access the credentials file used by kubectl at /etc/kubernetes/admin.conf on any one of the master or worker NCNs.
@@ -20,8 +19,9 @@ This procedure requires administrative privileges and assumes that the device be
 
 2.  Verify access by executing the following command:
 
+    (`ncn#`)
     ```bash
-    ncn# kubectl get nodes
+    kubectl get nodes
     ```
 
     If the command was successful, the system will return output similar to the following:
