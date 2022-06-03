@@ -46,6 +46,7 @@
 8325-48Y8C
 ACLs
 airgapped
+Alertmanager
 analog
 analyze
 analyzed
@@ -133,6 +134,7 @@ ConMan
 ConnectX-4
 ConnectX-5
 ConnectX-5s
+CoreDNS
 Cray
 Cray-HPE
 CrayPort
@@ -443,6 +445,7 @@ RPMs
 RPs
 RSAv1
 RSAv2
+Rsyslog
 Runbook
 S-8000
 S-8024
@@ -596,3 +599,7 @@ Init
  - introduction/site_survey.md
 # To allow Site Init
 Init
+
+ - operations/network/management_network/upgrade.md
+Preconfig
+preconfig

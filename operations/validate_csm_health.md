@@ -176,7 +176,7 @@ If `ncn-m001` is the PIT node, then run these checks on `ncn-m001`; otherwise ru
 
   - The `spire-agent` service may also fail if an NCN was powered off for too long and its tokens expired. If this happens, then delete
     `/root/spire/agent_svid.der`, `/root/spire/bundle.der`, and `/root/spire/data/svid.key` off the NCN before deleting the
-    `request-ncn-join-token` daemonset pod.
+    `request-ncn-join-token` `daemonset` pod.
 - `cfs-state-reporter service ran successfully`
   - If this test is failing, it could be due to SSL certificate issues on that NCN.
      1. Run the following command on the node where the test is failing.
