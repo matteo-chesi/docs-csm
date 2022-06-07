@@ -88,26 +88,31 @@ a Ceph image.
 
 1. Update NCN boot parameters.
 
-    1. Get the existing `metal.server` setting for the component name (xname) of the node of interest:
+    1. Set a variable with the component name (xname) of the node of interest.
 
         ```console
         ncn# XNAME=<your-xname>
+        ```
+
+    1. Get the existing `metal.server` setting for the node.
+
+        ```console
         ncn# METAL_SERVER=$(cray bss bootparameters list --hosts $XNAME --format json | jq '.[] |."params"' \
              | awk -F 'metal.server=' '{print $2}' \
              | awk -F ' ' '{print $1}')
         ```
 
-    1. Verify that the variable was set correctly:
+    1. Verify that the variable was set correctly.
 
         ```console
         ncn# echo $METAL_SERVER
         ````
 
-    1. Update the kernel, `initrd`, and metal server to point to the new artifacts.
+    1. Update the kernel, `initrd`, and `metal.server` to point to the new artifacts.
 
         Note: Multiple xnames can be updated at the same time, if desired.
 
-        1. Set variables:
+        1. Set variables.
 
             ```console
             ncn# S3_ARTIFACT_PATH=ncn-images/k8s/<new-version>
@@ -117,14 +122,14 @@ a Ceph image.
                  sed "/metal.server/ s|$METAL_SERVER|$NEW_METAL_SERVER|")
             ```
 
-        1. Verify that the value of `$NEW_METAL_SERVER` was set correctly:
+        1. Verify that the value of `$NEW_METAL_SERVER` was set correctly.
 
             ```console
             ncn# echo $PARAMS
             ```
 
         1. Update BSS.
-        
+
             In the following invocation, `$XNAME` may be one or more xnames.
 
             ```console
@@ -137,4 +142,3 @@ a Ceph image.
 1. Reboot the NCN.
 
     See [Reboot NCNs](../node_management/Reboot_NCNs.md).
-
