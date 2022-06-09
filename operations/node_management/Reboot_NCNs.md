@@ -111,7 +111,7 @@ The `kubectl` command is installed.
    automatically re-enabled when they boot.
 
    ```bash
-   ncn-mw# cray cfs components list --status failed | jq .[].id -r | while read -r xname ; do
+   ncn-mw# cray cfs components list --status failed --format json | jq .[].id -r | while read -r xname ; do
                 echo "$xname"
                 cray cfs components update $xname --enabled False --error-count 0
            done
